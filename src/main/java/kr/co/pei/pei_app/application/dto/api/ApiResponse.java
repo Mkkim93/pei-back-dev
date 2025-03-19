@@ -1,5 +1,6 @@
 package kr.co.pei.pei_app.application.dto.api;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ public class ApiResponse<T> {
     private final String message;
     private final String errorCode;
     private final LocalDateTime timestamp = LocalDateTime.now();
+
     private final T data;
 
     public static <T> ApiResponse<T> success(String message, T data) {

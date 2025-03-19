@@ -1,6 +1,9 @@
 package kr.co.pei.pei_app.domain.repository.users;
 
+import kr.co.pei.pei_app.application.dto.users.FindUsersDTO;
 import kr.co.pei.pei_app.domain.entity.users.Users;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +26,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     @Query("select u.username from Users u where u.phone = :phone")
     String findUsernameByPhone(@Param("phone") String phone);
+
+    @Query("select new kr.co.pei.pei_app.application.dto.users.FindUsersDTO(u.id, u.username, u.name, u.phone, u.mail, u.createAt, u.roleType) from Users u")
+    Page<FindUsersDTO> findAllUsers(Pageable pageable);
 }

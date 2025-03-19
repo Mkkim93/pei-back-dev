@@ -6,6 +6,9 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+/**
+ * 예외 발생 추적 AOP
+ */
 @Slf4j
 @Aspect
 @Component

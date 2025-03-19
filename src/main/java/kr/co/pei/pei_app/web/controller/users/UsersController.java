@@ -4,12 +4,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import kr.co.pei.pei_app.application.dto.api.ApiResponse;
+import kr.co.pei.pei_app.application.dto.users.FindUsersDTO;
 import kr.co.pei.pei_app.application.dto.users.PasswordRequest;
 import kr.co.pei.pei_app.application.dto.users.UsersUpdateDTO;
 import kr.co.pei.pei_app.application.dto.users.UsersDetailDTO;
 import kr.co.pei.pei_app.application.service.users.UsersService;
 import kr.co.pei.pei_app.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +30,17 @@ import org.springframework.web.bind.annotation.*;
 public class UsersController {
 
     private final UsersService usersService;
+
+    @GetMapping
+    @Operation(summary = "전체 사용자 목록 조회", description = "최상위 관리자부터 목록 페이징을 위한 API 입니다.")
+    public ResponseEntity<ApiResponse<Page<FindUsersDTO>>> findAllUsers(@PageableDefault(
+            size = 10,
+            sort = "roleType",
+            direction = Sort.Direction.ASC
+    ) Pageable pageable) {
+        Page<FindUsersDTO> userList = usersService.findAllUsers(pageable);
+        return ResponseEntity.ok(ApiResponse.success("모든 사용자 정보", userList));
+    }
 
     @GetMapping("/profile")
     @Operation(summary = "내 정보 조회", description = "사용자 정보를 상세 조회 하기 위한 API")
@@ -72,15 +89,15 @@ public class UsersController {
     }
 
     // TODO 수정할 데이터 결정 안됨
-    @Operation(summary = "정보 수정", description = "별도의 인증 없이 사용자 정보 수정")
     @PatchMapping
+    @Operation(summary = "정보 수정", description = "별도의 인증 없이 사용자 정보 수정")
     public ResponseEntity<String> updateUsers(@RequestBody UsersUpdateDTO usersUpdateDTO) {
         return null;
     }
 
     // TODO 비밀번호 링크를 클라이언트에서 전송 후 구현
-    @Operation(summary = "비밀번호 변경(재설정)", description = "임시 비밀번호 링크에서 비밀번호 재설정")
     @PostMapping("/auth-reset")
+    @Operation(summary = "비밀번호 변경(재설정)", description = "임시 비밀번호 링크에서 비밀번호 재설정")
     public ResponseEntity<ApiResponse<String>> modifyPassword(@RequestParam("password") String password,
                                                               @RequestParam("username") String username) {
 //        Map<String, Object> responseMap = usersService.updatePassword(username, password);
@@ -88,10 +105,19 @@ public class UsersController {
         return null;
     }
 
-    @Operation(summary = "회원 탈퇴", description = "전화번호 인증 완료 시 회원 탈퇴 처리를 위한 API 입니다.")
-    @DeleteMapping
-    public ResponseEntity<ApiResponse<String>> delete(@RequestParam("username") String username) {
-
-        return null;
+    // TODO 영구 탈퇴 (향후 요구 사항에 따라 복구 할지 결정)
+    @DeleteMapping("/{username}")
+    @Operation(summary = "회원 탈퇴", description = "비밀번호 검증 완료 후 회원 탈퇴")
+    public ResponseEntity<ApiResponse<String>> delete(@PathVariable("username") String username) {
+        Boolean deleted = usersService.deleteUsername(username);
+        if (deleted) {
+            return ResponseEntity.ok(ApiResponse.success("계정 탈퇴가 완료 되었습니다."));
+        }
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST.value(),
+                        "FAILED_WITH_DRAW",
+                        "일시 적인 오류로 회원 탈퇴에 실패하였습니다."));
     }
+
 }

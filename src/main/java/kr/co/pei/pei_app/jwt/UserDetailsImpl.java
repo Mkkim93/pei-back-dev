@@ -1,7 +1,6 @@
 package kr.co.pei.pei_app.jwt;
 
 import kr.co.pei.pei_app.domain.entity.users.Users;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

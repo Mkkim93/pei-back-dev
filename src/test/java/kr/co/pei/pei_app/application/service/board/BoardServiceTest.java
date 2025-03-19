@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 @SpringBootTest
 @Transactional
-@Profile("dev")
 @ActiveProfiles("test")
 class BoardServiceTest {
 
@@ -29,21 +28,21 @@ class BoardServiceTest {
     private BoardService boardService;
 
     @Test
-    void findBoardPages() {
+    void pages() {
 
     }
 
     @Test
-    void findBoardDetail() {
+    void detail() {
     }
 
     @Test
-    void updateBoard() {
+    void update() {
     }
 
     @Test
     @DisplayName("게시글 등록")
-    void createBoard() {
+    void create() {
         // given
         CreateBoardDTO createBoardDTO = new CreateBoardDTO();
         createBoardDTO.setTitle("제목 테스트1");

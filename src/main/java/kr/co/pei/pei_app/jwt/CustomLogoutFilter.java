@@ -109,7 +109,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         response.setCharacterEncoding("UTF-8");
 
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("status", status);
+        responseBody.put("status", response.getStatus());
         responseBody.put("message", message);
         responseBody.put("code", code);
 
@@ -128,7 +128,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         response.setCharacterEncoding("UTF-8");
 
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("status", HttpServletResponse.SC_OK);
+        responseBody.put("status", response.getStatus());
         responseBody.put("message", message);
         responseBody.put("code", code);
 

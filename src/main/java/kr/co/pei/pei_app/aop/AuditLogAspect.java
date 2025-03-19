@@ -1,0 +1,87 @@
+package kr.co.pei.pei_app.aop;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import kr.co.pei.pei_app.application.dto.board.CreateBoardDTO;
+import kr.co.pei.pei_app.application.service.auth.UsersContextService;
+import kr.co.pei.pei_app.domain.entity.board.Board;
+import kr.co.pei.pei_app.domain.entity.log.AuditLog;
+import kr.co.pei.pei_app.domain.entity.log.Log;
+import kr.co.pei.pei_app.domain.entity.users.Users;
+import kr.co.pei.pei_app.domain.repository.log.LogRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+/**
+ * 활동 로그 AOP
+ */
+@Slf4j
+@Aspect
+@Component
+@RequiredArgsConstructor
+public class AuditLogAspect {
+
+    private final UsersContextService usersContextService;
+    private final LogRepository logRepository;
+    private final HttpServletRequest request;
+
+    @Around("@annotation(kr.co.pei.pei_app.domain.entity.log.AuditLog)")
+    @Transactional
+    public Object logActivity(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        Object[] args = joinPoint.getArgs();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+
+        AuditLog auditLog = method.getAnnotation(AuditLog.class);
+
+        Users users = usersContextService.getCurrentUser();
+
+        if (users == null) {
+            log.warn("관리자 정보 확인에 실패하였습니다.");
+            return joinPoint.proceed();
+        }
+
+        String action = auditLog.action();
+        String description = auditLog.description();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonData = "";
+
+        for (Object arg : args) {
+            if (arg.getClass().getSimpleName().endsWith("DTO")) {
+                try {
+                    jsonData = mapper.writeValueAsString(arg);
+                } catch (Exception e) {
+                    log.error("JSON 변환 오류", e);
+                }
+            }
+        }
+
+        Object proceed = joinPoint.proceed();
+
+        Log logEntity = Log.builder()
+                .users(users)
+                .action(action)
+                .description(jsonData)
+                .ipAddress(request.getRemoteAddr())
+                .userAgent(request.getHeader("User-Agent"))
+                .build();
+
+        logRepository.save(logEntity);
+
+        log.info("관리자 활동 로그 저장: {} - {}", action, description);
+
+        return proceed;
+    }
+
+}

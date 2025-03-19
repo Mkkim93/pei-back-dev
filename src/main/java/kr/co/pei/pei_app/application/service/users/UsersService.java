@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.application.service.users;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.co.pei.pei_app.application.dto.users.FindUsersDTO;
 import kr.co.pei.pei_app.application.dto.users.PasswordRequest;
 import kr.co.pei.pei_app.application.dto.users.UsersDetailDTO;
 import kr.co.pei.pei_app.application.service.auth.AuthService;
@@ -9,12 +10,12 @@ import kr.co.pei.pei_app.domain.repository.users.UsersRepository;
 import kr.co.pei.pei_app.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -26,6 +27,10 @@ public class UsersService {
     private final BCryptPasswordEncoder encoder;
     private final UsersRepository usersRepository;
     private final AuthService authService;
+
+    public Page<FindUsersDTO> findAllUsers(Pageable pageable) {
+        return usersRepository.findAllUsers(pageable);
+    }
 
     public UsersDetailDTO detail(UserDetailsImpl userDetails) {
 
@@ -91,5 +96,20 @@ public class UsersService {
 
     public Optional<Users> findByUsername(String username) {
         return usersRepository.findByUsername(username);
+    }
+
+    public Boolean deleteUsername(String username) {
+
+        Users users = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("사용자 정보를 찾는 도중 오류가 발생 하였습니다."));
+
+        usersRepository.delete(users);
+
+        Optional<Users> deleted = usersRepository.findByUsername(username);
+
+        if (deleted.isPresent()) {
+            return false;
+        }
+        return true;
     }
 }

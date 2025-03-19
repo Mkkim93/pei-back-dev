@@ -2,11 +2,13 @@ package kr.co.pei.pei_app.application.dto.users;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 사용자 등록 DTO
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

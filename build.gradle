@@ -32,6 +32,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 
+	// HIBERNATE
+	implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.3.1'
+
+	// JACKSON
+	implementation 'com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations'
+
 	// QUERY DSL
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -44,7 +50,6 @@ dependencies {
 
 	// MONGO
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-
 
 	// SECURITY
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -61,7 +66,10 @@ dependencies {
 
 	// MYSQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	runtimeOnly 'com.h2database:h2'
+
+
+	// ELASTIC SEARCH
+//	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
 	// SWAGGER
 	implementation 'org.modelmapper:modelmapper:3.1.0'
@@ -82,8 +90,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'com.h2database:h2'
-
 }
 
 tasks.named('test') {

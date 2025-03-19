@@ -3,6 +3,9 @@ package kr.co.pei.pei_app.application.dto.users;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 내 정보 조회 DTO
+ */
 @Data
 @NoArgsConstructor
 public class UsersDetailDTO {

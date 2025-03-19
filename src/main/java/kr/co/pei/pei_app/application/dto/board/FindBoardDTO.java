@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * 전체 게시글 조회 DTO
+ */
 @Data
 @NoArgsConstructor
 public class FindBoardDTO {
@@ -23,6 +26,7 @@ public class FindBoardDTO {
         this.content = board.getContent();
         this.createAt = board.getCreatedAt();
         this.updateAt = board.getUpdatedAt();
+        this.writer = board.getUsers().getName();
     }
 
 }

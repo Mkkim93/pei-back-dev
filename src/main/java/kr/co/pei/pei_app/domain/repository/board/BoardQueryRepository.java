@@ -28,7 +28,8 @@ public class BoardQueryRepository extends QuerydslRepositorySupport implements B
     @Override
     public DetailBoardDTO detail(Long boardId) {
 
-        Board board = queryFactory.selectFrom(QBoard.board).leftJoin(QBoard.board.users, users).fetchJoin()
+        Board board = queryFactory.selectFrom(QBoard.board)
+                .leftJoin(QBoard.board.users, users).fetchJoin()
                 .where(QBoard.board.id.eq(boardId))
                 .fetchOne();
 
