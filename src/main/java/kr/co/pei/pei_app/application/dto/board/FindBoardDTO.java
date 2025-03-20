@@ -28,5 +28,4 @@ public class FindBoardDTO {
         this.updateAt = board.getUpdatedAt();
         this.writer = board.getUsers().getName();
     }
-
 }

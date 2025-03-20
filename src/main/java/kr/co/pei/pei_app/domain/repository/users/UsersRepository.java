@@ -17,10 +17,12 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
 
     Optional<Users> findByUsername(String username);
 
+    // TODO 클라이언트에서 패스워드 링크 보내주면 아래 쿼리로 패스워드 재설정
     @Modifying
     @Query("update Users u set u.password = :password where u.username = :username")
     Integer updateTempPassword(@Param("password") String password, @Param("username") String username);
 
+    // TODO 사용자에게 비밀번호 링크를 보내기 전 검증
     @Query("select u.username from Users u where u.mail = :mail")
     String findUsernameByMail(@Param("mail") String mail);
 

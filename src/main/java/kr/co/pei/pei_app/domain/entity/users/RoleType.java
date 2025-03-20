@@ -7,13 +7,13 @@ public enum RoleType {
 
     ROLE_ADMIN("관리자"), ROLE_USER("사용자");
 
-    private final String description;
+    private final String text;
 
-    RoleType(String description) {
-        this.description = description;
+    RoleType(String text) {
+        this.text = text;
     }
 
-    public String getDescription() {
-        return description;
+    public String getText() {
+        return text;
     }
 }

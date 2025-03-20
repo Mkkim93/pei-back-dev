@@ -67,6 +67,8 @@ dependencies {
 	// MYSQL
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
+	// APACHE POI
+	implementation 'org.apache.poi:poi-ooxml:5.4.0'
 
 	// ELASTIC SEARCH
 //	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'

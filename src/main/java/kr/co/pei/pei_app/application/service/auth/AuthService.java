@@ -24,6 +24,7 @@ public class AuthService {
     private final PasswordService passwordService;
 
     public Long sendOTP(String phone) {
+
         String secretCode = generateAuthCode();
         Long expiration = authRedisService.setSmsCode(phone, secretCode);
 
@@ -55,7 +56,6 @@ public class AuthService {
     }
 
     public void getUsernameByCode(String phone, String code) {
-
         authRedisService.getUsernameByCode(phone, code);
     }
 

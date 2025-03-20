@@ -31,6 +31,6 @@ public class FindUsersDTO {
         this.phone = phone;
         this.mail = mail;
         this.createAt = createAt;
-        this.roleType = roleType.getDescription();
+        this.roleType = roleType.getText();
     }
 }

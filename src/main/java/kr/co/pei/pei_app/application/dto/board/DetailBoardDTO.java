@@ -2,7 +2,6 @@ package kr.co.pei.pei_app.application.dto.board;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.QueryProjection;
-import kr.co.pei.pei_app.domain.entity.users.Users;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class DetailBoardDTO {
 
-    private Long boardId;
+    private Long id;
     private String title;
     private String content;
     private String writer;
@@ -24,9 +23,9 @@ public class DetailBoardDTO {
     // TODO 나중에 파일 추가
 
     @QueryProjection
-    public DetailBoardDTO(Long boardId, String title, String content,
+    public DetailBoardDTO(Long id, String title, String content,
                           String writer, LocalDateTime updatedAt, Long views, String username) {
-        this.boardId = boardId;
+        this.id = id;
         this.title = title;
         this.content = content;
         this.writer = writer;

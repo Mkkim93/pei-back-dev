@@ -51,9 +51,6 @@ public class AuditLogAspect {
             return joinPoint.proceed();
         }
 
-        String action = auditLog.action();
-        String description = auditLog.description();
-
         ObjectMapper mapper = new ObjectMapper();
         String jsonData = "";
 
@@ -71,7 +68,7 @@ public class AuditLogAspect {
 
         Log logEntity = Log.builder()
                 .users(users)
-                .action(action)
+                .action(auditLog.action())
                 .description(jsonData)
                 .ipAddress(request.getRemoteAddr())
                 .userAgent(request.getHeader("User-Agent"))
@@ -79,7 +76,7 @@ public class AuditLogAspect {
 
         logRepository.save(logEntity);
 
-        log.info("관리자 활동 로그 저장: {} - {}", action, description);
+        log.info("관리자 활동 로그 저장: {} - {}", auditLog.action(), jsonData);
 
         return proceed;
     }

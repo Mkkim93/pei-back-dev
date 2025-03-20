@@ -1,6 +1,5 @@
 package kr.co.pei.pei_app.domain.entity.log;
 
-import io.hypersistence.utils.hibernate.type.json.JsonStringType;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import kr.co.pei.pei_app.domain.entity.users.Users;
@@ -28,6 +27,7 @@ public class Log {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column
     private String action;
 
     @Type(value = JsonType.class)
@@ -47,4 +47,7 @@ public class Log {
 
     @Column(name = "user_agent")
     private String userAgent;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
 }

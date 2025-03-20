@@ -2,7 +2,9 @@ package kr.co.pei.pei_app.application.service.board;
 
 import kr.co.pei.pei_app.application.dto.board.CreateBoardDTO;
 import kr.co.pei.pei_app.application.dto.board.FindBoardDTO;
+import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.board.BoardRepository;
+import kr.co.pei.pei_app.domain.repository.users.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +29,9 @@ class BoardServiceTest {
     @Autowired
     private BoardService boardService;
 
+    @Autowired
+    private UsersRepository usersRepository;
+
     @Test
     void pages() {
 
@@ -47,6 +52,8 @@ class BoardServiceTest {
         CreateBoardDTO createBoardDTO = new CreateBoardDTO();
         createBoardDTO.setTitle("제목 테스트1");
         createBoardDTO.setContent("내용 테스트1");
+
+        Users users = usersRepository.findById(1L).get();
 
     }
 }

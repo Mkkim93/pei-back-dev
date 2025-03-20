@@ -46,8 +46,7 @@ public class BoardQueryRepository extends QuerydslRepositorySupport implements B
     @Override
     public Boolean update(UpdateBoardDTO updateBoardDTO) {
 
-        EntityManager em = getEntityManager();
-        JPAUpdateClause updateClause = new JPAUpdateClause(em, board);
+        JPAUpdateClause updateClause = new JPAUpdateClause(getEntityManager(), board);
 
         if (updateBoardDTO.getTitle() != null) {
             updateClause.set(board.title, updateBoardDTO.getTitle());
@@ -55,8 +54,9 @@ public class BoardQueryRepository extends QuerydslRepositorySupport implements B
         if (updateBoardDTO.getContent() != null) {
             updateClause.set(board.content, updateBoardDTO.getContent());
         }
+
         updateClause.set(board.updatedAt, LocalDateTime.now());
-        updateClause.where(board.id.eq(updateBoardDTO.getBoardId()));
+        updateClause.where(board.id.eq(updateBoardDTO.getId()));
 
         long updateCount = updateClause.execute();
 

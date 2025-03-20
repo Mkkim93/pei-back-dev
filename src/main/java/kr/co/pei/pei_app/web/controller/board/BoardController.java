@@ -1,6 +1,8 @@
 package kr.co.pei.pei_app.web.controller.board;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kr.co.pei.pei_app.application.dto.api.ApiResponse;
@@ -21,7 +23,7 @@ import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.*;
 
-@Tag(name = "BOARD_API")
+@Tag(name = "BOARD_API", description = "게시글 관리를 위한 API")
 @RestController
 @RequestMapping("/api/board")
 @RequiredArgsConstructor
@@ -29,17 +31,17 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @Operation(summary = "게시글 조회", description = "게시글 페이징 조회 API")
+    @Operation(summary = "글 목록 조회", description = "게시글 페이징 조회 API")
     @GetMapping
     public ResponseEntity<ApiResponse<Page<FindBoardDTO>>> findPage(@PageableDefault(sort = "createdAt", direction = ASC) Pageable pageable,
-                                                                    @RequestParam(value = "searchKeyword", required = false) String searchKeyword) {
+                                                                    @Parameter(description = "검색 (제목 or 내용)") @RequestParam(value = "searchKeyword", required = false) String searchKeyword) {
         Page<FindBoardDTO> boardList = boardService.pages(pageable, searchKeyword);
         return ResponseEntity.ok(ApiResponse.success("게시글 리스트", boardList));
     }
 
-    @Operation(summary = "게시글 상세 조회", description = "게시글 PK 기준 상세글 조회")
+    @Operation(summary = "상세 조회", description = "게시글 상세 조회 API")
     @GetMapping("/detail/{boardId}")
-    public ResponseEntity<ApiResponse<DetailBoardDTO>> findDetail(@PathVariable("boardId") Long boardId) {
+    public ResponseEntity<ApiResponse<DetailBoardDTO>> findDetail(@Parameter(description = "게시글 번호") @PathVariable("boardId") Long boardId) {
         DetailBoardDTO boardDetail = boardService.detail(boardId);
         return ResponseEntity.ok(ApiResponse.success("게시글 상세 페이지", boardDetail));
     }
@@ -52,7 +54,7 @@ public class BoardController {
     }
 
     // TODO
-    @Operation(summary = "게시글 수정", description = "게시글 수정을 위한 API")
+    @Operation(summary = "게시글 수정", description = "게시글 수정 API")
     @PatchMapping
     public ResponseEntity<ApiResponse<Boolean>> updated(@RequestBody UpdateBoardDTO updateBoardDTO) {
         Boolean updated = boardService.update(updateBoardDTO);
@@ -65,9 +67,9 @@ public class BoardController {
         return ResponseEntity.ok(ApiResponse.success("업데이트에 성공하였습니다.", true));
     }
 
-    @Operation(summary = "게시글 삭제", description = "게시글 번호를 기준으로 게시글을 삭제합니다. 게시글 삭제 시, 해당 게시글의 파일도 함께 삭제 됩니다.")
+    @Operation(summary = "게시글 삭제", description = "글 번호 기준으로 게시글 삭제. 게시글 삭제 시, 해당 게시글에 포함돤 파일 삭제")
     @DeleteMapping
-    public ResponseEntity<ApiResponse<String>> deleted(@RequestParam("boardId") List<Long> boardIds) {
+    public ResponseEntity<ApiResponse<String>> deleted(@Parameter(description = "게시글 번호") @RequestParam("boardId") List<Long> boardIds) {
         boolean exist = boardService.delete(boardIds);
         if (!exist) {
             return ResponseEntity
