@@ -24,7 +24,6 @@ public class AuditorAwareImpl implements AuditorAware<Users> {
             String username = ((UserDetailsImpl) principal).getUsername();
             return usersService.findByUsername(username);
         }
-
         return Optional.empty();
     }
 }

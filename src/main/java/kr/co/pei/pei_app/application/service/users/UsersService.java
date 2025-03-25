@@ -55,15 +55,11 @@ public class UsersService {
         return usersRepository.findUsernameByPhone(phone);
     }
 
+    // 사용자의 계정에 등록된 개인 메일 주소로 비밀번호 변경 링크를 전송
     public void recoverPassword(String username) {
 
-        boolean existsByUsername = usersRepository.existsByUsername(username);
-
-        if (!existsByUsername) {
-            throw new IllegalArgumentException("해당 계정의 사용자 정보가 존재 하지 않습니다.");
-        }
-
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재 하지 않습니다."));
+
         String temp = generateTempPassword();
         String encodePassword = encoder.encode(temp);
 

@@ -1,5 +1,6 @@
 package kr.co.pei.pei_app.web.controller.poi;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+@Tag(name = "POI_API", description = "엑셀 시트를 다운로드 / 테이블에 저장 하기 위한 API")
 @RestController
 @RequestMapping("/api/poi")
 public class ExcelController {

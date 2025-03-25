@@ -1,5 +1,6 @@
 package kr.co.pei.pei_app.application.dto.users;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import kr.co.pei.pei_app.domain.entity.users.RoleType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 /**
  * 전체 사용자 목록 조회 DTO
  */
+@Schema(description = "사용자 목록 조회 DTO")
 @Data
 @NoArgsConstructor
 public class FindUsersDTO {

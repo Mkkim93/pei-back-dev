@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
+
     private final JwtUtil jwtUtil;
 
     public JwtFilter(JwtUtil jwtUtil) {
@@ -30,13 +31,16 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        log.info("JwtFilter.doFilterInternal() 실행");
 
-        String accessToken = request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
-        if (accessToken == null) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        String accessToken = authorization.split(" ")[1];
 
         try {
             jwtUtil.isExpired(accessToken);

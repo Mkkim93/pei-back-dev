@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 /**
  * 사용자 등록 DTO
  */
+@Schema(description = "회원 가입을 위한 DTO")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

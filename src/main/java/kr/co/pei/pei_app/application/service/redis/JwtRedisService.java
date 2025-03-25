@@ -50,7 +50,7 @@ public class JwtRedisService {
     public Boolean deleteRefreshToken(String username) {
         log.info("레디스 리플래시 토큰 삭제");
         String key = createKey(username);
-        Boolean delete = redisTemplate.delete(REFRESH_PREFIX + key); // key = username
+        Boolean delete = redisTemplate.delete(key); // key = username
 
         if (!delete) {
             log.info("DB(REDIS) 토큰 삭제 실패");
@@ -60,7 +60,7 @@ public class JwtRedisService {
         return true;
     }
 
-    // 토큰이 존재할 때 리플래시 토큰을 기반으로 사용자의 계정을 응답
+
     public String findUsernameByToken(String username) {
         log.info("레디스 유저 정보 조회");
         String key = createKey(username);
@@ -79,5 +79,20 @@ public class JwtRedisService {
             throw new IllegalArgumentException("회원 정보가 유효하지 않습니다.");
         }
         return REFRESH_PREFIX + username;
+    }
+
+    public String findRefreshByToken(String token) {
+        log.info("레디스 유저 토큰 조회");
+
+        String username = jwtUtil.getUsername(token);
+        String key = createKey(username);
+        Object tokenStr = redisTemplate.opsForValue().get(key);
+
+        if (tokenStr == null) {
+            log.warn("레디스 토큰 만료");
+            throw new AuthenticationException("인증이 만료되었습니다.") {};
+        }
+
+        return tokenStr.toString();
     }
 }

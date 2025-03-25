@@ -95,7 +95,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.setStatus(HttpStatus.OK.value());
         sendSuccessResponse(response, "LOGIN_SUCCESS", "로그인에 성공 하였습니다.");
-
     }
 
     private Cookie createCookie(String key, String value) {
@@ -104,6 +103,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setAttribute("SameSite", "Strict");
         return cookie;
     }
 
@@ -119,7 +119,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         responseBody.put("status", "Unauthorized");
         responseBody.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
 
-        sendErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "LOGIN_FAILED", "아이디 또는 비밀번호를 잘못 입력하였습니다.");
+        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "LOGIN_FAILED", "아이디 또는 비밀번호를 잘못 입력하였습니다.");
     }
 
     private void sendErrorResponse(HttpServletResponse response, int status, String code, String message) throws IOException {

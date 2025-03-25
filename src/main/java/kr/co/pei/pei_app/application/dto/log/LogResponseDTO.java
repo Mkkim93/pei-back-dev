@@ -1,12 +1,14 @@
 package kr.co.pei.pei_app.application.dto.log;
 
 import com.fasterxml.jackson.annotation.JsonRawValue;
+import io.swagger.v3.oas.annotations.media.Schema;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Schema(description = "활동 로그 응답 DTO")
 @Data
 @NoArgsConstructor
 public class LogResponseDTO {

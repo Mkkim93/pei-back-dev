@@ -38,10 +38,6 @@ public class Log {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", nullable = false)
-    private Users users;
-
     @Column(name = "ip_address")
     private String ipAddress;
 
@@ -50,4 +46,8 @@ public class Log {
 
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "users_id", nullable = false)
+    private Users users;
 }
