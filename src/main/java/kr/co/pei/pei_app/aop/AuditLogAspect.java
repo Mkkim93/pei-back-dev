@@ -2,9 +2,7 @@ package kr.co.pei.pei_app.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import kr.co.pei.pei_app.application.dto.board.CreateBoardDTO;
 import kr.co.pei.pei_app.application.service.auth.UsersContextService;
-import kr.co.pei.pei_app.domain.entity.board.Board;
 import kr.co.pei.pei_app.domain.entity.log.AuditLog;
 import kr.co.pei.pei_app.domain.entity.log.Log;
 import kr.co.pei.pei_app.domain.entity.users.Users;
@@ -17,9 +15,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CookieValue;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -56,12 +52,20 @@ public class AuditLogAspect {
         String jsonData = "";
 
         for (Object arg : args) {
-            if (arg.getClass().getSimpleName().endsWith("DTO")) {
-                try {
+            try {
+                // DTO 객체이거나 단순히 JSON 직렬화 가능한 경우 모두 기록
+                if (arg != null && (
+                        arg.getClass().getSimpleName().endsWith("DTO")
+                                || arg instanceof java.util.Collection
+                                || arg instanceof java.util.Map
+                                || arg.getClass().isArray()
+                                || arg instanceof Number
+                                || arg instanceof String
+                )) {
                     jsonData = mapper.writeValueAsString(arg);
-                } catch (Exception e) {
-                    log.error("JSON 변환 오류", e);
                 }
+            } catch (Exception e) {
+                log.error("JSON 변환 오류", e);
             }
         }
 
@@ -72,6 +76,7 @@ public class AuditLogAspect {
                 .action(auditLog.action())
                 .description(jsonData)
                 .ipAddress(request.getRemoteAddr())
+                .isDeleted(false)
                 .userAgent(request.getHeader("User-Agent"))
                 .build();
 

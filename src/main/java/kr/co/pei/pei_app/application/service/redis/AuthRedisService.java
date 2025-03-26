@@ -1,5 +1,6 @@
 package kr.co.pei.pei_app.application.service.redis;
 
+import kr.co.pei.pei_app.application.exception.redis.OtpStorageException;
 import kr.co.pei.pei_app.application.exception.users.DuplicateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,20 +63,21 @@ public class AuthRedisService {
 
         Long expire = authRedisTemplate.getExpire(key, TimeUnit.SECONDS);
         log.info("expire : {}", expire);
+
         if (expire == -2L) {
-            throw new IllegalArgumentException("인증 번호 입력 시간이 만료 되었습니다. 인증번호를 다시 요청해주세요.");
+            throw new IllegalArgumentException("인증 번호 입력 시간이 만료 되었습니다. 인증번호를 다시 요청해주세요");
         }
 
         Object code = authRedisTemplate.opsForValue().get(key);
 
         if (code == null) {
-            throw new IllegalArgumentException("코드가 존재 하지 않습니다.");
+            throw new IllegalArgumentException("인증번호가 존재 하지 않습니다.");
         }
 
         code = code.toString();
 
         if (!inputCode.equals(code)) {
-            throw new IllegalArgumentException("입력하신 인증번호가 존재하지 않습니다.");
+            throw new IllegalArgumentException("잘못된 인증번호 입니다 다시 입력해주세요.");
         }
     }
 

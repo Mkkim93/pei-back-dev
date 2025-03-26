@@ -2,6 +2,7 @@ package kr.co.pei.pei_app.application.service.auth;
 
 import jakarta.servlet.http.Cookie;
 import kr.co.pei.pei_app.application.dto.api.PasswordCheckResponse;
+import kr.co.pei.pei_app.application.exception.redis.OtpStorageException;
 import kr.co.pei.pei_app.application.service.redis.AuthRedisService;
 import kr.co.pei.pei_app.application.service.redis.JwtRedisService;
 import kr.co.pei.pei_app.application.service.sms.SmsService;
@@ -42,14 +43,17 @@ public class AuthService {
     public Long sendOTP(String phone) {
 
         String secretCode = generateAuthCode();
-        Long expiration = authRedisService.setSmsCode(phone, secretCode);
 
-        if (expiration > 0) {
+        try {
+            Long expiration = authRedisService.setSmsCode(phone, secretCode);
+            if (expiration == null || expiration <= 0) {
+                throw new OtpStorageException("Redis OTP 저장 실패: expiration 유효하지 않음");
+            }
             smsService.sendSms(phone, secretCode);
-        } else {
-            throw new IllegalStateException("OTP 저장에 실패하였습니다.");
+            return expiration;
+        } catch (OtpStorageException e) {
+            throw new OtpStorageException("Redis 연결 오류로 인증코드 저장 실패", e);
         }
-        return expiration;
     }
 
     public void sendPassword(String encodedPassword, String mail) {

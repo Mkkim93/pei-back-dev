@@ -3,6 +3,7 @@ package kr.co.pei.pei_app.web.controller.board;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,44 +37,258 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    // TODO
     @Operation(summary = "글 목록 조회", description = "게시글 페이징 조회 API")
-    @ApiResponse(responseCode = "200", description = "게시글 리스트",
-            content = @Content(schema = @Schema(implementation = ApiResult.class)))
+    @ApiResponse(
+            responseCode = "200",
+            description = "게시글 리스트",
+            content = @Content(schema = @Schema(implementation = ApiResult.class),
+                    mediaType = "application/json",
+                    examples = @ExampleObject(
+                            name = "게시글 페이징 조회 예시",
+                            summary = "작성 날짜 기준 오름차 순 / 최신글 10개 조회",
+                            value = """
+                                    {
+                                      "status": 200,
+                                      "message": "게시글 리스트",
+                                      "timestamp": "2025-03-26T16:20:44.987059",
+                                      "data": {
+                                        "content": [
+                                          {
+                                            "id": 1,
+                                            "title": "게시글 제목 테스트1",
+                                            "content": "게시글 내용 테스트1",
+                                            "createAt": "2025-03-17T13:40:43.229192",
+                                            "updateAt": "2025-03-17T13:40:43.229192",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 4,
+                                            "title": "제목 테스트11 수정",
+                                            "content": "내용 테스트11 수정",
+                                            "createAt": "2025-03-17T14:05:55.200368",
+                                            "updateAt": "2025-03-17T17:08:04.013232",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 15,
+                                            "title": "게시글 제목 테스트",
+                                            "content": "안녕하세요",
+                                            "createAt": "2025-03-19T18:55:07.22891",
+                                            "updateAt": "2025-03-19T18:55:07.22891",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 16,
+                                            "title": "게시글 작성 (로그테스트)",
+                                            "content": "게시글 작성입니다.",
+                                            "createAt": "2025-03-19T19:38:10.671135",
+                                            "updateAt": "2025-03-19T19:38:10.671135",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 17,
+                                            "title": "게시글 작성 (로그테스트2)",
+                                            "content": "게시글 작성입니다.",
+                                            "createAt": "2025-03-19T19:52:10.553378",
+                                            "updateAt": "2025-03-19T19:52:10.553378",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 18,
+                                            "title": "게시글 작성 (로그테스트3)",
+                                            "content": "게시글 작성입니다.",
+                                            "createAt": "2025-03-19T20:08:56.909047",
+                                            "updateAt": "2025-03-19T20:08:56.909047",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 19,
+                                            "title": "게시글 작성 (로그테스트4)",
+                                            "content": "게시글 작성입니다.",
+                                            "createAt": "2025-03-19T20:10:40.728188",
+                                            "updateAt": "2025-03-19T20:10:40.728188",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 20,
+                                            "title": "게시글 수정 (로그테스트11)",
+                                            "content": "게시글을 수정합니다.",
+                                            "createAt": "2025-03-19T20:19:41.028054",
+                                            "updateAt": "2025-03-20T12:21:13.711504",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 21,
+                                            "title": "엑세스 없을 때 게시글 작성",
+                                            "content": "내용",
+                                            "createAt": "2025-03-25T18:44:42.311179",
+                                            "updateAt": "2025-03-25T18:44:42.311179",
+                                            "writer": "관리자1"
+                                          },
+                                          {
+                                            "id": 22,
+                                            "title": "엑세스 없을 때 게시글 작성",
+                                            "content": "내용",
+                                            "createAt": "2025-03-25T18:44:52.351371",
+                                            "updateAt": "2025-03-25T18:44:52.351371",
+                                            "writer": "관리자1"
+                                          }
+                                        ],
+                                        "page": {
+                                          "size": 10,
+                                          "number": 0,
+                                          "totalElements": 14,
+                                          "totalPages": 2
+                                        }
+                                      }
+                                    }
+                                    """
+                    )
+            )
+    )
     @GetMapping
     public ResponseEntity<ApiResult<Page<FindBoardDTO>>> findPage(
             @ParameterObject @PageableDefault(sort = "createdAt", direction = ASC) Pageable pageable,
             @Parameter(description = "검색 (제목 or 내용)") @RequestParam(value = "searchKeyword", required = false) String searchKeyword) {
         Page<FindBoardDTO> boardList = boardService.pages(pageable, searchKeyword);
-        return ResponseEntity.ok(ApiResult.success("게시글 리스트", boardList));
+        return ResponseEntity.ok(ApiResult.success("게시글 리스트 조회 성공", boardList));
     }
 
     @Operation(summary = "상세 조회", description = "게시글 상세 조회 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 상세 조회",
-                    content = @Content(schema = @Schema(implementation = ApiResult.class))),
-            @ApiResponse(responseCode = "400", description = "게시글이 존재하지 않거나 로그인이 시간이 만료되어 접근이 불가 합니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResult.class)))
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글 상세 조회",
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "게시글 상세 조회 예시",
+                                    summary = "게시글 상세 조회 응답 예시",
+                                    value = """
+                                            {
+                                                "status": 200,
+                                                "message": "게시글 상세 페이지",
+                                                "timestamp": "2025-03-26T17:03:29.902639",
+                                                "data": {
+                                                    "id": 34,
+                                                    "title": "포스트맨에서 201 테스트",
+                                                    "content": "내용입니다",
+                                                    "writer": "관리자1",
+                                                    "updatedAt": "2025-03-26T16:59:24.404693",
+                                                    "views": 0
+                                                }
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "게시글이 존재하지 않거나 로그인이 시간이 만료되어 접근이 불가 합니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "게시글 조회 실패 예시",
+                                    summary = "게시글이 삭제 되었을 경우 응답 예시",
+                                    value = """
+                                            {
+                                                "status": 400,
+                                                "message": "게시글이 존재하지 않습니다.",
+                                                "timeStamp": "2025-03-26T17:04:30.243475"
+                                            }
+                                            """
+                            )
+
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "게시글 조회 시 오류 (서버 내부 오류)",
+                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "게시글 조회 오류 (서버 내부 오류)",
+                                    summary = "게시글 조회 시 서버 오류 응답 예시",
+                                    value = """
+                                            {
+                                                "status" : 500,
+                                                "message" : "죄송합니다. 게시글 조회 도중 서버 오류가 발생하였습니다. 다시 시도하시거나 관리자에게 문의해주세요.",
+                                                "timeStamp": "2025-03-26T17:04:30.243475"
+                                            }
+                                            """
+                            )
+                    )
+            )
     })
     @GetMapping("/detail/{boardId}")
     public ResponseEntity<ApiResult<DetailBoardDTO>> findDetail(
-            @Parameter(description = "게시글 번호")
-            @PathVariable("boardId") Long boardId
-    ) {
+            @Parameter(description = "게시글 번호") @PathVariable("boardId") Long boardId) {
         DetailBoardDTO boardDetail = boardService.detail(boardId);
         return ResponseEntity.ok(ApiResult.success("게시글 상세 페이지", boardDetail));
     }
 
-    @Operation(summary = "게시글 작성", description = "게시글 작성 API")
+    @Operation(summary = "게시글 작성", description = "게시글 작성 시 제목은 필수 입력 사항입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글 작성 완료",
-                    content = @Content(schema = @Schema(implementation = ApiResult.class))),
-            @ApiResponse(responseCode = "400", description = "게시글 작성 실패",
-                    content = @Content(schema = @Schema(implementation = ErrorResult.class)))
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "게시글 작성 완료",
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "게시글 작성 성공 예시",
+                                    summary = "게시글 작성 성공 시 해당 게시글 PK 응답 예제",
+                                    value = """
+                                            {
+                                                "status" : 201,
+                                                "message" : "게시글이 성공적으로 작성 되었습니다.",
+                                                "timestamp": "2025-03-26T16:20:44.987059",
+                                                "data" : "1"
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse( // TODO 파일 엔티티 연동 시 사용
+                    responseCode = "413",
+                    description = "게시글 작성 실패",
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
+                            mediaType = "multipart/form-data",
+                            examples = @ExampleObject(
+                                    name = "유효성 검사 실패",
+                                    summary = "파일 크기 등 제한 오류",
+                                    value = """
+                                                "status" : 413,
+                                                "message" : "파일 크기가 너무 큽니다. 파일 크기는 2GB 이하만 업로드 가능합니다.",
+                                                "timestamp" : "2025-03-26T16:20:44.987059"
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "게시글 작성 실패 (서버 내부 오류)",
+                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "게시글 작성 실패",
+                                    summary = "서버 내부 DB(트랜잭션 또는 내부 로직 오류)",
+                                    value = """
+                                                {
+                                                    "status" : 500,
+                                                    "message" : "죄송합니다. 서버 내부 오류로 인해 게시글 작성에 실패 하였습니다. 다시 시도하거나 관리자에게 문의 해주세요.",
+                                                    "timestamp": "2025-03-26T16:20:44.987059"
+                                                }
+                                            """
+                            )
+                    )
+            )
     })
     @PostMapping
-    public ResponseEntity<ApiResult<String>> created(@Valid @RequestBody CreateBoardDTO createBoardDTO) {
-        boardService.create(createBoardDTO);
-        return ResponseEntity.ok(ApiResult.success("게시글이 성공적으로 작성 되었습니다."));
+    public ResponseEntity<ApiResult<Long>> created(@Valid @RequestBody CreateBoardDTO createBoardDTO) {
+        Long boardId = boardService.create(createBoardDTO);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResult.success(HttpStatus.CREATED.value(), "게시글이 성공적으로 작성 되었습니다.", boardId));
     }
 
     // TODO 게시글 수정 목록 및 파일 수정 로직 추가, 게시글 수정 실패 시 응답 메세지 미정
@@ -94,21 +309,67 @@ public class BoardController {
         return ResponseEntity.ok(ApiResult.success("업데이트에 성공하였습니다.", true));
     }
 
+    // TODO 파일 삭제 추가 예정
     @Operation(summary = "게시글 삭제", description = "글 번호 기준으로 게시글 삭제. 게시글 삭제 시, 해당 게시글에 포함돤 파일 삭제")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "게시글이 삭제 완료",
-                    content = @Content(schema = @Schema(implementation = ApiResult.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류로 인해 게시글 삭제 실패",
-                    content = @Content(schema = @Schema(implementation = ErrorResult.class)))
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "게시글이 삭제 완료",
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "게시글 삭제 성공 예시",
+                                    summary = "게시글 삭제 성공 응답 예시",
+                                    value = """
+                                            {
+                                                "status": 200,
+                                                "message": "게시글이 정상적으로 삭제 되었습니다.",
+                                                "timestamp": "2025-03-26T17:13:12.741289"
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "삭제하려는 게시글이 존재 하지 않는 경우",
+                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "삭제 게시글 없을 떄 예시",
+                                    summary = "삭제 게시글 없을 때 응답 예제",
+                                    value = """
+                                            {
+                                                "status" : 404,
+                                                "message" : "삭제 대상 게시글이 존재 하지 않습니다.",
+                                                "timestamp": "2025-03-26T17:22:18.453368"
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 내부 오류로 인해 게시글 삭제 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "게시글 삭제 실패 (서버 내부 오류)",
+                                    summary = "서버 내부 DB(트랜잭션, 내부 로직 등) 오류 응답 예시",
+                                    value = """
+                                                {
+                                                    "status" : 500,
+                                                    "message" : "게시글 삭제 중 오류가 발생했습니다.",
+                                                    "timestamp": "2025-03-26T17:22:18.453368"
+                                                }
+                                            """
+                            )
+                    )
+            )
     })
     @DeleteMapping
     public ResponseEntity<ApiResult<String>> deleted(@Parameter(description = "게시글 번호") @RequestParam("boardId") List<Long> boardIds) {
-        boolean exist = boardService.delete(boardIds);
-        if (!exist) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(), "NO CONTENT", "삭제할 게시글이 존재 하지 않습니다."));
-        }
+        boardService.delete(boardIds);
         return ResponseEntity.ok(ApiResult.success("게시글이 정상적으로 삭제 되었습니다."));
     }
 }

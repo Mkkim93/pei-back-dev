@@ -5,6 +5,8 @@ import kr.co.pei.pei_app.application.dto.board.CreateBoardDTO;
 import kr.co.pei.pei_app.application.dto.board.DetailBoardDTO;
 import kr.co.pei.pei_app.application.dto.board.FindBoardDTO;
 import kr.co.pei.pei_app.application.dto.board.UpdateBoardDTO;
+import kr.co.pei.pei_app.application.exception.board.BoardDeleteFailedException;
+import kr.co.pei.pei_app.application.exception.board.BoardNotFoundException;
 import kr.co.pei.pei_app.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import kr.co.pei.pei_app.domain.entity.log.AuditLog;
@@ -31,7 +33,7 @@ public class BoardService {
     private final BoardQueryRepository boardQueryRepository;
 
     @AuditLog(action = "게시글 작성", description = "게시글을 작성 하였습니다.")
-    public void create(CreateBoardDTO createBoardDTO) {
+    public Long create(CreateBoardDTO createBoardDTO) {
 
         Users users = contextService.getCurrentUser();
 
@@ -41,14 +43,15 @@ public class BoardService {
                 .users(users)
                 .build();
 
-        boardRepository.save(board);
+        Board save = boardRepository.save(board);
+
+        return save.getId();
     }
 
     public Page<FindBoardDTO> pages(Pageable pageable, String searchKeyword) {
         if (searchKeyword != null) {
             // TODO
         }
-
         Page<Board> boardPages = boardRepository.findAll(pageable);
         return boardPages.map(FindBoardDTO::new);
     }
@@ -85,12 +88,19 @@ public class BoardService {
 
     // TODO 게시글에 정적파일 또는 메타데이터 추가 시 파일 삭제 로직 추가
     @AuditLog(action = "게시글 삭제", description = "게시글을 삭제 하였습니다.")
-    public boolean delete(List<Long> boardIds) {
+    public void delete(List<Long> boardIds) {
         long count = boardRepository.countByIdIn(boardIds);
+
         if (count != boardIds.size()) {
-            return false;
+            throw new BoardNotFoundException("삭제 대상 게시글이 존재 하지 않습니다.");
         }
-        boardRepository.deleteAllById(boardIds);
-        return true;
+
+        try {
+
+            boardRepository.deleteAllById(boardIds);
+
+        } catch (Exception e) {
+            throw new BoardDeleteFailedException("게시글 삭제 중 오류가 발생했습니다.", e);
+        }
     }
 }

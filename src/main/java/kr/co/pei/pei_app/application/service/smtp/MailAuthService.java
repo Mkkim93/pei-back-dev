@@ -5,6 +5,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -36,9 +37,9 @@ public class MailAuthService {
 
             return temp;
 
-        } catch (MessagingException e) {
+        } catch (MessagingException e) { // 예외 전환 : MessagingEx 를 MailSendEx 로 감싸서 던짐
             log.error("메일 전송 실패: {}", e.getMessage());
-            throw new IllegalStateException("메일 전송 중 오류가 발생했습니다.", e);
+            throw new MailSendException("메일 전송에 실패하였습니다.", e);
         }
     }
 }

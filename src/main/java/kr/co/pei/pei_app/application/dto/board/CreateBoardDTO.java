@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 public class CreateBoardDTO {
 
     @NotBlank(message = "제목 입력은 필수 입니다.")
+    @Schema(description = "게시글 제목", example = "제목 입니다.")
     private String title;
+
+    @Schema(description = "게시글 내용", example = "내용 입니다.")
     private String content;
 }

@@ -70,8 +70,10 @@ public class NotifyService {
         }
     }
 
-    // TODO 읽음 처리를 위한 메서드
+    // TODO 읽음 처리 메서드
     public void markAsRead(Long usersId) {
 
     }
+
+    // TODO 알림 삭제 처리 메서드
 }

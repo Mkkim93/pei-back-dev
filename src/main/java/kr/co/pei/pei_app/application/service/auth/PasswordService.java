@@ -29,10 +29,10 @@ public class PasswordService {
 
     public static String getStrengthMessage(int strength) {
         return switch (strength) {
-            case 0, 1 -> "현재 비밀번호는 보안에 취약합니다. 8자리 이상 숫자, 영문 특수문자를 조합하세요";
+            case 0, 1 -> "현재 비밀번호는 보안에 취약합니다. 최소 8자리 이상 숫자, 영문 특수문자를 조합하세요";
             case 2, 3 -> "현재 비밀번호는 보안에 취약합니다. 숫자, 영문, 특수문자를 조합하세요";
-            case 4 -> "현재 비밀번호는 적절합니다.";
-            default -> "비밀번호 강도를 측정할 수 없습니다.";
+            case 4 -> "안전한 비밀번호 입니다.";
+            default -> "사용 불가능한 비밀번호 입니다.";
         };
     }
 }
