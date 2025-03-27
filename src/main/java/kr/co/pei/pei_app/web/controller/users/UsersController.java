@@ -137,8 +137,8 @@ public class UsersController {
             ),
     })
     @GetMapping("/profile")
-    public ResponseEntity<ApiResult<UsersDetailDTO>> detail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UsersDetailDTO userInfo = usersService.detail(userDetails);
+    public ResponseEntity<ApiResult<UsersDetailDTO>> detail() {
+        UsersDetailDTO userInfo = usersService.detail();
         return ResponseEntity.ok(ApiResult.success("내 정보", userInfo));
     }
 

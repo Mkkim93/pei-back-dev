@@ -21,6 +21,7 @@ public class FindBoardDTO {
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private String writer;
+    private Long views;
 
     public FindBoardDTO(Board board) {
         this.id = board.getId();
@@ -29,5 +30,6 @@ public class FindBoardDTO {
         this.createAt = board.getCreatedAt();
         this.updateAt = board.getUpdatedAt();
         this.writer = board.getUsers().getName();
+        this.views = board.getViews();
     }
 }

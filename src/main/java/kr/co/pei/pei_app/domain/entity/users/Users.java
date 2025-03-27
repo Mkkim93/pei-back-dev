@@ -40,6 +40,12 @@ public class Users {
     @Column(name = "create_at", updatable = false)
     private LocalDateTime createAt;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "user_img")
+    private String userImg;
+
     // refresh 토큰에 저장될 사용자 정보 (계정명, 권한)
     public void setJwtPayload(String username, RoleType roleType) {
         this.username = username;

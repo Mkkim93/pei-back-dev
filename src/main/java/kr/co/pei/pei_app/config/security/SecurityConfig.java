@@ -72,7 +72,8 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable());
 
         http
-                .authorizeHttpRequests((auth) -> auth.requestMatchers("/**").permitAll());
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/**", "/login", "/logout", "/api/users/profile").permitAll());
 
         http
                 .exceptionHandling(exceptionHandling -> exceptionHandling

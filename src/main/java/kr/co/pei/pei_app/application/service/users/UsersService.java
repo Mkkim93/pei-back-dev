@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,14 +33,15 @@ public class UsersService {
         return usersRepository.findAllUsers(pageable);
     }
 
-    public UsersDetailDTO detail(UserDetailsImpl userDetails) {
+    public UsersDetailDTO detail() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
 //        String findUsername = authService.findUsernameByToken(username);
         Users users = usersRepository.findByUsername(
-                userDetails.getUsername()).
-                orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재하지 않습니다."));
+                username).orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재하지 않습니다."));
 
-        return new UsersDetailDTO(users.getUsername(), users.getName(), users.getPhone(), users.getMail());
+        return new UsersDetailDTO(users.getUsername(), users.getName(), users.getPhone(), users.getMail(), users.getRoleType().getText());
     }
 
     // 사용자 계정 찾기

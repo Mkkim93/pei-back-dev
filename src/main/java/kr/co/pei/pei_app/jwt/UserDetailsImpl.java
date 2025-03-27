@@ -18,7 +18,8 @@ public record UserDetailsImpl(Users users) implements UserDetails {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                log.info("사용자 권한 정보: {} ", users.getRoleType().getText());
+                log.info("사용자 권한 정보(별칭): {} ", users.getRoleType().getText());
+                log.info("사용자 권한 정보: {}", users.getRoleType().name());
                 return users.getRoleType().name();
             }
         });

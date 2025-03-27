@@ -72,7 +72,8 @@ public class AuthController {
             )
     })
     @PostMapping
-    public ResponseEntity<ApiResult<Boolean>> reissueToken(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public ResponseEntity<ApiResult<Boolean>> reissueToken(HttpServletRequest request,
+                                                           HttpServletResponse response) throws AuthenticationException {
       log.info("토큰 검증 후 재발급 로직 실행");
 
       Cookie[] cookies = request.getCookies();

@@ -149,7 +149,7 @@ public class BoardController {
     )
     @GetMapping
     public ResponseEntity<ApiResult<Page<FindBoardDTO>>> findPage(
-            @ParameterObject @PageableDefault(sort = "createdAt", direction = ASC) Pageable pageable,
+            @ParameterObject @PageableDefault(sort = "createdAt", direction = DESC, page = 0, size = 5) Pageable pageable,
             @Parameter(description = "검색 (제목 or 내용)") @RequestParam(value = "searchKeyword", required = false) String searchKeyword) {
         Page<FindBoardDTO> boardList = boardService.pages(pageable, searchKeyword);
         return ResponseEntity.ok(ApiResult.success("게시글 리스트 조회 성공", boardList));

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UsersUpdateDTO {
-
     private String tel;
     private String mail;
 }

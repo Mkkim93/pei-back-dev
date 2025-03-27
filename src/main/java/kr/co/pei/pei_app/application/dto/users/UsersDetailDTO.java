@@ -16,11 +16,13 @@ public class UsersDetailDTO {
     private String name;
     private String phone;
     private String mail;
+    private String roleType;
 
-    public UsersDetailDTO(String username, String name, String phone, String mail) {
+    public UsersDetailDTO(String username, String name, String phone, String mail, String roleType) {
         this.username = username;
         this.name = name;
         this.phone = phone;
         this.mail = mail;
+        this.roleType = roleType;
     }
 }

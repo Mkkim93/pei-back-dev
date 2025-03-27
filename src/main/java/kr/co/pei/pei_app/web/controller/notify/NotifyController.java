@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.pei.pei_app.application.dto.notify.NotifyPostDTO;
 import kr.co.pei.pei_app.application.service.notify.NotifyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -32,10 +33,9 @@ public class NotifyController {
             description = "SSE 연결 성공",
             content = @Content(mediaType = "text/event-stream")
     )
-    @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public SseEmitter subscribe() {
-        SseEmitter subscribe = notifyService.subscribe();
-        return subscribe;
+    @GetMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@RequestParam("token") String token) {
+        return notifyService.subscribe(token);
     }
 
     // TODO

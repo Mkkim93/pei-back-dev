@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import kr.co.pei.pei_app.application.service.redis.JwtRedisService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -63,27 +64,34 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         if (refresh == null) {
-            sendErrorResponse(httpResponse, HttpServletResponse.SC_BAD_REQUEST, "REFRESH_TOKEN_NULL","Refresh 토큰이 없습니다.");
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_BAD_REQUEST,
+                    "REFRESH_TOKEN_NULL","Refresh 토큰이 없습니다.");
+            String name = SecurityContextHolder.getContext().getAuthentication().getName();
+            String username = jwtUtil.getUsername(name);
+            redisService.deleteRefreshToken(username);
             return;
         }
 
         try {
             jwtUtil.isExpired(refresh);
         } catch (ExpiredJwtException e) {
-            sendErrorResponse(httpResponse, HttpServletResponse.SC_BAD_REQUEST, "REFRESH_TOKEN_EXPIRED","Refresh 토큰이 만료 되었습니다.");
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_BAD_REQUEST,
+                    "REFRESH_TOKEN_EXPIRED","Refresh 토큰이 만료 되었습니다.");
             return;
         }
 
         String category = jwtUtil.getCategory(refresh);
         if (!category.equals("refresh")) {
-            sendErrorResponse(httpResponse, HttpServletResponse.SC_BAD_REQUEST, "REFRESH_TOKEN_FAILED","잘못된 Refresh 토큰 입니다.");
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_BAD_REQUEST,
+                    "REFRESH_TOKEN_FAILED","잘못된 Refresh 토큰 입니다.");
             return;
         }
 
         String username = jwtUtil.getUsername(refresh);
         Boolean isExist = redisService.getRefreshTokenTTL(username);
         if (!isExist) {
-            sendErrorResponse(httpResponse, HttpServletResponse.SC_BAD_REQUEST, "REFRESH_TOKEN_NULL","해당 사용자의 Refresh 토큰이 존재하지 않습니다.");
+            sendErrorResponse(httpResponse, HttpServletResponse.SC_BAD_REQUEST,
+                    "REFRESH_TOKEN_NULL","해당 사용자의 Refresh 토큰이 존재하지 않습니다.");
             return;
         }
 
