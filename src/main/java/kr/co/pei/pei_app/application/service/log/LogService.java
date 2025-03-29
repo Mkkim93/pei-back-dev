@@ -27,16 +27,13 @@ public class LogService {
 
         Page<Log> usersLog = logRepository.findByUsersId(users.getId(), pageable);
 
-        return usersLog.map(log -> {
-
-            return new LogResponseDTO(
-                    log.getId(),
-                    log.getAction(),
-                    log.getDescription(),
-                    log.getCreatedAt(),
-                    log.getUsers()
-            );
-        });
+        return usersLog.map(log -> new LogResponseDTO(
+                log.getId(),
+                log.getAction(),
+                log.getDescription(),
+                log.getCreatedAt(),
+                log.getUsers()
+        ));
     }
 
     public boolean delete(Long logId) {

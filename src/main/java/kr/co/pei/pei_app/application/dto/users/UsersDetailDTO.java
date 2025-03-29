@@ -17,12 +17,16 @@ public class UsersDetailDTO {
     private String phone;
     private String mail;
     private String roleType;
+    private String description;
+    private String userImg;
 
-    public UsersDetailDTO(String username, String name, String phone, String mail, String roleType) {
+    public UsersDetailDTO(String username, String name, String phone, String mail, String roleType, String description, String userImg) {
         this.username = username;
         this.name = name;
         this.phone = phone;
         this.mail = mail;
         this.roleType = roleType;
+        this.description = description;
+        this.userImg = userImg;
     }
 }

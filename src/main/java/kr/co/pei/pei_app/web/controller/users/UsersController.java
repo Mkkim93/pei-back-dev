@@ -16,7 +16,6 @@ import kr.co.pei.pei_app.application.dto.users.UsersUpdateDTO;
 import kr.co.pei.pei_app.application.dto.users.UsersDetailDTO;
 import kr.co.pei.pei_app.application.service.users.UsersService;
 import kr.co.pei.pei_app.config.exception.ErrorResult;
-import kr.co.pei.pei_app.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -25,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,7 +107,7 @@ public class UsersController {
         return ResponseEntity.ok(ApiResult.success("모든 사용자 정보", userList));
     }
 
-    @Operation(summary = "내 정보 조회", description = "사용자 정보를 상세 조회 하기 위한 API")
+    @Operation(summary = "내 정보 조회", description = "내 정보 상세 조회를 위한 API")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

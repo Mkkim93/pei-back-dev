@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.naming.AuthenticationException;
+import java.util.Map;
 
 @Slf4j
 @Tag(name = "AUTH_API", description = "클라이언트에서 인증/인가를 위해 서버 측에서 검증을 위한 API")
@@ -78,11 +79,26 @@ public class AuthController {
 
       Cookie[] cookies = request.getCookies();
 
-      String newAccessToken = authService.validRefreshFromCookieAndRedis(cookies);
+      Map<String, Object> responseMap = authService.validRefreshFromCookieAndRedis(cookies);
 
-      response.setHeader("Authorization",  "Bearer " + newAccessToken);
+        boolean expired = Boolean.FALSE.equals(responseMap.get("expired"));
+        boolean valid = Boolean.FALSE.equals(responseMap.get("valid"));
 
-      return ResponseEntity.status(HttpStatus.CREATED)
+        if (expired || valid) {
+            // ✅ 쿠키 삭제 명령 추가
+            Cookie deleteCookie = new Cookie("refresh", null);
+            deleteCookie.setPath("/"); // 루트 경로 기준
+            deleteCookie.setHttpOnly(true); // 원래 설정과 일치해야 삭제됨
+            deleteCookie.setMaxAge(0); // 만료 즉시
+            response.addCookie(deleteCookie);
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResult.error(HttpStatus.UNAUTHORIZED.value(), "REFRESH_TOKEN_NULL", "서버 검증에 실패 하였습니다.", false));
+        }
+        response.setHeader("Authorization",  "Bearer " + responseMap.get("token"));
+        log.info("엑시스 토큰 재발급 완료");
+
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResult.success(HttpStatus.CREATED.value(), "토큰 재발급 성공", true));
     }
 }

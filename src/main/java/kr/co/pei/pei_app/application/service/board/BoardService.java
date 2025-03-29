@@ -10,6 +10,7 @@ import kr.co.pei.pei_app.application.exception.board.BoardNotFoundException;
 import kr.co.pei.pei_app.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import kr.co.pei.pei_app.domain.entity.log.AuditLog;
+import kr.co.pei.pei_app.domain.entity.notify.NotifyEvent;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.board.BoardQueryRepository;
 import kr.co.pei.pei_app.domain.repository.board.BoardRepository;
@@ -32,7 +33,8 @@ public class BoardService {
     private final UsersContextService contextService;
     private final BoardQueryRepository boardQueryRepository;
 
-    @AuditLog(action = "게시글 작성", description = "게시글을 작성 하였습니다.")
+    @NotifyEvent(message = "새 글이 등록되었습니다", type = "게시글", url = "/post/list")
+//    @AuditLog(action = "게시글 작성", description = "게시글을 작성 하였습니다.")
     public Long create(CreateBoardDTO createBoardDTO) {
 
         Users users = contextService.getCurrentUser();

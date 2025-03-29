@@ -37,11 +37,12 @@ public class UsersService {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-//        String findUsername = authService.findUsernameByToken(username);
         Users users = usersRepository.findByUsername(
                 username).orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재하지 않습니다."));
 
-        return new UsersDetailDTO(users.getUsername(), users.getName(), users.getPhone(), users.getMail(), users.getRoleType().getText());
+        return new UsersDetailDTO(
+                users.getUsername(), users.getName(), users.getPhone(),
+                users.getMail(), users.getRoleType().getText(), users.getDescription(), users.getUserImg());
     }
 
     // 사용자 계정 찾기

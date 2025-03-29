@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.naming.AuthenticationException;
 import java.security.SecureRandom;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -83,16 +84,18 @@ public class AuthService {
         return passwordService.calculateStrength(password);
     }
 
-    private String getRefreshTokenFromRedis(String token) {
-        return jwtRedisService.findRefreshByToken(token);
+    private Map<String, Object> getRefreshTokenFromRedis(String token) {
+        return jwtRedisService.existByToken(token);
     }
 
-    public String validRefreshFromCookieAndRedis(Cookie[] cookies) throws AuthenticationException {
+    public Map<String, Object> validRefreshFromCookieAndRedis(Cookie[] cookies)
+            throws AuthenticationException {
 
         String refreshToken = null;
 
         if (cookies == null) {
             log.warn("쿠키 정보 없음");
+            // 여기서는 쿠키 만료 시 인증 만료만 띄워야됨 레디스 토큰 삭제할 방법 없음
             throw new AuthenticationException("인증이 만료 되었습니다.") {};
         }
 
@@ -102,23 +105,31 @@ public class AuthService {
             }
         }
 
-        String validRedisByToken = getRefreshTokenFromRedis(refreshToken);
+        Map<String, Object> validRedisByToken = getRefreshTokenFromRedis(refreshToken);
 
-        if (!validRedisByToken.equals(refreshToken)) {
-            log.warn("리플래시 토큰 교차 검증 실패");
-            throw new AuthenticationException("인증이 만료 되었습니다.");
+        String existToken = Optional.ofNullable(validRedisByToken.get("existToken"))
+                .map(Object::toString)
+                .orElse("");
+
+        if (!existToken.equals(refreshToken) || existToken.isEmpty()) {
+            log.warn("리플래시 토큰 교차 검증 실패 또는 레디스 토큰 없음");
+            validRedisByToken.put("valid", false);
+            return validRedisByToken;
         }
 
         Boolean expired = jwtUtil.isExpired(refreshToken);
 
         if (expired) { // true : 토큰이 만료됨
             log.warn("리플래시 토큰 만료");
-            throw new AuthenticationException("인증이 만료 되었습니다.");
+            validRedisByToken.put("expired", false);
+            return validRedisByToken;
         }
 
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
-        return jwtUtil.createJwt("access", username, role, accessExpired);
+        String access = jwtUtil.createJwt("access", username, role, accessExpired);
+        validRedisByToken.put("token", access);
+        return validRedisByToken;
     }
 }

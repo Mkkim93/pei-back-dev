@@ -1,25 +1,32 @@
 package kr.co.pei.pei_app.application.service.notify;
 
 import jakarta.persistence.EntityNotFoundException;
+import kr.co.pei.pei_app.application.dto.notify.NotifyFindDTO;
 import kr.co.pei.pei_app.application.dto.notify.NotifyPostDTO;
 import kr.co.pei.pei_app.application.service.auth.AuthService;
 import kr.co.pei.pei_app.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.notify.Notify;
 import kr.co.pei.pei_app.domain.entity.users.Users;
+import kr.co.pei.pei_app.domain.repository.notify.EmitterRepository;
 import kr.co.pei.pei_app.domain.repository.notify.NotifyRepository;
 import kr.co.pei.pei_app.domain.repository.users.UsersRepository;
 import kr.co.pei.pei_app.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.webjars.NotFoundException;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,7 +36,7 @@ public class NotifyService {
     private final UsersRepository usersRepository;
     private final JwtUtil jwtUtil;
     private final NotifyRepository notifyRepository;
-    private final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final EmitterRepository emitterRepository;
 
     public SseEmitter subscribe(String token) {
 
@@ -38,50 +45,60 @@ public class NotifyService {
         Users usersEntity = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("유저 정보 없음"));
 
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        emitters.put(usersEntity.getId(), emitter);
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE); // TODO .env 로 분리
+        emitterRepository.save(usersEntity.getId(), emitter);
 
-        emitter.onCompletion(() -> emitters.remove(usersEntity.getId()));
-        emitter.onTimeout(() -> emitters.remove(usersEntity.getId()));
+        emitter.onCompletion(() -> emitterRepository.remove(usersEntity.getId()));
+        emitter.onTimeout(() -> emitterRepository.remove(usersEntity.getId()));
 
         try {
-            emitter.send(SseEmitter.event().name("connect").data("connected"));
+            emitter.send(SseEmitter.event()
+                    .name("connect")
+                    .data("connected"));
         } catch (IOException e) {
             emitter.completeWithError(e);
         }
+        log.info("에미터 실행 횟수");
         return emitter;
     }
 
-    public void sendNotification(NotifyPostDTO notifyPostDTO) {
-        Notify notify = Notify.builder()
-                .receiverId(notifyPostDTO.getReceiverId())
-                .message(notifyPostDTO.getMessage())
-                .isRead(false)
-                .createdAt(LocalDateTime.now())
-                .type(notifyPostDTO.getType())
-                .url(notifyPostDTO.getUrl())
-                .targetId(notifyPostDTO.getTargetId())
-                .build();
+    // 전체 알림 조회
+    public List<NotifyFindDTO> findAll() {
 
-        notifyRepository.save(notify); // mongoDB
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        SseEmitter emitter = emitters.get(notifyPostDTO.getReceiverId());
-        if (emitter != null) {
-            try {
-                emitter.send(SseEmitter.event()
-                        .name("notification")
-                        .data(notifyPostDTO.getMessage()));
-            } catch (IOException e) {
-                emitter.completeWithError(e);
-                emitters.remove(notifyPostDTO.getReceiverId());
-            }
-        }
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("알림 관련 사용자 조회 오류"));
+
+        List<Notify> notifyList = notifyRepository.findByReceiverId(users.getId());
+
+        return notifyList.stream()
+                .filter(notify -> !notify.getIsRead())
+                .map(notify -> new NotifyFindDTO(
+                notify.getId(),
+                notify.getMessage(),
+                notify.getType(),
+                notify.getCreatedAt(),
+                notify.getTargetId(),
+                notify.getUrl(),
+                notify.getIsRead()
+        )).collect(Collectors.toList());
     }
 
-    // TODO 읽음 처리 메서드
-    public void markAsRead(Long usersId) {
-
+    public void markAsRead(String notifyId) {
+        Notify notify = notifyRepository
+                .findById(notifyId)
+                .orElseThrow(() -> new NotFoundException("알림이 존재하지 않습니다."));
+        notify.setIsRead(true);
+        notifyRepository.save(notify);
     }
 
-    // TODO 알림 삭제 처리 메서드
+    // 알림 삭제 (전체)
+    public void deleteAll(List<String> notifyIds) {
+        notifyRepository.deleteAllById(notifyIds);
+    }
+
+    // 알림 삭제 (단일)
+    public void deleteOne(String notifyId) {
+        notifyRepository.deleteById(notifyId);
+    }
 }

@@ -7,6 +7,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -81,18 +83,15 @@ public class JwtRedisService {
         return REFRESH_PREFIX + username;
     }
 
-    public String findRefreshByToken(String token) {
-        log.info("레디스 유저 토큰 조회");
+    public Map<String, Object> existByToken(String token) {
+        log.info("레디스 유저 토큰 존재 여부 확인");
 
         String username = jwtUtil.getUsername(token);
         String key = createKey(username);
         Object tokenStr = redisTemplate.opsForValue().get(key);
 
-        if (tokenStr == null) {
-            log.warn("레디스 토큰 만료");
-            throw new AuthenticationException("인증이 만료되었습니다.") {};
-        }
-
-        return tokenStr.toString();
+        HashMap<String, Object> responseMap = new HashMap<>();
+        responseMap.put("existToken", tokenStr);
+        return responseMap;
     }
 }
