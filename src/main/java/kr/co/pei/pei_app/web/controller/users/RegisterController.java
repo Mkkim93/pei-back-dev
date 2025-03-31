@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kr.co.pei.pei_app.application.dto.api.ApiResult;
-import kr.co.pei.pei_app.application.dto.api.PasswordCheckResponse;
 import kr.co.pei.pei_app.application.dto.users.UsersRegisterDTO;
 import kr.co.pei.pei_app.application.service.users.RegisterService;
 import lombok.RequiredArgsConstructor;
@@ -150,128 +149,18 @@ public class RegisterController {
     })
     @GetMapping("/check-username")
     public ResponseEntity<ApiResult<String>> existUsername(@Parameter(description = "사용할 계정 입력") @RequestParam("username") String username) {
+        if (username.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
+                    .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(), "올바른 형식의 계정이 아닙니다.", null));
+        }
+
         boolean existByUsername = registerService.existByUsername(username);
 
         if (existByUsername) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(ApiResult.error(HttpStatus.CONFLICT.value(), "EXIST_USERNAME", "사용 중인 계정 입니다."));
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(ApiResult.error(HttpStatus.CONFLICT.value(), "이미 사용 중인 계정입니다.", null));
         }
-        return ResponseEntity.ok(ApiResult.success("사용 가능한 계정입니다.", username));
-    }
-
-    @Operation(summary = "비밀번호 강도체크", description = "사용자가 입력한 비밀번호가 충분히 안전한지 확인")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "안전한 비밀번호",
-                    content = @Content(schema = @Schema(implementation = PasswordCheckResponse.class),
-                            mediaType = "application/json",
-                            examples = @ExampleObject(
-                                    name = "강한 비밀번호 예시",
-                                    summary = "비밀번호 강도체크 성공 응답 예제",
-                                    value = """
-                    {
-                        "status": 200,
-                        "message": "안전한 비밀번호 입니다.",
-                        "timestamp": "2025-03-26T03:16:29.459Z"
-                    }
-                """
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "안전하지 않은 비밀번호 - 다양한 케이스",
-                    content = @Content(schema = @Schema(implementation = PasswordCheckResponse.class),
-                            mediaType = "application/json",
-                            examples = {
-                                    @ExampleObject(
-                                            name = "빈 비밀번호",
-                                            summary = "입력값 없음",
-                                            value = """
-                        {
-                            "status": 400,
-                            "message": "안전하지 않은 비밀번호 입니다.",
-                            "errorCode": "BAD_PASSWORD",
-                            "timestamp": "2025-03-26T13:28:56.898284",
-                            "data": {
-                                "description": "현재 비밀번호는 보안에 취약합니다. 최소 8자리 이상 숫자, 영문 특수문자를 조합하세요",
-                                "grade": 0,
-                                "strongPassword": false
-                            }
-                        }
-                    """
-                                    ),
-                                    @ExampleObject(
-                                            name = "짧은 비밀번호",
-                                            summary = "8자리 미만 입력",
-                                            value = """
-                        {
-                            "status": 400,
-                            "message": "안전하지 않은 비밀번호 입니다.",
-                            "errorCode": "BAD_PASSWORD",
-                            "timestamp": "2025-03-26T13:22:04.267639",
-                            "data": {
-                                "description": "현재 비밀번호는 보안에 취약합니다. 최소 8자리 이상 숫자, 영문, 특수문자를 조합하세요",
-                                "grade": 1,
-                                "strongPassword": false
-                            }
-                        }
-                    """
-                                    ),
-                                    @ExampleObject(
-                                            name = "조건 불충족 (grade 2)",
-                                            summary = "숫자, 영문, 특수문자 중 하나 누락",
-                                            value = """
-                        {
-                            "status": 400,
-                            "message": "안전하지 않은 비밀번호 입니다.",
-                            "errorCode": "BAD_PASSWORD",
-                            "timestamp": "2025-03-26T13:22:04.267639",
-                            "data": {
-                                "description": "현재 비밀번호는 보안에 취약합니다. 숫자, 영문, 특수문자를 조합하세요",
-                                "grade": 2,
-                                "strongPassword": false
-                            }
-                        }
-                    """
-                                    ),
-                                    @ExampleObject(
-                                            name = "조건 불충족 (grade 3)",
-                                            summary = "강도 부족 (grade 3)",
-                                            value = """
-                        {
-                            "status": 400,
-                            "message": "안전하지 않은 비밀번호 입니다.",
-                            "errorCode": "BAD_PASSWORD",
-                            "timestamp": "2025-03-26T13:35:26.872038",
-                            "data": {
-                                "description": "현재 비밀번호는 보안에 취약합니다. 숫자, 영문, 특수문자를 조합하세요",
-                                "grade": 3,
-                                "strongPassword": false
-                            }
-                        }
-                    """
-                                    )
-                            }
-                    )
-            )
-    })
-    @PostMapping("/password-strength")
-    public ResponseEntity<ApiResult<PasswordCheckResponse>> checkPasswordStrength(@Parameter(description = "사용할 비밀번호 (숫자, 문자, 특수문자 포함 8자리 이상)", example = "123@@45aa") @RequestParam("password") String password) {
-
-        PasswordCheckResponse passwordCheckResponse = registerService.checkPasswordStrength(password);
-
-        if (passwordCheckResponse.getGrade() > 3) {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(ApiResult.success("사용 가능한 비밀번호 입니다.", passwordCheckResponse));
-        }
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(),
-                "안전하지 않은 비밀번호 입니다.","BAD_PASSWORD", passwordCheckResponse));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success("사용 가능한 계정입니다.", username));
     }
 
     @Operation(summary = "인증번호 요청", description = "입력한 전화번호로 인증 번호 발송 (만료 시간: 3M) 응답")

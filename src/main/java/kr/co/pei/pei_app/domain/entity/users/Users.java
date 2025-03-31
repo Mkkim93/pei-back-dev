@@ -53,11 +53,12 @@ public class Users {
     }
 
     @Builder
-    public Users(String username, String password, String name, String phone, String mail) {
+    public Users(Long id, String username, String password, String name, String phone, String mail) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
-        this.roleType = RoleType.ROLE_USER;
+        this.roleType = RoleType.ROLE_USER; // Default value =  ROLE_USER
         this.createAt = LocalDateTime.now();
         this.phone = phone;
         this.mail = mail;

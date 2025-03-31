@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ class JwtRedisServiceTest {
     @Test
     void createTable() {
         Users users = new Users();
-        users.setJwtPayload("user6", ROLE_ADMIN);
+        users.setJwtPayload("user2", ROLE_ADMIN);
         usersRepository.save(users);
 
         Users users1 = usersRepository

@@ -1,6 +1,5 @@
 package kr.co.pei.pei_app.application.service.users;
 
-import kr.co.pei.pei_app.application.dto.api.PasswordCheckResponse;
 import kr.co.pei.pei_app.application.dto.users.UsersResponseDTO;
 import kr.co.pei.pei_app.application.dto.users.UsersRegisterDTO;
 import kr.co.pei.pei_app.application.exception.users.DuplicateException;
@@ -75,9 +74,5 @@ public class RegisterService {
 
     public boolean existByUsername(String username) {
         return usersRepository.existsByUsername(username);
-    }
-
-    public PasswordCheckResponse checkPasswordStrength(String password) {
-        return authService.checkPassword(password);
     }
 }

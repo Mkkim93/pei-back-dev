@@ -1,7 +1,6 @@
 package kr.co.pei.pei_app.application.service.auth;
 
 import jakarta.servlet.http.Cookie;
-import kr.co.pei.pei_app.application.dto.api.PasswordCheckResponse;
 import kr.co.pei.pei_app.application.exception.redis.OtpStorageException;
 import kr.co.pei.pei_app.application.service.redis.AuthRedisService;
 import kr.co.pei.pei_app.application.service.redis.JwtRedisService;
@@ -26,18 +25,16 @@ public class AuthService {
     private final AuthRedisService authRedisService;
     private final MailAuthService mailAuthService;
     private final SmsService smsService;
-    private final PasswordService passwordService;
     private final Long accessExpired;
 
     public AuthService(JwtUtil jwtUtil, JwtRedisService jwtRedisService, AuthRedisService authRedisService,
-                       MailAuthService mailAuthService, SmsService smsService, PasswordService passwordService,
+                       MailAuthService mailAuthService, SmsService smsService,
                        @Value("${spring.jwt.access.expired}") Long accessExpired) {
         this.jwtUtil = jwtUtil;
         this.jwtRedisService = jwtRedisService;
         this.authRedisService = authRedisService;
         this.mailAuthService = mailAuthService;
         this.smsService = smsService;
-        this.passwordService = passwordService;
         this.accessExpired = accessExpired;
     }
 
@@ -78,10 +75,6 @@ public class AuthService {
 
     public void getUsernameByCode(String phone, String code) {
         authRedisService.getUsernameByCode(phone, code);
-    }
-
-    public PasswordCheckResponse checkPassword(String password) {
-        return passwordService.calculateStrength(password);
     }
 
     private Map<String, Object> getRefreshTokenFromRedis(String token) {

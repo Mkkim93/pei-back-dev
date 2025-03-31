@@ -1,6 +1,8 @@
 package kr.co.pei.pei_app.domain.repository.board;
 
 import kr.co.pei.pei_app.domain.entity.board.Board;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +18,12 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Modifying
     @Query("update Board b set b.views = b.views + 1 where b.id = :boardId")
     Integer updateView(@Param("boardId") Long boardId);
+
+    @Query("""
+            select b 
+            from Board b 
+            where b.title like concat('%', :keyword, '%') 
+            or b.content like concat('%', :keyword, '%')
+           """)
+    Page<Board> searchByBoardPages(@Param("keyword") String keyword, Pageable pageable);
 }

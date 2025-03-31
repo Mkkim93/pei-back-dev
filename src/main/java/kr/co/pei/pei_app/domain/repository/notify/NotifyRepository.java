@@ -11,6 +11,5 @@ import java.util.List;
 
 @Repository
 public interface NotifyRepository extends MongoRepository<Notify, String> {
-
     List<Notify> findByReceiverId(Long receiverId);
 }

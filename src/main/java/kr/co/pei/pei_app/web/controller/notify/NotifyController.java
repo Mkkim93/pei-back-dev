@@ -60,7 +60,7 @@ public class NotifyController {
 
     @Operation
     @PatchMapping
-    public ResponseEntity<ApiResult<String>> markAsReadTrue(@RequestParam("notifyId") String notifyId) {
+    public ResponseEntity<ApiResult<String>> markAsReadTrue(@RequestParam("id") String notifyId) {
         notifyService.markAsRead(notifyId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResult.success("알림 읽음 처리"));

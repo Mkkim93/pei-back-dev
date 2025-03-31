@@ -73,7 +73,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/**", "/login", "/logout", "/api/users/profile", "/api/notify/**").permitAll());
+                        .requestMatchers("/**", "/login", "/logout", "/api/users/profile", "/api/notify/**", "/api/register/**").permitAll());
 
         http
                 .exceptionHandling(exceptionHandling -> exceptionHandling

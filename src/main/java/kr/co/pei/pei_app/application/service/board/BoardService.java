@@ -16,10 +16,12 @@ import kr.co.pei.pei_app.domain.repository.board.BoardQueryRepository;
 import kr.co.pei.pei_app.domain.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.util.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -33,8 +35,8 @@ public class BoardService {
     private final UsersContextService contextService;
     private final BoardQueryRepository boardQueryRepository;
 
-    @NotifyEvent(message = "새 글이 등록되었습니다", type = "게시글", url = "/post/list")
-//    @AuditLog(action = "게시글 작성", description = "게시글을 작성 하였습니다.")
+    @NotifyEvent(message = "새 글이 등록되었습니다", type = "게시글", url = "/api/board")
+    @AuditLog(action = "게시글 작성", description = "게시글을 작성 하였습니다.")
     public Long create(CreateBoardDTO createBoardDTO) {
 
         Users users = contextService.getCurrentUser();
@@ -51,11 +53,14 @@ public class BoardService {
     }
 
     public Page<FindBoardDTO> pages(Pageable pageable, String searchKeyword) {
-        if (searchKeyword != null) {
-            // TODO
+
+        Page<FindBoardDTO> pageResult = null;
+
+        if (StringUtils.hasText(searchKeyword)) {
+            return boardRepository.searchByBoardPages(searchKeyword, pageable).map(FindBoardDTO::new);
+        } else {
+            return boardRepository.findAll(pageable).map(FindBoardDTO::new);
         }
-        Page<Board> boardPages = boardRepository.findAll(pageable);
-        return boardPages.map(FindBoardDTO::new);
     }
 
     public DetailBoardDTO detail(Long boardId) {

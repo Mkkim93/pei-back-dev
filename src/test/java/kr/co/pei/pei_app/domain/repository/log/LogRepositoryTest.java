@@ -47,7 +47,7 @@ class LogRepositoryTest {
         Users users = usersRepository.findByUsername(name).get();
         Log log = Log.builder()
                 .action("게시글 수정")
-//                .description("{title: 게시글 수정 (로그테스트11), boardId: 20, content: 게시글을 수정합니다.}")
+                .description("{title: 게시글 수정 (로그테스트11), boardId: 20, content: 게시글을 수정합니다.}")
                 .users(users)
                 .build();
         logRepository.save(log);
