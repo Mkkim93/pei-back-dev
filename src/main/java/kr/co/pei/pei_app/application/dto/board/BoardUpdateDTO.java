@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "게시글 수정 DTO")
 @Data
 @NoArgsConstructor
-public class UpdateBoardDTO {
+public class BoardUpdateDTO {
 
     private Long id;
     private String title;

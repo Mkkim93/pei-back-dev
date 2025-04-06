@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-@Tag(name = "POI_API", description = "엑셀 시트를 다운로드 / 테이블에 저장 하기 위한 API")
+@Tag(name = "POI_API", description = "엑셀 시트 다운로드 / 테이블 저장을 위한 API")
 @RestController
 @RequestMapping("/api/poi")
 public class ExcelController {

@@ -3,6 +3,7 @@ package kr.co.pei.pei_app.domain.repository.log;
 import kr.co.pei.pei_app.domain.entity.log.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface LogRepository extends JpaRepository<Log, Long> {
 
+    @EntityGraph(attributePaths = {"users"})
     @Query("select l from Log l where l.users.id = :usersId and l.isDeleted = false")
     Page<Log> findByUsersId(@Param("usersId") Long usersId, Pageable pageable);
 

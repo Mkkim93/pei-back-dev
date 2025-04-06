@@ -22,11 +22,11 @@ public class LogResponseDTO {
     private String users;
 
     public LogResponseDTO(Long id, String action,
-                          String description, LocalDateTime createdAt, Users users) {
+                          String description, LocalDateTime createdAt, String users) {
         this.id = id;
         this.action = action;
         this.description = description;
         this.createdAt = createdAt;
-        this.users = users.getName();
+        this.users = users;
     }
 }

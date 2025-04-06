@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import kr.co.pei.pei_app.application.dto.api.ApiResult;
-import kr.co.pei.pei_app.application.dto.users.FindUsersDTO;
+import kr.co.pei.pei_app.application.dto.users.UsersFindDTO;
 import kr.co.pei.pei_app.application.dto.users.PasswordRequest;
 import kr.co.pei.pei_app.application.dto.users.UsersUpdateDTO;
 import kr.co.pei.pei_app.application.dto.users.UsersDetailDTO;
@@ -37,7 +37,6 @@ public class UsersController {
 
     private final UsersService usersService;
 
-    // TODO
     @Operation(summary = "전체 사용자 목록 조회", description = "최상위 관리자부터 목록 페이징을 위한 API 입니다.")
     @ApiResponse(responseCode = "200", description = "모든 사용자 정보",
             content = @Content(schema = @Schema(implementation = ApiResult.class),
@@ -46,6 +45,7 @@ public class UsersController {
                             name = "사용자 목록 조회 예시",
                             summary = "사용자 목록 조회 응답 예제",
                             value = """
+                                    {
                                     "status" : 200,
                                     "message" : "모든 사용자 정보",
                                     "timestamp": "2025-03-26T14:58:10.11471",
@@ -101,9 +101,9 @@ public class UsersController {
             )
     )
     @GetMapping
-    public ResponseEntity<ApiResult<Page<FindUsersDTO>>> findAllUsers(@ParameterObject @PageableDefault(
+    public ResponseEntity<ApiResult<Page<UsersFindDTO>>> findAllUsers(@ParameterObject @PageableDefault(
             sort = "roleType", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<FindUsersDTO> userList = usersService.findAllUsers(pageable);
+        Page<UsersFindDTO> userList = usersService.findAllUsers(pageable);
         return ResponseEntity.ok(ApiResult.success("모든 사용자 정보", userList));
     }
 
@@ -202,7 +202,7 @@ public class UsersController {
                                             "status" : 200,
                                             "message" : "인증 성공",
                                             "timestamp": "2025-03-26T15:05:06.617087",
-                                            "data" : "king00314@naver.com"
+                                            "data" : "user1"
                                         }
                                         """
                         )

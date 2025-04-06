@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Schema(description = "게시글 상세 조회를 위한 DTO")
 @Data
 @NoArgsConstructor
-public class DetailBoardDTO {
+public class BoardDetailDTO {
 
     private Long id;
     private String title;
@@ -25,7 +25,7 @@ public class DetailBoardDTO {
     // TODO 나중에 파일 추가
 
     @QueryProjection
-    public DetailBoardDTO(Long id, String title, String content,
+    public BoardDetailDTO(Long id, String title, String content,
                           String writer, LocalDateTime updatedAt, Long views, String username) {
         this.id = id;
         this.title = title;
@@ -34,5 +34,18 @@ public class DetailBoardDTO {
         this.updatedAt = updatedAt;
         this.views = views;
         this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return "DetailBoardDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", writer='" + writer + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", views=" + views +
+                ", username='" + username + '\'' +
+                '}';
     }
 }

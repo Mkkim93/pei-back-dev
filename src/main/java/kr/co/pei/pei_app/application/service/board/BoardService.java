@@ -1,10 +1,9 @@
 package kr.co.pei.pei_app.application.service.board;
 
-import jakarta.persistence.EntityNotFoundException;
-import kr.co.pei.pei_app.application.dto.board.CreateBoardDTO;
-import kr.co.pei.pei_app.application.dto.board.DetailBoardDTO;
-import kr.co.pei.pei_app.application.dto.board.FindBoardDTO;
-import kr.co.pei.pei_app.application.dto.board.UpdateBoardDTO;
+import kr.co.pei.pei_app.application.dto.board.BoardCreateDTO;
+import kr.co.pei.pei_app.application.dto.board.BoardDetailDTO;
+import kr.co.pei.pei_app.application.dto.board.BoardFindDTO;
+import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
 import kr.co.pei.pei_app.application.exception.board.BoardDeleteFailedException;
 import kr.co.pei.pei_app.application.exception.board.BoardNotFoundException;
 import kr.co.pei.pei_app.application.service.auth.UsersContextService;
@@ -16,9 +15,9 @@ import kr.co.pei.pei_app.domain.repository.board.BoardQueryRepository;
 import kr.co.pei.pei_app.domain.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.util.StringUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -37,13 +36,13 @@ public class BoardService {
 
     @NotifyEvent(message = "새 글이 등록되었습니다", type = "게시글", url = "/api/board")
     @AuditLog(action = "게시글 작성", description = "게시글을 작성 하였습니다.")
-    public Long create(CreateBoardDTO createBoardDTO) {
+    public Long create(BoardCreateDTO boardCreateDTO) {
 
         Users users = contextService.getCurrentUser();
 
         Board board = Board.builder()
-                .title(createBoardDTO.getTitle())
-                .content(createBoardDTO.getContent())
+                .title(boardCreateDTO.getTitle())
+                .content(boardCreateDTO.getContent())
                 .users(users)
                 .build();
 
@@ -52,41 +51,41 @@ public class BoardService {
         return save.getId();
     }
 
-    public Page<FindBoardDTO> pages(Pageable pageable, String searchKeyword) {
-
-        Page<FindBoardDTO> pageResult = null;
+    public Page<BoardFindDTO> pages(Pageable pageable, String searchKeyword) {
+        Page<BoardFindDTO> pageResult = null;
 
         if (StringUtils.hasText(searchKeyword)) {
-            return boardRepository.searchByBoardPages(searchKeyword, pageable).map(FindBoardDTO::new);
+            return boardRepository.searchByBoardPages(searchKeyword, pageable);
         } else {
-            return boardRepository.findAll(pageable).map(FindBoardDTO::new);
+            return boardRepository.findBoardDTOS(pageable);
         }
     }
 
-    public DetailBoardDTO detail(Long boardId) {
+    public BoardDetailDTO detail(Long boardId) {
 
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new EntityNotFoundException("게시글이 존재하지 않습니다."));
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        BoardDetailDTO boardDetailDTO = boardQueryRepository.detail(boardId);
 
-        Users users = contextService.getCurrentUser();
-        DetailBoardDTO detailBoardDTO = boardQueryRepository.detail(board.getId());
-
-        if (users.getUsername().equals(detailBoardDTO.getUsername())) {
-            log.info("자신이 작성한 글은 조회 수 증가 X");
-            return detailBoardDTO;
+        if (boardDetailDTO == null) {
+            throw new BoardNotFoundException("게시글이 존재하지 않습니다.");
         }
 
-        Integer viewCount = boardRepository.updateView(board.getId());
+        if (name.equals(boardDetailDTO.getUsername())) {
+            log.info("자신이 작성한 글은 조회 수 증가 X");
+            return boardDetailDTO;
+        }
+
+        Integer viewCount = boardRepository.updateView(boardDetailDTO.getId());
 
         if (viewCount < 1) {
             log.info("게시글 조회수 증가 오류: {}", viewCount);
         }
-        return detailBoardDTO;
+        return boardDetailDTO;
     }
 
     @AuditLog(action = "게시글 업데이트")
-    public Boolean update(UpdateBoardDTO updateBoardDTO) {
-        Boolean update = boardQueryRepository.update(updateBoardDTO);
+    public Boolean update(BoardUpdateDTO boardUpdateDTO) {
+        Boolean update = boardQueryRepository.update(boardUpdateDTO);
         if (!update) {
             return false;
         }
@@ -103,9 +102,7 @@ public class BoardService {
         }
 
         try {
-
             boardRepository.deleteAllById(boardIds);
-
         } catch (Exception e) {
             throw new BoardDeleteFailedException("게시글 삭제 중 오류가 발생했습니다.", e);
         }

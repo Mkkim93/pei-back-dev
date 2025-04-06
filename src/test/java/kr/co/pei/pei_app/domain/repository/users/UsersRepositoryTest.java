@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.domain.repository.users;
 
-import kr.co.pei.pei_app.application.dto.users.FindUsersDTO;
+import kr.co.pei.pei_app.application.dto.users.UsersFindDTO;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -55,12 +55,12 @@ class UsersRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
 
         // when
-        Page<FindUsersDTO> allUsers = repository.findAllUsers(pageRequest);
+        Page<UsersFindDTO> allUsers = repository.findAllUsers(pageRequest);
 
         // then
-        List<FindUsersDTO> content = allUsers.getContent();
+        List<UsersFindDTO> content = allUsers.getContent();
 
-        for (FindUsersDTO dto : content) {
+        for (UsersFindDTO dto : content) {
             System.out.println("dto.getUsername() = " + dto.getUsername());
             System.out.println("dto.getName() = " + dto.getName());
             System.out.println("dto.getRoleType() = " + dto.getRoleType());

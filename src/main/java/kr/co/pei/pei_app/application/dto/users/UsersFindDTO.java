@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Schema(description = "사용자 목록 조회 DTO")
 @Data
 @NoArgsConstructor
-public class FindUsersDTO {
+public class UsersFindDTO {
 
     private Long id;
     private String username;
@@ -23,7 +23,7 @@ public class FindUsersDTO {
     private LocalDateTime createAt;
     private String roleType;
 
-    public FindUsersDTO(Long id, String username,
+    public UsersFindDTO(Long id, String username,
                         String name, String phone,
                         String mail, LocalDateTime createAt,
                         RoleType roleType) {

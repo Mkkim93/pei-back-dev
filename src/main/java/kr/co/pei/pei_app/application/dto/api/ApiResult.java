@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.formula.functions.TDist;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
@@ -42,7 +40,7 @@ public class ApiResult<T> {
         return new ApiResult<>(status, errorCode, message, data);
     }
 
-    public static  <T> ApiResult<T> error(int status, String message, T data) {
+    public static <T> ApiResult<T> error(int status, String message) {
         return new ApiResult<>(status, message, null, null);
     }
 }

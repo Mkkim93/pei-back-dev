@@ -19,6 +19,17 @@ public class JwtUtil {
                 Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
+
+    // add to userId with payload (04/06)
+    public Long getId(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("id", Long.class);
+    }
+
     public String getUsername(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -47,10 +58,11 @@ public class JwtUtil {
                 .before(new Date());
     }
 
-    public String createJwt(String category, String username, String role, Long expirationTime) {
+    public String createJwt(String category, Long id, String username, String role, Long expirationTime) {
 
         return Jwts.builder()
                 .claim("category", category)
+                .claim("id", id)
                 .claim("username", username)
                 .claim("roles", role)
                 .issuedAt(new Date(System.currentTimeMillis()))

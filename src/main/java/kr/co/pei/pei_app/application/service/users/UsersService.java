@@ -1,13 +1,12 @@
 package kr.co.pei.pei_app.application.service.users;
 
 import jakarta.persistence.EntityNotFoundException;
-import kr.co.pei.pei_app.application.dto.users.FindUsersDTO;
+import kr.co.pei.pei_app.application.dto.users.UsersFindDTO;
 import kr.co.pei.pei_app.application.dto.users.PasswordRequest;
 import kr.co.pei.pei_app.application.dto.users.UsersDetailDTO;
 import kr.co.pei.pei_app.application.service.auth.AuthService;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.users.UsersRepository;
-import kr.co.pei.pei_app.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,7 +28,7 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final AuthService authService;
 
-    public Page<FindUsersDTO> findAllUsers(Pageable pageable) {
+    public Page<UsersFindDTO> findAllUsers(Pageable pageable) {
         return usersRepository.findAllUsers(pageable);
     }
 

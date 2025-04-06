@@ -76,20 +76,17 @@ public class AuthController {
     public ResponseEntity<ApiResult<Boolean>> reissueToken(HttpServletRequest request,
                                                            HttpServletResponse response) throws AuthenticationException {
       log.info("토큰 검증 후 재발급 로직 실행");
-
       Cookie[] cookies = request.getCookies();
-
       Map<String, Object> responseMap = authService.validRefreshFromCookieAndRedis(cookies);
 
         boolean expired = Boolean.FALSE.equals(responseMap.get("expired"));
         boolean valid = Boolean.FALSE.equals(responseMap.get("valid"));
 
         if (expired || valid) {
-            // ✅ 쿠키 삭제 명령 추가
             Cookie deleteCookie = new Cookie("refresh", null);
-            deleteCookie.setPath("/"); // 루트 경로 기준
-            deleteCookie.setHttpOnly(true); // 원래 설정과 일치해야 삭제됨
-            deleteCookie.setMaxAge(0); // 만료 즉시
+            deleteCookie.setPath("/");
+            deleteCookie.setHttpOnly(true);
+            deleteCookie.setMaxAge(0);
             response.addCookie(deleteCookie);
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

@@ -14,17 +14,17 @@ public record UserDetailsImpl(Users users) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(new GrantedAuthority() {
+        Collection<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        grantedAuthorities.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                log.info("사용자 권한 정보(별칭): {} ", users.getRoleType().getText());
-                log.info("사용자 권한 정보: {}", users.getRoleType().name());
                 return users.getRoleType().name();
             }
         });
-        return collection;
+        return grantedAuthorities;
     }
+
+    public Long getId() {return users.getId();}
 
     @Override
     public String getUsername() {

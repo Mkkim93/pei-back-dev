@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "게시글 작성 DTO")
 @Data
 @NoArgsConstructor
-public class CreateBoardDTO {
+public class BoardCreateDTO {
 
     @NotBlank(message = "제목 입력은 필수 입니다.")
     @Schema(description = "게시글 제목", example = "제목 입니다.")

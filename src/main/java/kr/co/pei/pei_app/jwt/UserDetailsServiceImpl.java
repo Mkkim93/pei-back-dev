@@ -23,9 +23,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("사용자 정보가 존재하지 않습니다."));
 
-        if (users == null) {
-            throw new UsernameNotFoundException("존재하지 않거나 잘못된 사용자 정보 입니다.");
+        if (users == null || !users.getUsername().equals(username)) {
+            throw new UsernameNotFoundException("잘못된 사용자 정보 입니다.");
         }
+
         return new UserDetailsImpl(users);
     }
 }

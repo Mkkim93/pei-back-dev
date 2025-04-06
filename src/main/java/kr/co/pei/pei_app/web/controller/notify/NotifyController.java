@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.pei.pei_app.application.dto.api.ApiResult;
 import kr.co.pei.pei_app.application.dto.notify.NotifyFindDTO;
-import kr.co.pei.pei_app.application.dto.notify.NotifyPostDTO;
 import kr.co.pei.pei_app.application.service.notify.NotifyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -32,7 +32,7 @@ public class LogService {
                 log.getAction(),
                 log.getDescription(),
                 log.getCreatedAt(),
-                log.getUsers()
+                log.getUsers().getName()
         ));
     }
 

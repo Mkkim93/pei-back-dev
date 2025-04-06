@@ -88,7 +88,7 @@ public class AuthService {
 
         if (cookies == null) {
             log.warn("쿠키 정보 없음");
-            // 여기서는 쿠키 만료 시 인증 만료만 띄워야됨 레디스 토큰 삭제할 방법 없음
+            // 여기서는 쿠키 만료 시 인증 만료만 띄워야됨 레디스 토큰 삭제할 방법 없음 (헤더 사용자 정보 없음)
             throw new AuthenticationException("인증이 만료 되었습니다.") {};
         }
 
@@ -120,8 +120,9 @@ public class AuthService {
 
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
+        Long id = jwtUtil.getId(refreshToken);
 
-        String access = jwtUtil.createJwt("access", username, role, accessExpired);
+        String access = jwtUtil.createJwt("access", id, username, role, accessExpired);
         validRedisByToken.put("token", access);
         return validRedisByToken;
     }

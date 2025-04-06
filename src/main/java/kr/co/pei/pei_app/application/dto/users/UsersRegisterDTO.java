@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UsersRegisterDTO {
 
+    // TODO 계정 규칙 미정
     @Schema(description = "사용자 계정", example = "king0031443")
     @Size(min = 10, max = 20, message = "숫자와 문자를 포함한 최소 10자리 이상이어야 합니다.")
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "계정 이름은 영문과 숫자만 포함할 수 있습니다.")

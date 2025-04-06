@@ -80,9 +80,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String access = jwtUtil.createJwt("access", username, role, accessTokenExpired);
+        UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
+        Long id = principal.getId();
 
-        String refresh = jwtUtil.createJwt("refresh", username, role, refreshTokenExpired);
+        log.info("로그인 한사용자 PK: {}", id);
+
+        String access = jwtUtil.createJwt("access", id, username, role, accessTokenExpired);
+
+        String refresh = jwtUtil.createJwt("refresh", id, username, role, refreshTokenExpired);
 
         redisService.saveRefreshToken(username, refresh, refreshTokenExpired);
 

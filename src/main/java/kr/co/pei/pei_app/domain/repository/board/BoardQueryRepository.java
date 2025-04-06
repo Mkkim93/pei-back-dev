@@ -1,19 +1,19 @@
 package kr.co.pei.pei_app.domain.repository.board;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
-import kr.co.pei.pei_app.application.dto.board.DetailBoardDTO;
-import kr.co.pei.pei_app.application.dto.board.UpdateBoardDTO;
+import kr.co.pei.pei_app.application.dto.board.BoardDetailDTO;
+import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
 import kr.co.pei.pei_app.domain.entity.board.Board;
-import kr.co.pei.pei_app.domain.entity.board.QBoard;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 
 import static kr.co.pei.pei_app.domain.entity.board.QBoard.*;
-import static kr.co.pei.pei_app.domain.entity.users.QUsers.*;
+import static kr.co.pei.pei_app.domain.entity.users.QUsers.users;
 
 @Repository
 public class BoardQueryRepository extends QuerydslRepositorySupport implements BoardRepositoryCustom {
@@ -26,37 +26,36 @@ public class BoardQueryRepository extends QuerydslRepositorySupport implements B
     }
 
     @Override
-    public DetailBoardDTO detail(Long boardId) {
+    public BoardDetailDTO detail(Long boardId) {
 
-        Board board = queryFactory.selectFrom(QBoard.board)
-                .leftJoin(QBoard.board.users, users).fetchJoin()
-                .where(QBoard.board.id.eq(boardId))
+        return queryFactory.select(Projections.constructor(BoardDetailDTO.class,
+                board.id,
+                board.title,
+                board.content,
+                users.name,
+                board.updatedAt,
+                board.views,
+                users.username))
+                .from(board)
+                .join(board.users, users)
+                .where(board.id.eq(boardId))
                 .fetchOne();
-
-        return new DetailBoardDTO(
-                board.getId(),
-                board.getTitle(),
-                board.getContent(),
-                board.getUsers().getName(),
-                board.getUpdatedAt(),
-                board.getViews(),
-                board.getUsers().getUsername());
     }
 
     @Override
-    public Boolean update(UpdateBoardDTO updateBoardDTO) {
+    public Boolean update(BoardUpdateDTO boardUpdateDTO) {
 
         JPAUpdateClause updateClause = new JPAUpdateClause(getEntityManager(), board);
 
-        if (updateBoardDTO.getTitle() != null) {
-            updateClause.set(board.title, updateBoardDTO.getTitle());
+        if (boardUpdateDTO.getTitle() != null) {
+            updateClause.set(board.title, boardUpdateDTO.getTitle());
         }
-        if (updateBoardDTO.getContent() != null) {
-            updateClause.set(board.content, updateBoardDTO.getContent());
+        if (boardUpdateDTO.getContent() != null) {
+            updateClause.set(board.content, boardUpdateDTO.getContent());
         }
 
         updateClause.set(board.updatedAt, LocalDateTime.now());
-        updateClause.where(board.id.eq(updateBoardDTO.getId()));
+        updateClause.where(board.id.eq(boardUpdateDTO.getId()));
 
         long updateCount = updateClause.execute();
 

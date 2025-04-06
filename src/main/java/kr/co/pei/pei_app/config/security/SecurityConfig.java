@@ -73,7 +73,9 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/**", "/login", "/logout", "/api/users/profile", "/api/notify/**", "/api/register/**").permitAll());
+                        .requestMatchers("/login", "/logout", "/api/users/**","/api/users/profile", "/api/notify/**",
+                                "/api/register/**", "/api/reissue", "/api/board/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/**").hasAnyRole("ADMIN", "USER").anyRequest().authenticated());
 
         http
                 .exceptionHandling(exceptionHandling -> exceptionHandling
