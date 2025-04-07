@@ -61,7 +61,8 @@ public class BoardController {
                                              "updateAt": "2025-03-31T11:33:22.655005",
                                              "writer": "관리자2",
                                              "views": 40,
-                                             "roleType": "사용자"
+                                             "roleType": "사용자",
+                                             "usersId" : 6
                                            },
                                            {
                                              "id": 76,
@@ -71,7 +72,8 @@ public class BoardController {
                                              "updateAt": "2025-03-31T11:26:41.89088",
                                              "writer": "관리자2",
                                              "views": 32,
-                                             "roleType": "사용자"
+                                             "roleType": "사용자",
+                                             "usersId" : 6
                                            },
                                            {
                                              "id": 75,
@@ -81,7 +83,8 @@ public class BoardController {
                                              "updateAt": "2025-03-31T11:16:49.484734",
                                              "writer": "관리자2",
                                              "views": 12,
-                                             "roleType": "사용자"
+                                             "roleType": "사용자",
+                                             "usersId" : 6
                                            },
                                            {
                                              "id": 74,
@@ -91,7 +94,8 @@ public class BoardController {
                                              "updateAt": "2025-03-31T10:52:21.920275",
                                              "writer": "관리자2",
                                              "views": 16,
-                                             "roleType": "사용자"
+                                             "roleType": "사용자",
+                                             "usersId" : 6
                                            },
                                            {
                                              "id": 73,
@@ -101,7 +105,8 @@ public class BoardController {
                                              "updateAt": "2025-03-31T10:50:26.862231",
                                              "writer": "관리자2",
                                              "views": 23,
-                                             "roleType": "사용자"
+                                             "roleType": "사용자",
+                                             "usersId" : 6
                                            }
                                          ],
                                          "page": {

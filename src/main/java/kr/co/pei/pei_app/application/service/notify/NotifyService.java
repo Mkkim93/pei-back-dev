@@ -2,9 +2,6 @@ package kr.co.pei.pei_app.application.service.notify;
 
 import jakarta.persistence.EntityNotFoundException;
 import kr.co.pei.pei_app.application.dto.notify.NotifyFindDTO;
-import kr.co.pei.pei_app.application.dto.notify.NotifyPostDTO;
-import kr.co.pei.pei_app.application.service.auth.AuthService;
-import kr.co.pei.pei_app.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.notify.Notify;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.notify.EmitterRepository;
@@ -13,20 +10,17 @@ import kr.co.pei.pei_app.domain.repository.users.UsersRepository;
 import kr.co.pei.pei_app.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.webjars.NotFoundException;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -62,26 +56,51 @@ public class NotifyService {
         return emitter;
     }
 
-    // 전체 알림 조회
-    public List<NotifyFindDTO> findAll() {
+    public Page<NotifyFindDTO> findAll(Pageable pageable) {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("알림 관련 사용자 조회 오류"));
 
-        List<Notify> notifyList = notifyRepository.findByReceiverId(users.getId());
+        Page<Notify> notifyPage = notifyRepository.findByReceiverId(users.getId(), pageable);
 
-        return notifyList.stream()
-                .filter(notify -> !notify.getIsRead())
-                .map(notify -> new NotifyFindDTO(
+        List<NotifyFindDTO> content = notifyPage.map(notify -> new NotifyFindDTO(
                 notify.getId(),
                 notify.getMessage(),
                 notify.getType(),
                 notify.getCreatedAt(),
                 notify.getTargetId(),
                 notify.getUrl(),
-                notify.getIsRead()
-        )).collect(Collectors.toList());
+                notify.getIsRead(),
+                notify.getIsDisplayed()
+        )).toList();
+        return new PageImpl<>(content, pageable, notifyPage.getTotalElements());
+    }
+
+    // 전체 알림 중 새로운 알림만 조회
+    public Page<NotifyFindDTO> findAllByIsDisplayedTrue(Pageable pageable) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("알림 관련 사용자 조회 오류"));
+
+        Page<Notify> notifyPage = notifyRepository.findByReceiverIdAndIsDisplayedFalse(users.getId(), pageable);
+
+        // 필터링 + DTO 변환
+        List<NotifyFindDTO> content = notifyPage.stream()
+                .filter(notify -> !notify.getIsRead())
+                .map(notify -> new NotifyFindDTO(
+                        notify.getId(),
+                        notify.getMessage(),
+                        notify.getType(),
+                        notify.getCreatedAt(),
+                        notify.getTargetId(),
+                        notify.getUrl(),
+                        notify.getIsRead(),
+                        notify.getIsDisplayed()
+                ))
+                .toList();
+        return new PageImpl<>(content, pageable, notifyPage.getTotalElements());
     }
 
     public void markAsRead(String notifyId) {
@@ -100,5 +119,9 @@ public class NotifyService {
     // 알림 삭제 (단일)
     public void deleteOne(String notifyId) {
         notifyRepository.deleteById(notifyId);
+    }
+
+    public void updatedDisplayedTrue(List<String> notifyIds) {
+        notifyRepository.markAsDisplayed(notifyIds);
     }
 }

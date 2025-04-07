@@ -29,4 +29,5 @@ public class Notify {
     private Boolean isRead = false;
     private String url; // 클릭시 이동 경로
     private LocalDateTime expired;
+    private Boolean isDisplayed = false; // 알림 랜더링 여부 (최초 1회만 랜더링 되고 읽지 않은 알림은 '읽지 않음 알림' 목록에서 확인 가능하도록 구현)
 }

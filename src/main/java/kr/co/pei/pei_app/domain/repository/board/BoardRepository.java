@@ -22,7 +22,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query("""
             select new kr.co.pei.pei_app.application.dto.board.BoardFindDTO(
-            b.id, b.title, b.content, b.createdAt, b.updatedAt, b.users.name, b.users.roleType, b.views
+            b.id, b.title, b.content, b.createdAt, b.updatedAt, b.users.name, b.users.roleType, b.views, b.users.id
             )
             from Board b
             join b.users u
@@ -33,7 +33,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query("""
         select new kr.co.pei.pei_app.application.dto.board.BoardFindDTO(
-        b.id, b.title, b.content, b.createdAt, b.updatedAt, b.users.name, b.users.roleType, b.views) 
+        b.id, b.title, b.content, b.createdAt, b.updatedAt, b.users.name, b.users.roleType, b.views, b.users.id) 
         from Board b
         join b.users u
     """)

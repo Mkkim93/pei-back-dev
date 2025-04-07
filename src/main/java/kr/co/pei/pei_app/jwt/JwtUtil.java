@@ -19,8 +19,6 @@ public class JwtUtil {
                 Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-
-    // add to userId with payload (04/06)
     public Long getId(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)

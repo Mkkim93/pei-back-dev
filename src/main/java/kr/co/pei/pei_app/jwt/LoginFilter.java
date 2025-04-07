@@ -116,19 +116,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.info("인증 실패 로직 실행");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
-        HashMap<String, Object> responseBody = new HashMap<>();
-        responseBody.put("status", "Unauthorized");
-        responseBody.put("message", "아이디 또는 비밀번호가 올바르지 않습니다.");
-
-        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "LOGIN_FAILED", "아이디 또는 비밀번호를 잘못 입력하였습니다.");
+        sendErrorResponse(response, HttpServletResponse.SC_BAD_REQUEST, "LOGIN_FAILED", "아이디와 비밀번호를 확인해주세요.");
     }
 
     private void sendErrorResponse(HttpServletResponse response, int status, String code, String message) throws IOException {
         response.setStatus(status);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("status", status);
         responseBody.put("message", message);

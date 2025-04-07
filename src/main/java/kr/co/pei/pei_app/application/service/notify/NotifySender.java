@@ -41,6 +41,7 @@ public class NotifySender {
                     .type(type)
                     .url(url)
                     .targetId(targetId)
+                    .isDisplayed(false)
                     .build();
 
             notifyRepository.save(notify); // mongoDB

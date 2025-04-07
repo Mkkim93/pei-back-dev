@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.application.dto.notify;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,9 +20,13 @@ public class NotifyFindDTO {
     private Long targetId;
     private String url;
     private Boolean isRead;
+    private Boolean isDisplayed;
+
+    @JsonIgnore
+    private Long receiverId;
 
     public NotifyFindDTO(String id, String message, String type,
-                         LocalDateTime createAt, Long targetId, String url, Boolean isRead) {
+                         LocalDateTime createAt, Long targetId, String url, Boolean isRead, Boolean isDisplayed) {
         this.id = id;
         this.message = message;
         this.type = type;
@@ -29,5 +34,6 @@ public class NotifyFindDTO {
         this.targetId = targetId;
         this.url = url;
         this.isRead = isRead;
+        this.isDisplayed = isDisplayed;
     }
 }

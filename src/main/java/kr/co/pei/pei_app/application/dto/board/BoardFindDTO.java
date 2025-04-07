@@ -24,6 +24,7 @@ public class BoardFindDTO {
     private String writer;
     private Long views;
     private String roleType;
+    private Long usersId;
 
     public BoardFindDTO(Board board) {
         this.id = board.getId();
@@ -34,11 +35,12 @@ public class BoardFindDTO {
         this.writer = board.getUsers().getName();
         this.roleType = board.getUsers().getRoleType().getText();
         this.views = board.getViews();
+        this.usersId = board.getUsers().getId();
     }
 
     public BoardFindDTO(Long id, String title, String content,
                         LocalDateTime createAt, LocalDateTime updateAt, String writer, RoleType roleType,
-                        Long views) {
+                        Long views, Long usersId) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -47,6 +49,7 @@ public class BoardFindDTO {
         this.writer = writer;
         this.roleType = roleType.getText();
         this.views = views;
+        this.usersId = usersId;
     }
 
     @Override

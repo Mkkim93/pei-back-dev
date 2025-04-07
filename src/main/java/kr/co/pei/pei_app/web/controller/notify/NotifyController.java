@@ -8,6 +8,10 @@ import kr.co.pei.pei_app.application.dto.api.ApiResult;
 import kr.co.pei.pei_app.application.dto.notify.NotifyFindDTO;
 import kr.co.pei.pei_app.application.service.notify.NotifyService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Tag(name = "NOTIFY_API", description = "모든 도메인의 새로운 이벤트 발생 시 사용자에게 알림을 보내기 위한 API")
 @RestController
@@ -51,8 +57,9 @@ public class NotifyController {
 
     @Operation
     @GetMapping
-    public ResponseEntity<ApiResult<List<NotifyFindDTO>>> findAll() {
-        List<NotifyFindDTO> all = notifyService.findAll();
+    public ResponseEntity<ApiResult<Page<NotifyFindDTO>>> findAll(@ParameterObject @PageableDefault(sort = "createAt", direction = DESC, page = 0, size = 5)
+                                                                  Pageable pageable) {
+        Page<NotifyFindDTO> all = notifyService.findAllByIsDisplayedTrue(pageable);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResult.success("전체 알림 조회", all));
     }
@@ -79,5 +86,12 @@ public class NotifyController {
         notifyService.deleteAll(notifyIds);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResult.success("전체 알림이 삭제 되었습니다."));
+    }
+
+    @Operation
+    @PatchMapping("/isDisplayed")
+    public ResponseEntity<ApiResult<String>> updatedByDisPlayed(@RequestBody List<String> notifyIds) {
+        notifyService.updatedDisplayedTrue(notifyIds);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success("알림 업데이트 완료"));
     }
 }
