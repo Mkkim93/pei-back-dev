@@ -20,7 +20,6 @@ import org.webjars.NotFoundException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -56,6 +55,7 @@ public class NotifyService {
         return emitter;
     }
 
+    // 모든 알림 조회 (Profile.vue)
     public Page<NotifyFindDTO> findAll(Pageable pageable) {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -78,7 +78,7 @@ public class NotifyService {
     }
 
     // 전체 알림 중 새로운 알림만 조회
-    public Page<NotifyFindDTO> findAllByIsDisplayedTrue(Pageable pageable) {
+    public Page<NotifyFindDTO> findAllByIsDisplayedFalse(Pageable pageable) {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 

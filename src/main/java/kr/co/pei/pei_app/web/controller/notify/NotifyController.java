@@ -2,6 +2,8 @@ package kr.co.pei.pei_app.web.controller.notify;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.pei.pei_app.application.dto.api.ApiResult;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,20 +51,94 @@ public class NotifyController {
         return notifyService.subscribe(token);
     }
 
-//    @Operation
-//    @PostMapping
-//    public ResponseEntity<Void> send(@RequestBody NotifyPostDTO notifyPostDTO) {
-//        notifyService.sendNotification(notifyPostDTO);
-//        return ResponseEntity.ok().build();
-//    }
-
-    @Operation
     @GetMapping
-    public ResponseEntity<ApiResult<Page<NotifyFindDTO>>> findAll(@ParameterObject @PageableDefault(sort = "createAt", direction = DESC, page = 0, size = 5)
+    public ResponseEntity<ApiResult<Page<NotifyFindDTO>>> findAll(@ParameterObject @PageableDefault(sort = "createAt", direction = DESC, page = 0, size = 5) Pageable pageable) {
+        Page<NotifyFindDTO> all = notifyService.findAll(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success("모든 알림 조회", all));
+    }
+
+    @Operation(
+            summary = "전체 알림 중 첫 알림 조회",
+            description = "한번 랜더링된 알림은 뜨지 않음")
+    @ApiResponse(responseCode = "200", description = "알림 조회",
+    content = @Content(schema = @Schema(implementation = ApiResult.class),
+    mediaType = "application/json", examples = @ExampleObject(
+            name = "최초 알림 조회 예시",
+            summary = "최초 알림 조회 응답 예제",
+            value = """
+                    {
+                      "status": 200,
+                      "message": "전체 알림 조회",
+                      "timestamp": "2025-04-08T13:10:13.496794",
+                      "data": {
+                        "content": [
+                          {
+                            "id": "67f37a0de3f02b695ad374d1",
+                            "message": "새 글이 등록되었습니다",
+                            "type": "게시글",
+                            "createAt": "2025-04-07T16:09:01",
+                            "targetId": null,
+                            "url": "/api/board",
+                            "isRead": false,
+                            "isDisplayed": false
+                          },
+                          {
+                            "id": "67f37a0de3f02b695ad374d8",
+                            "message": "새 글이 등록되었습니다",
+                            "type": "게시글",
+                            "createAt": "2025-04-07T16:09:01",
+                            "targetId": null,
+                            "url": "/api/board",
+                            "isRead": false,
+                            "isDisplayed": false
+                          },
+                          {
+                            "id": "67f37a0ce3f02b695ad374c3",
+                            "message": "새 글이 등록되었습니다",
+                            "type": "게시글",
+                            "createAt": "2025-04-07T16:09:00",
+                            "targetId": null,
+                            "url": "/api/board",
+                            "isRead": false,
+                            "isDisplayed": false
+                          },
+                          {
+                            "id": "67f37a0ce3f02b695ad374bc",
+                            "message": "새 글이 등록되었습니다",
+                            "type": "게시글",
+                            "createAt": "2025-04-07T16:09:00",
+                            "targetId": null,
+                            "url": "/api/board",
+                            "isRead": false,
+                            "isDisplayed": false
+                          },
+                          {
+                            "id": "67f37a0ce3f02b695ad374ca",
+                            "message": "새 글이 등록되었습니다",
+                            "type": "게시글",
+                            "createAt": "2025-04-07T16:09:00",
+                            "targetId": null,
+                            "url": "/api/board",
+                            "isRead": false,
+                            "isDisplayed": false
+                          }
+                        ],
+                        "page": {
+                          "size": 5,
+                          "number": 0,
+                          "totalElements": 23,
+                          "totalPages": 5
+                        }
+                      }
+                    }
+                    """
+    )))
+    @GetMapping("/isDisplayed")
+    public ResponseEntity<ApiResult<Page<NotifyFindDTO>>> findAllByDisplayedFalse(@ParameterObject @PageableDefault(sort = "createAt", direction = DESC, page = 0, size = 5)
                                                                   Pageable pageable) {
-        Page<NotifyFindDTO> all = notifyService.findAllByIsDisplayedTrue(pageable);
+        Page<NotifyFindDTO> all = notifyService.findAllByIsDisplayedFalse(pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResult.success("전체 알림 조회", all));
+                .body(ApiResult.success("최초 알림 조회", all));
     }
 
     @Operation
