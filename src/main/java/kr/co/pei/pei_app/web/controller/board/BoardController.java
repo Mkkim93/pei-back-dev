@@ -17,6 +17,7 @@ import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
 import kr.co.pei.pei_app.application.service.board.BoardService;
 import kr.co.pei.pei_app.config.exception.ErrorResult;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +25,13 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction.*;
 
+@Slf4j
 @Tag(name = "BOARD_API", description = "게시글 관리를 위한 API")
 @RestController
 @RequestMapping("/api/board")
@@ -260,6 +263,7 @@ public class BoardController {
     })
     @PostMapping
     public ResponseEntity<ApiResult<Long>> created(@Valid @RequestBody BoardCreateDTO boardCreateDTO) {
+        log.info("boardCreateDTO: {}", boardCreateDTO);
         Long boardId = boardService.create(boardCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResult.success(HttpStatus.CREATED.value(), "게시글이 성공적으로 작성 되었습니다.", boardId));
@@ -272,15 +276,15 @@ public class BoardController {
                     content = @Content(schema = @Schema(implementation = ApiResult.class)))
     })
     @PatchMapping
-    public ResponseEntity<ApiResult<Boolean>> updated(@RequestBody BoardUpdateDTO boardUpdateDTO) {
-        Boolean updated = boardService.update(boardUpdateDTO);
-        if (!updated) {
+    public ResponseEntity<ApiResult<Long>> updated(@RequestBody BoardUpdateDTO boardUpdateDTO) {
+        Long updated = boardService.update(boardUpdateDTO);
+        if (updated == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(),
                             "UPDATED_FAILED",
-                    "업데이트에 실패하였습니다.", false));
+                    "업데이트에 실패하였습니다."));
         }
-        return ResponseEntity.ok(ApiResult.success("업데이트에 성공하였습니다.", true));
+        return ResponseEntity.ok(ApiResult.success("게시글이 수정 되었습니다.", updated));
     }
 
     // TODO 파일 삭제 추가 예정
@@ -342,7 +346,7 @@ public class BoardController {
             )
     })
     @DeleteMapping
-    public ResponseEntity<ApiResult<String>> deleted(@Parameter(description = "게시글 번호") @RequestParam("id") List<Long> boardIds) {
+    public ResponseEntity<ApiResult<String>> deleted(@Parameter(description = "게시글 번호") @RequestParam("ids") List<Long> boardIds) {
         boardService.delete(boardIds);
         return ResponseEntity.ok(ApiResult.success("게시글이 정상적으로 삭제 되었습니다."));
     }

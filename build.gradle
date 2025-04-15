@@ -73,6 +73,9 @@ dependencies {
 	// APACHE POI
 	implementation 'org.apache.poi:poi-ooxml:5.4.0'
 
+	// S3 (임시)
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 	// ELASTIC SEARCH
 //	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 

@@ -25,4 +25,11 @@ public class NotifyRepositoryImpl implements NotifyRepositoryCustom{
                 .matching(where("_id").in(ids))
                 .apply(new Update().set("isDisplayed", true)).all();
     }
+
+    @Override
+    public void markAsRead(List<String> ids) {
+        template.update(Notify.class)
+                .matching(where("_id").in(ids))
+                .apply(new Update().set("isRead", true)).all();
+    }
 }

@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,8 +34,9 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UsersContextService contextService;
     private final BoardQueryRepository boardQueryRepository;
+    private static final String BOARD_NOTIFY_PREFIX = "/detail/";
 
-    @NotifyEvent(message = "새 글이 등록되었습니다", type = "게시글", url = "/api/board")
+    @NotifyEvent(message = "새 글이 등록되었습니다", type = "게시글", url = BOARD_NOTIFY_PREFIX)
     @AuditLog(action = "게시글 작성", description = "게시글을 작성 하였습니다.")
     public Long create(BoardCreateDTO boardCreateDTO) {
 
@@ -52,7 +54,6 @@ public class BoardService {
     }
 
     public Page<BoardFindDTO> pages(Pageable pageable, String searchKeyword) {
-        Page<BoardFindDTO> pageResult = null;
 
         if (StringUtils.hasText(searchKeyword)) {
             return boardRepository.searchByBoardPages(searchKeyword, pageable);
@@ -63,14 +64,14 @@ public class BoardService {
 
     public BoardDetailDTO detail(Long boardId) {
 
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
         BoardDetailDTO boardDetailDTO = boardQueryRepository.detail(boardId);
 
         if (boardDetailDTO == null) {
             throw new BoardNotFoundException("게시글이 존재하지 않습니다.");
         }
 
-        if (name.equals(boardDetailDTO.getUsername())) {
+        if (username.equals(boardDetailDTO.getUsername())) {
             log.info("자신이 작성한 글은 조회 수 증가 X");
             return boardDetailDTO;
         }
@@ -83,13 +84,10 @@ public class BoardService {
         return boardDetailDTO;
     }
 
-    @AuditLog(action = "게시글 업데이트")
-    public Boolean update(BoardUpdateDTO boardUpdateDTO) {
-        Boolean update = boardQueryRepository.update(boardUpdateDTO);
-        if (!update) {
-            return false;
-        }
-        return true;
+    @NotifyEvent(message = "게시글이 수정되었습니다.", type = "게시글", url = BOARD_NOTIFY_PREFIX) // TODO
+    @AuditLog(action = "게시글 업데이트", description = "게시글을 수정하였습니다.")
+    public Long update(BoardUpdateDTO boardUpdateDTO) {
+        return boardQueryRepository.update(boardUpdateDTO);
     }
 
     // TODO 게시글에 정적파일 또는 메타데이터 추가 시 파일 삭제 로직 추가

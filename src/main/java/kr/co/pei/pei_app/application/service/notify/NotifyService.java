@@ -98,27 +98,12 @@ public class NotifyService {
                         notify.getUrl(),
                         notify.getIsRead(),
                         notify.getIsDisplayed()
-                ))
-                .toList();
+                )).toList();
         return new PageImpl<>(content, pageable, notifyPage.getTotalElements());
     }
 
-    public void markAsRead(String notifyId) {
-        Notify notify = notifyRepository
-                .findById(notifyId)
-                .orElseThrow(() -> new NotFoundException("알림이 존재하지 않습니다."));
-        notify.setIsRead(true);
-        notifyRepository.save(notify);
-    }
-
-    // 알림 삭제 (전체)
-    public void deleteAll(List<String> notifyIds) {
-        notifyRepository.deleteAllById(notifyIds);
-    }
-
-    // 알림 삭제 (단일)
-    public void deleteOne(String notifyId) {
-        notifyRepository.deleteById(notifyId);
+    public void markAsRead(List<String> ids) {
+        notifyRepository.markAsRead(ids);
     }
 
     public void updatedDisplayedTrue(List<String> notifyIds) {

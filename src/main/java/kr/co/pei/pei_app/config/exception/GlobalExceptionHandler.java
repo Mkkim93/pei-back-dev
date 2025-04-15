@@ -7,7 +7,6 @@ import kr.co.pei.pei_app.application.exception.board.BoardNotFoundException;
 import kr.co.pei.pei_app.application.exception.redis.OtpStorageException;
 import kr.co.pei.pei_app.application.exception.users.DuplicateException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.naming.AuthenticationException;
 import java.util.HashMap;
 import java.util.Map;
-
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -47,7 +45,7 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage()));
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResult(HttpStatus.BAD_REQUEST.value(), errors.toString()));
+                .body(new ErrorResult(HttpStatus.BAD_REQUEST.value(), errors));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -28,11 +28,10 @@ public class NotifySender {
     private final EmitterRepository emitterRepository;
 
     public void sendNotification(String message, String type, String url, Long targetId) {
-        log.info("샌드노티피케이션(핵심) 실행 여부");
+        log.info("sendNotification 실행");
         List<Users> allUsers = usersRepository.findAll();
 
         for (Users users : allUsers) {
-
             Notify notify = Notify.builder()
                     .receiverId(users.getId())
                     .message(message)

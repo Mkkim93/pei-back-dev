@@ -118,6 +118,6 @@ class BoardServiceTest {
         BoardCreateDTO boardCreateDTO = new BoardCreateDTO();
         boardCreateDTO.setTitle("제목 테스트3");
         boardCreateDTO.setContent("내용 테스트3");
-        boardService.create(boardCreateDTO);
+        boardService.create(boardCreateDTO, null);
     }
 }

@@ -90,7 +90,8 @@ public class AuthController {
             response.addCookie(deleteCookie);
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResult.error(HttpStatus.UNAUTHORIZED.value(), "REFRESH_TOKEN_NULL", "서버 검증에 실패 하였습니다.", false));
+                    .body(ApiResult.error(HttpStatus.UNAUTHORIZED.value(),
+                            "REFRESH_TOKEN_NULL", "서버 검증에 실패 하였습니다.", false));
         }
         response.setHeader("Authorization",  "Bearer " + responseMap.get("token"));
         log.info("엑시스 토큰 재발급 완료");

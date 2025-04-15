@@ -7,5 +7,5 @@ public interface BoardRepositoryCustom {
 
     BoardDetailDTO detail(Long boardId);
 
-    Boolean update(BoardUpdateDTO boardUpdateDTO);
+    Long update(BoardUpdateDTO boardUpdateDTO);
 }

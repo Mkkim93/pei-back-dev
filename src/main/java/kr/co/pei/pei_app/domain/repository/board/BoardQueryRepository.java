@@ -43,7 +43,7 @@ public class BoardQueryRepository extends QuerydslRepositorySupport implements B
     }
 
     @Override
-    public Boolean update(BoardUpdateDTO boardUpdateDTO) {
+    public Long update(BoardUpdateDTO boardUpdateDTO) {
 
         JPAUpdateClause updateClause = new JPAUpdateClause(getEntityManager(), board);
 
@@ -60,8 +60,8 @@ public class BoardQueryRepository extends QuerydslRepositorySupport implements B
         long updateCount = updateClause.execute();
 
         if (updateCount > 0) {
-            return true;
+            return boardUpdateDTO.getId();
         }
-        return false;
+        throw new IllegalArgumentException("게시글 업데이트 실패");
     }
 }

@@ -16,10 +16,13 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.data.domain.Sort.Direction.*;
 
 @Tag(name = "LOG_API", description = "사용자 활동 로그 기록 API")
 @RestController
@@ -93,7 +96,7 @@ public class LogController {
     })
     @GetMapping
     public ResponseEntity<ApiResult<Page<LogResponseDTO>>> findAll(@ParameterObject @PageableDefault(
-            sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable) {
+            sort = "createdAt", direction = DESC) Pageable pageable) {
 
         Page<LogResponseDTO> logList = logService.findAll(pageable);
         return ResponseEntity
