@@ -2,7 +2,9 @@ package kr.co.pei.pei_app.application.service.s3;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import kr.co.pei.pei_app.application.dto.file.FileBoardDTO;
 import kr.co.pei.pei_app.config.s3.S3Config;
+import kr.co.pei.pei_app.domain.entity.file.FileStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,14 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class S3Uploader implements S3Service {
+public class S3ServiceImpl implements S3Service {
 
     private final S3Config s3Config;
 
@@ -29,18 +29,19 @@ public class S3Uploader implements S3Service {
     private String localLocation;
 
     @Override
-    public List<String> imageUpload(List<MultipartFile> files) throws IOException {
+    public List<FileBoardDTO> fileUpload(List<MultipartFile> files) throws IOException {
 
-        List<String> urls = new ArrayList<>();
+        List<FileBoardDTO> dtoList = new ArrayList<>();
 
         for (MultipartFile file : files) {
-            String fileName = file.getOriginalFilename();
+            FileBoardDTO dto = new FileBoardDTO();
+            String orgName = file.getOriginalFilename();
 
-            if (fileName == null || !fileName.contains(".")) {
+            if (orgName == null || !orgName.contains(".")) {
                 throw new IllegalArgumentException("파일명이 유효하지 않습니다.");
             }
 
-            String ext = fileName.substring(fileName.lastIndexOf("."));
+            String ext = orgName.substring(orgName.lastIndexOf("."));
             String uuidFileName = UUID.randomUUID() + ext;
             String localPath = localLocation + uuidFileName;
 
@@ -48,13 +49,20 @@ public class S3Uploader implements S3Service {
             file.transferTo(localFile);
             log.info("로컬 파일 저장 완료: {}", localPath);
 
-            s3Config.amazonS3Client().putObject(
+            s3Config.amazonS3().putObject(
                     new PutObjectRequest(bucket, uuidFileName, localFile)
                             .withCannedAcl(CannedAccessControlList.PublicRead)
             );
 
-            String url = s3Config.amazonS3Client().getUrl(bucket, uuidFileName).toString();
-            urls.add(url);
+            String url = s3Config.amazonS3().getUrl(bucket, uuidFileName).toString();
+
+            dto.setOrgName(orgName);
+            dto.setName(uuidFileName);
+            dto.setSize(file.getSize());
+            dto.setType(file.getContentType());
+            dto.setPath(url);
+
+            dtoList.add(dto);
 
             if (localFile.delete()) {
                 log.info("로컬 파일 삭제 완료: {}", localPath);
@@ -62,6 +70,14 @@ public class S3Uploader implements S3Service {
                 log.warn("로컬 파일 삭제 실패: {}", localPath);
             }
         }
-        return urls;
+        return dtoList;
+    }
+
+    @Override
+    public void s3Delete(List<FileStore> fileStoreList) {
+        log.info("s3 파일 삭제");
+        for (FileStore fileStore : fileStoreList) {
+            s3Config.amazonS3().deleteObject(bucket, fileStore.getName());
+        }
     }
 }

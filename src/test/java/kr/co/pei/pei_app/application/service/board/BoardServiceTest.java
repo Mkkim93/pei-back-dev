@@ -4,6 +4,7 @@ import kr.co.pei.pei_app.application.dto.board.BoardCreateDTO;
 import kr.co.pei.pei_app.application.dto.board.BoardDetailDTO;
 import kr.co.pei.pei_app.application.dto.board.BoardFindDTO;
 import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
+import kr.co.pei.pei_app.application.dto.file.FileBoardDTO;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.board.BoardRepository;
@@ -21,7 +22,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -35,9 +38,6 @@ class BoardServiceTest {
 
     @Autowired
     private BoardRepository boardRepository;
-
-    @Autowired
-    private UsersRepository usersRepository;
 
     @BeforeEach
     void loginUser() {
@@ -118,6 +118,17 @@ class BoardServiceTest {
         BoardCreateDTO boardCreateDTO = new BoardCreateDTO();
         boardCreateDTO.setTitle("제목 테스트3");
         boardCreateDTO.setContent("내용 테스트3");
-        boardService.create(boardCreateDTO, null);
+
+        List<FileBoardDTO> boardFiles = new ArrayList<>();
+        FileBoardDTO dto = new FileBoardDTO();
+        dto.setName("파일 이름_uuid");
+        dto.setOrgName("파일 이름");
+        dto.setPath("/");
+        dto.setSize(10000L);
+        dto.setType("image/png");
+        boardFiles.add(dto);
+        boardCreateDTO.setBoardFiles(boardFiles);
+
+        boardService.create(boardCreateDTO);
     }
 }

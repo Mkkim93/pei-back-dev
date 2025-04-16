@@ -12,5 +12,7 @@ public class FileBoardDTO {
     private String orgName;
     private String type;
     private Long size;
+    private String renderType;
     private Long boardId;
+
 }

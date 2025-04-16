@@ -7,6 +7,7 @@ import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
 import kr.co.pei.pei_app.application.exception.board.BoardDeleteFailedException;
 import kr.co.pei.pei_app.application.exception.board.BoardNotFoundException;
 import kr.co.pei.pei_app.application.service.auth.UsersContextService;
+import kr.co.pei.pei_app.application.service.file.FileStoreService;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import kr.co.pei.pei_app.domain.entity.log.AuditLog;
 import kr.co.pei.pei_app.domain.entity.notify.NotifyEvent;
@@ -21,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
+    private final FileStoreService fileStoreService;
     private final BoardRepository boardRepository;
     private final UsersContextService contextService;
     private final BoardQueryRepository boardQueryRepository;
@@ -48,9 +49,13 @@ public class BoardService {
                 .users(users)
                 .build();
 
-        Board save = boardRepository.save(board);
+        Board savedEntity = boardRepository.save(board);
 
-        return save.getId();
+        if (boardCreateDTO.getBoardFiles() != null) {
+            fileStoreService.saveFiles(savedEntity, boardCreateDTO);
+        }
+
+        return savedEntity.getId();
     }
 
     public Page<BoardFindDTO> pages(Pageable pageable, String searchKeyword) {
@@ -98,6 +103,9 @@ public class BoardService {
         if (count != boardIds.size()) {
             throw new BoardNotFoundException("삭제 대상 게시글이 존재 하지 않습니다.");
         }
+
+        // 핵심 (게시글 삭제 전, file 메타데이터 + s3 버킷 정리)
+        fileStoreService.deleteFilesIfBoardHasFiles(boardIds);
 
         try {
             boardRepository.deleteAllById(boardIds);
