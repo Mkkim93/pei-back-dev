@@ -15,4 +15,13 @@ public class FileBoardDTO {
     private String renderType;
     private Long boardId;
 
+    public FileBoardDTO(String name, String path, String orgName, String type, Long size, String renderType, Long boardId) {
+        this.name = name;
+        this.path = path;
+        this.orgName = orgName;
+        this.type = type;
+        this.size = size;
+        this.renderType = renderType;
+        this.boardId = boardId;
+    }
 }

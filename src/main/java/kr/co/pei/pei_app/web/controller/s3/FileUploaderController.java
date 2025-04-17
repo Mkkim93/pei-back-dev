@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @Tag(name = "S3_FILE_UPLOAD_API")
 @RestController
-@RequestMapping("/api/upload")
+@RequestMapping("/api/s3upload")
 @RequiredArgsConstructor
 public class FileUploaderController {
 

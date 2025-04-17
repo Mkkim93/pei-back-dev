@@ -73,8 +73,16 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/logout", "/api/users/**","/api/users/profile", "/api/notify/**",
-                                "/api/register/**", "/api/reissue", "/api/board/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/login", "/logout",
+                                "/api/users/**",
+                                "/api/users/profile",
+                                "/api/notify/**",
+                                "/api/file/**",
+                                "/api/register/**",
+                                "/api/reissue",
+                                "/api/board/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**").permitAll()
                         .requestMatchers("/**").hasAnyRole("ADMIN", "USER").anyRequest().authenticated());
 
         http
@@ -104,7 +112,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Disposition"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PATCH", "OPTIONS", "HEAD"));

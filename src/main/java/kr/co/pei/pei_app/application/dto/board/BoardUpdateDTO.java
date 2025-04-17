@@ -12,4 +12,6 @@ public class BoardUpdateDTO {
     private Long id;
     private String title;
     private String content;
+
+    private Long fileStoreId;
 }

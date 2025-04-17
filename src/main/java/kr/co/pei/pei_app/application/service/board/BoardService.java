@@ -70,6 +70,7 @@ public class BoardService {
     public BoardDetailDTO detail(Long boardId) {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         BoardDetailDTO boardDetailDTO = boardQueryRepository.detail(boardId);
 
         if (boardDetailDTO == null) {
