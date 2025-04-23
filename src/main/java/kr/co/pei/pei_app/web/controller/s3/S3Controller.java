@@ -25,8 +25,8 @@ public class S3Controller {
 
     @Operation(summary = "파일 업로드", description = "S3 에 업로드할 이미지 요청 컨트롤러")
     @PostMapping
-    public ResponseEntity<ApiResult<List<FileBoardDTO>>> uploader(@RequestParam("files") List<MultipartFile> file) throws IOException {
-        List<FileBoardDTO> fileMetaList = s3ServiceImpl.fileUpload(file);
+    public ResponseEntity<ApiResult<List<FileBoardDTO>>> uploader(@RequestPart("files") List<MultipartFile> files) throws IOException {
+        List<FileBoardDTO> fileMetaList = s3ServiceImpl.fileUpload(files);
         log.info("컨트롤러 파일 응답 객체: {}", fileMetaList);
         return ResponseEntity.ok(ApiResult.success("파일 등록 성공", fileMetaList));
     }
