@@ -26,7 +26,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             )
             from Board b
             join b.users u
-            where b.title like concat('%', :keyword, '%') 
+            where b.isDeleted = false and b.title like concat('%', :keyword, '%') 
             or b.content like concat('%', :keyword, '%')
            """)
     Page<BoardFindDTO> searchByBoardPages(@Param("keyword") String keyword, Pageable pageable);
@@ -35,7 +35,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         select new kr.co.pei.pei_app.application.dto.board.BoardFindDTO(
         b.id, b.title, b.content, b.createdAt, b.updatedAt, b.users.name, b.users.roleType, b.views, b.users.id) 
         from Board b
-        join b.users u
+        join b.users 
+        where b.isDeleted = false
     """)
     Page<BoardFindDTO> findBoardDTOS(Pageable pageable);
 }

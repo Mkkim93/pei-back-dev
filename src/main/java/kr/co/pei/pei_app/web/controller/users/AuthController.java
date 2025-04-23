@@ -94,7 +94,7 @@ public class AuthController {
                             "REFRESH_TOKEN_NULL", "서버 검증에 실패 하였습니다.", false));
         }
         response.setHeader("Authorization",  "Bearer " + responseMap.get("token"));
-        log.info("엑시스 토큰 재발급 완료");
+        log.info("엑세스 토큰 재발급 완료");
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResult.success(HttpStatus.CREATED.value(), "토큰 재발급 성공", true));

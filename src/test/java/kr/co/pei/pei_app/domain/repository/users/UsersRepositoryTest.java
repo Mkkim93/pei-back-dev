@@ -126,7 +126,7 @@ class UsersRepositoryTest {
 
         // given
         String username = "user1";
-        String mail = "king00314@naver.com";
+        String mail = "king00313@naver.com";
 
         // when
         String recoverUsername = repository.findUsernameByMail(mail);

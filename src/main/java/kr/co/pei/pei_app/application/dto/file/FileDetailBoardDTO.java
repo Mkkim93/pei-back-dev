@@ -15,14 +15,17 @@ public class FileDetailBoardDTO {
     private String orgName;
     private Long boardId;
     private RenderType renderType;
+    private boolean used;
 
     @QueryProjection
-    public FileDetailBoardDTO(Long id, String name, String path, String orgName, Long boardId, RenderType renderType) {
+    public FileDetailBoardDTO(Long id, String name, String path, String orgName, Long boardId,
+                              RenderType renderType, boolean used) {
         this.id = id;
         this.name = name;
         this.path = path;
         this.orgName = orgName;
         this.boardId = boardId;
         this.renderType = renderType;
+        this.used = used;
     }
 }

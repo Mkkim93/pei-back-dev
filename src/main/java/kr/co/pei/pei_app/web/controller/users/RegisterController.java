@@ -227,7 +227,7 @@ public class RegisterController {
         return ResponseEntity.ok(ApiResult.success("인증번호 발송 완료", expired));
     }
 
-    @Operation(summary = "인증번호 검증", description = "입력한 인증번호 요청 후 검증, 인증번호 검증이 완료된 전화번호 응답")
+    @Operation(summary = "인증번호 검증", description = "입력한 인증번호 요청 후 검증, 인증번호 검증이 완료된 휴대폰번호 응답")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",

@@ -3,11 +3,14 @@ package kr.co.pei.pei_app.application.service.auth;
 import jakarta.persistence.EntityNotFoundException;
 import kr.co.pei.pei_app.application.service.users.UsersService;
 import kr.co.pei.pei_app.domain.entity.users.Users;
+import kr.co.pei.pei_app.domain.repository.users.UsersRepository;
 import kr.co.pei.pei_app.jwt.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * 현재 로그인 돤 사용자 정보(Entity) 호출
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class UsersContextService {
 
     private final UsersService usersService;
+//    private final UsersRepository usersRepository;
 
     public Users getCurrentUser() {
         Users users = null;
@@ -27,11 +31,17 @@ public class UsersContextService {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal instanceof UserDetailsImpl userDetails) {
                 users = usersService.findByUsername(userDetails.getUsername())
-                        .orElseThrow(() -> new EntityNotFoundException("유저 정보가 없습니다."));
+                        .orElseThrow(() -> new EntityNotFoundException("사용자 정보가 없습니다."));
             }
         } catch (AuthenticationException e) {
             throw new AuthenticationException("인증 정보가 만료 되었습니다.") {};
         }
         return users;
     }
+
+//    public Users getUsersByMail(String mail) {
+//        String username = usersRepository.findUsernameByMail(mail);
+//        return usersRepository.findByUsername(username)
+//                .orElseThrow(() -> new EntityNotFoundException("사용자 정보가 없습니다."));
+//    }
 }

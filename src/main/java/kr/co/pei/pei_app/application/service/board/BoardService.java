@@ -93,9 +93,19 @@ public class BoardService {
     @NotifyEvent(message = "게시글이 수정되었습니다.", type = "게시글", url = BOARD_NOTIFY_PREFIX) // TODO
     @AuditLog(action = "게시글 업데이트", description = "게시글을 수정하였습니다.")
     public Long update(BoardUpdateDTO boardUpdateDTO) {
-        return boardQueryRepository.update(boardUpdateDTO);
+        Long updatedBoardId = boardQueryRepository.update(boardUpdateDTO);
+
+        Board board = boardRepository.findById(updatedBoardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+
+        fileStoreService.updateFiles(board, boardUpdateDTO.getBoardFiles());
+
+        return updatedBoardId;
     }
 
+    /**
+     * 게시글 삭제 시 논리 삭제로 변경 (isDeleted = 1)
+     * @param boardIds
+     */
     // TODO 게시글에 정적파일 또는 메타데이터 추가 시 파일 삭제 로직 추가
     @AuditLog(action = "게시글 삭제", description = "게시글을 삭제 하였습니다.")
     public void delete(List<Long> boardIds) {
@@ -109,7 +119,8 @@ public class BoardService {
         fileStoreService.deleteFilesIfBoardHasFiles(boardIds);
 
         try {
-            boardRepository.deleteAllById(boardIds);
+//            boardRepository.deleteAllById(boardIds);
+            boardQueryRepository.delete(boardIds); // 논리 삭제로 변경
         } catch (Exception e) {
             throw new BoardDeleteFailedException("게시글 삭제 중 오류가 발생했습니다.", e);
         }

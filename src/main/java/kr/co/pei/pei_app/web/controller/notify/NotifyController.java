@@ -134,10 +134,10 @@ public class NotifyController {
     )))
     @GetMapping
     public ResponseEntity<ApiResult<Page<NotifyFindDTO>>> findAll(@ParameterObject @PageableDefault(
-            sort = "createdAt", direction = DESC, page = 0, size = 5) Pageable pageable) {
+            sort = "createdAt", direction = DESC, page = 0, size = 5) Pageable pageable, @RequestParam(value = "filterIsRead", required = false) Boolean isRead) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("알림 조회 시 유저 객체 확인: {}", username);
-        Page<NotifyFindDTO> all = notifyService.findAll(pageable);
+        Page<NotifyFindDTO> all = notifyService.findAll(pageable, isRead);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success("모든 알림 조회", all));
     }
 

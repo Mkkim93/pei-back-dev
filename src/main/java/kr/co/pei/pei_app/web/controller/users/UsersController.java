@@ -283,6 +283,65 @@ public class UsersController {
         return ResponseEntity.ok(ApiResult.success("인증 성공", username));
     }
 
+    @Operation(summary = "비밀번호 검증", description = "개인 정보 접근 시 사용자의 현재 비밀번호 검증")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "비밀번호 검증 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "비밀 번호 검증 성공 예시",
+                                    summary = "비밀 번호 검증 성공 응답 예시",
+                                    value = """
+                                            {
+                                                "status" : 200,
+                                                "message" : "비밀번호 확인이 완료 되었습니다.",
+                                                "timestamp": "2025-03-26T15:05:06.617087",
+                                                "data" : true
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "비밀번호 검증 실패",
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "비밀번호 검증 실패 예시",
+                                    summary = "비밀번호 검증 실패 응답 예시",
+                                    value = """
+                                            {
+                                                "status" : 400,
+                                                "message" : "잘못된 비밀번호 입니다.",
+                                                "timestamp": "2025-03-26T15:05:06.617087",
+                                                "data" : false
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
+    @PostMapping("/auth-valid")
+    public ResponseEntity<ApiResult<Boolean>> validPassword(@RequestBody PasswordRequest request) {
+        boolean validPassword = usersService.myPasswordValid(request);
+        if (!validPassword) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(), "BAD_PASSWORD", "잘못된 비밀번호 입니다.", false));
+        }
+        return ResponseEntity.ok(ApiResult.success("비밀번호 확인이 완료 되었습니다.", true));
+    }
+
+    // TODO 수정할 데이터 결정 안됨
+    @Operation(summary = "정보 수정", description = "별도의 인증 없이 사용자 정보 수정")
+    @PatchMapping
+    public ResponseEntity<String> updateUsers(@RequestBody UsersUpdateDTO usersUpdateDTO) {
+        return null;
+    }
+
     @Operation(summary = "비밀번호 찾기", description = "사용자 계정의 메일로 계정 비밀번호 변경 링크를 응답")
     @ApiResponses(value = {
             @ApiResponse(
@@ -344,82 +403,29 @@ public class UsersController {
     })
     @PostMapping("/auth-recover")
     public ResponseEntity<ApiResult<String>> recoverPassword(
-            @Parameter(description = "사용자 계정", example = "userid@naver.com") @RequestParam("username") String username) {
-        usersService.recoverPassword(username);
-        return ResponseEntity.ok(ApiResult.success("비밀번호 변경 링크가 메일로 발송 되었습니다.", username));
+            @Parameter(description = "사용자 계정", example = "userid@naver.com")
+            @RequestParam("mail") String mail) {
+        String userUUID = usersService.recoverPassword(mail);
+        return ResponseEntity.ok(ApiResult.success("비밀번호 변경 링크가 메일로 발송 되었습니다.", userUUID));
     }
 
-    @Operation(summary = "비밀번호 검증", description = "개인 정보 접근 시 사용자의 현재 비밀번호 검증")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "비밀번호 검증 성공",
-                    content = @Content(schema = @Schema(implementation = ApiResult.class),
-                            mediaType = "application/json",
-                            examples = @ExampleObject(
-                                    name = "비밀 번호 검증 성공 예시",
-                                    summary = "비밀 번호 검증 성공 응답 예시",
-                                    value = """
-                                            {
-                                                "status" : 200,
-                                                "message" : "비밀번호 확인이 완료 되었습니다.",
-                                                "timestamp": "2025-03-26T15:05:06.617087",
-                                                "data" : true
-                                            }
-                                            """
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "비밀번호 검증 실패",
-                    content = @Content(schema = @Schema(implementation = ApiResult.class),
-                            mediaType = "application/json",
-                            examples = @ExampleObject(
-                                    name = "비밀번호 검증 실패 예시",
-                                    summary = "비밀번호 검증 실패 응답 예시",
-                                    value = """
-                                            {
-                                                "status" : 400,
-                                                "message" : "잘못된 비밀번호 입니다.",
-                                                "timestamp": "2025-03-26T15:05:06.617087",
-                                                "data" : false
-                                            }
-                                            """
-                            )
-                    )
-            )
-    })
-    @PostMapping("/auth-valid")
-    public ResponseEntity<ApiResult<Boolean>> validPassword(@RequestBody PasswordRequest request) {
-        boolean validPassword = usersService.myPasswordValid(request);
-        if (!validPassword) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(), "BAD_PASSWORD", "잘못된 비밀번호 입니다.", false));
-        }
-        return ResponseEntity.ok(ApiResult.success("비밀번호 확인이 완료 되었습니다.", true));
-    }
-
-    // TODO 수정할 데이터 결정 안됨
-    @Operation(summary = "정보 수정", description = "별도의 인증 없이 사용자 정보 수정")
-    @PatchMapping
-    public ResponseEntity<String> updateUsers(@RequestBody UsersUpdateDTO usersUpdateDTO) {
-        return null;
-    }
-
-    // TODO 비밀번호 링크 클라이언트에서 전송 후 구현
+    // TODO 비밀번호 링크 클라이언트에서 전송 후 구현 완료 -> api Doc 작업
     @Operation(summary = "비밀번호 변경(재설정)", description = "임시 비밀번호 링크에서 비밀번호 재설정")
     @PostMapping("/auth-reset")
     public ResponseEntity<ApiResult<String>> modifyPassword(
             @Parameter(description = "변경할 비밀번호 (숫자,영문,특수문자 포함 8자리)", example = "aa1234@@@")
+            @RequestParam("token") String token,
             @RequestParam("password") String password) {
-//        Map<String, Object> responseMap = usersService.updatePassword(username, password);
-//        return ResponseEntity.ok(responseMap);
-        return null;
+        int count = usersService.resetPassword(token, password);
+
+        if (count < 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResult.error(400, "유효하지 않은 페이지입니다. 비밀번호 찾기를 처음부터 진행해 주세요."));
+        }
+        return ResponseEntity.ok(ApiResult.success("비밀번호가 성공적으로 변경 되었습니다."));
     }
 
-    // TODO 영구 탈퇴 (향후 요구 사항에 따라 복구 할지 결정)
+    // TODO 영구 탈퇴 (향후 요구 사항에 따라 복구 할지 결정) 일단 식별자 만들어놓음
     @Operation(summary = "회원 탈퇴", description = "비밀번호 검증 완료 후 회원 탈퇴")
     @DeleteMapping("/{username}")
     public ResponseEntity<ApiResult<String>> delete(@Parameter(description = "계정명") @PathVariable("username") String username) {

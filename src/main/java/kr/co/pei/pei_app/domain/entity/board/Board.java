@@ -38,12 +38,22 @@ public class Board {
     private LocalDateTime updatedAt;
 
     @Column
-    private Long views = 0L;
+    private Long views;
+
+    @Column
+    private Boolean isDeleted;
+
+    @PrePersist
+    public void createBoard() {
+        this.isDeleted = false;
+        this.views = 0L;
+    }
 
     @CreatedBy
     @JoinColumn(name = "users_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Users users;
+
 
     @Builder
     public Board(String title, String content, Users users) {

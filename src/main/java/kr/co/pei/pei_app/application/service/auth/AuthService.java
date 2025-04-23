@@ -54,8 +54,8 @@ public class AuthService {
         }
     }
 
-    public void sendPassword(String encodedPassword, String mail) {
-        mailAuthService.sendPassword(encodedPassword, mail);
+    public void sendPassword(Map<String, Object> savedMap) {
+        mailAuthService.sendPassword(savedMap);
     }
 
     // TODO refresh 토큰으로 사용자 정보 조회로 변경
@@ -125,5 +125,13 @@ public class AuthService {
         String access = jwtUtil.createJwt("access", id, username, role, accessExpired);
         validRedisByToken.put("token", access);
         return validRedisByToken;
+    }
+
+    public Map<String, Object> saveUserMail(Map<String, Object> authMap) {
+        return authRedisService.saveUserMail(authMap);
+    }
+
+    public Map<String, Object> getUsersUUIDToken(String token) {
+        return authRedisService.getUserUUIDToken(token);
     }
 }

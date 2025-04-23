@@ -46,6 +46,9 @@ public class Users {
     @Column(name = "user_img")
     private String userImg;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
     // refresh 토큰에 저장될 사용자 정보 (계정명, 권한)
     public void setJwtPayload(String username, RoleType roleType) {
         this.username = username;

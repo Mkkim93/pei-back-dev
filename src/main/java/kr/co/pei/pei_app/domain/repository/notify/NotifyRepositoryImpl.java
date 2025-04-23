@@ -11,7 +11,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import java.util.List;
 
 @Repository
-public class NotifyRepositoryImpl implements NotifyRepositoryCustom{
+public class NotifyRepositoryImpl implements NotifyRepositoryCustom {
 
     private final MongoTemplate template;
 

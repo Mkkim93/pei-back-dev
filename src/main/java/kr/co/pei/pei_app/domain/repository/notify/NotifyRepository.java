@@ -12,4 +12,5 @@ import java.util.List;
 public interface NotifyRepository extends MongoRepository<Notify, String>, NotifyRepositoryCustom {
     Page<Notify> findByReceiverIdAndIsDisplayedFalse(Long receiverId, Pageable pageable);
     Page<Notify> findByReceiverId(Long receiverId, Pageable pageable);
+    Page<Notify> findByReceiverIdAndIsReadFalse(Long receiverId, Pageable pageable);
 }

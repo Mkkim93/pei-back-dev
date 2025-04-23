@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/s3upload")
 @RequiredArgsConstructor
-public class FileUploaderController {
+public class S3Controller {
 
     private final S3ServiceImpl s3ServiceImpl;
 

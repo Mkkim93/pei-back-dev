@@ -56,13 +56,21 @@ public class NotifyService {
     }
 
     // 모든 알림 조회 (Profile.vue)
-    public Page<NotifyFindDTO> findAll(Pageable pageable) {
+    public Page<NotifyFindDTO> findAll(Pageable pageable, Boolean filterIsRead) {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Users users = usersRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("알림 관련 사용자 조회 오류"));
 
-        Page<Notify> notifyPage = notifyRepository.findByReceiverId(users.getId(), pageable);
+        Page<Notify> notifyPage;
+
+        if (!filterIsRead) {
+            notifyPage = notifyRepository.findByReceiverId(users.getId(), pageable);
+        }
+
+        else {
+            notifyPage = notifyRepository.findByReceiverIdAndIsReadFalse(users.getId(), pageable);
+        }
 
         List<NotifyFindDTO> content = notifyPage.map(notify -> new NotifyFindDTO(
                 notify.getId(),
@@ -74,7 +82,10 @@ public class NotifyService {
                 notify.getIsRead(),
                 notify.getIsDisplayed()
         )).toList();
+
         return new PageImpl<>(content, pageable, notifyPage.getTotalElements());
+
+
     }
 
     // 전체 알림 중 새로운 알림만 조회

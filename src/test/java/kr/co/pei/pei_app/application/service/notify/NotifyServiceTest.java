@@ -56,9 +56,10 @@ class NotifyServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = usersService.findByUsername(username).get();
+        boolean isRead = false;
 
         // when
-        Page<NotifyFindDTO> all = service.findAll(pageRequest);
+        Page<NotifyFindDTO> all = service.findAll(pageRequest, isRead);
         List<NotifyFindDTO> content = all.getContent();
         NotifyFindDTO first = content.getFirst();
 

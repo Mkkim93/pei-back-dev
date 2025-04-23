@@ -26,15 +26,16 @@ public class BoardDetailDTO {
 
     @JsonIgnore
     private String username;
+    private Long usersId;
 
     // TODO 나중에 파일 추가
     private List<FileDetailBoardDTO> boardFiles;
 
 
     @QueryProjection
-    public BoardDetailDTO(Long id, String title, String content,
-                          String writer, LocalDateTime updatedAt, Long views, String username
-                          ) {
+    public BoardDetailDTO(Long id, String title, String content, String writer,
+                          LocalDateTime updatedAt, Long views, String username, Long usersId,
+                          List<FileDetailBoardDTO> boardFiles) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -42,7 +43,8 @@ public class BoardDetailDTO {
         this.updatedAt = updatedAt;
         this.views = views;
         this.username = username;
-
+        this.usersId = usersId;
+        this.boardFiles = boardFiles;
     }
 
     @Override

@@ -20,7 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +32,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
+//@Transactional
 @ActiveProfiles("test")
 class BoardServiceTest {
 
@@ -38,6 +41,7 @@ class BoardServiceTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
 
     @BeforeEach
     void loginUser() {
@@ -113,11 +117,12 @@ class BoardServiceTest {
 
     @Test
     @DisplayName("게시글 등록")
+    @WithMockUser()
     void create() {
         // given
         BoardCreateDTO boardCreateDTO = new BoardCreateDTO();
-        boardCreateDTO.setTitle("제목 테스트3");
-        boardCreateDTO.setContent("내용 테스트3");
+        boardCreateDTO.setTitle("제목 테스트6");
+        boardCreateDTO.setContent("내용 테스트6");
 
         List<FileBoardDTO> boardFiles = new ArrayList<>();
         FileBoardDTO dto = new FileBoardDTO();
@@ -126,6 +131,7 @@ class BoardServiceTest {
         dto.setPath("/");
         dto.setSize(10000L);
         dto.setType("image/png");
+        dto.setRenderType("LIST");
         boardFiles.add(dto);
         boardCreateDTO.setBoardFiles(boardFiles);
 
