@@ -43,6 +43,9 @@ public class Board {
     @Column
     private Boolean isDeleted;
 
+    @Column
+    private boolean isTemp;
+
     @PrePersist
     public void createBoard() {
         this.isDeleted = false;
@@ -56,10 +59,12 @@ public class Board {
 
 
     @Builder
-    public Board(String title, String content, Users users) {
+    public Board(String title, String content, Boolean isTemp, Users users) {
         this.title = title;
         this.content = content;
+        this.isTemp = isTemp;
         this.users = users;
         this.views = 0L;
+
     }
 }

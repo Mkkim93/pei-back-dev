@@ -1,17 +1,12 @@
 package kr.co.pei.pei_app.application.service.board;
 
-import kr.co.pei.pei_app.application.dto.board.BoardCreateDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardDetailDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardFindDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
+import kr.co.pei.pei_app.application.dto.board.*;
 import kr.co.pei.pei_app.application.exception.board.BoardDeleteFailedException;
 import kr.co.pei.pei_app.application.exception.board.BoardNotFoundException;
-import kr.co.pei.pei_app.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.application.service.file.FileStoreService;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import kr.co.pei.pei_app.domain.entity.log.AuditLog;
 import kr.co.pei.pei_app.domain.entity.notify.NotifyEvent;
-import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.board.BoardQueryRepository;
 import kr.co.pei.pei_app.domain.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -31,40 +25,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
+    private final BoardSaveHelper boardSaveHelper;
     private final FileStoreService fileStoreService;
     private final BoardRepository boardRepository;
-    private final UsersContextService contextService;
     private final BoardQueryRepository boardQueryRepository;
     private static final String BOARD_NOTIFY_PREFIX = "/detail/";
 
     @NotifyEvent(message = "새 글이 등록되었습니다", type = "게시글", url = BOARD_NOTIFY_PREFIX)
     @AuditLog(action = "게시글 작성", description = "게시글을 작성 하였습니다.")
-    public Long create(BoardCreateDTO boardCreateDTO) {
-
-        Users users = contextService.getCurrentUser();
-
-        Board board = Board.builder()
-                .title(boardCreateDTO.getTitle())
-                .content(boardCreateDTO.getContent())
-                .users(users)
-                .build();
-
-        Board savedEntity = boardRepository.save(board);
-
-        if (boardCreateDTO.getBoardFiles() != null) {
-            fileStoreService.saveFiles(savedEntity, boardCreateDTO);
-        }
-
-        return savedEntity.getId();
+    public Long saveBoard(BoardFileSupport dto) {
+        return boardSaveHelper.boardSaved(dto);
     }
 
     public Page<BoardFindDTO> pages(Pageable pageable, String searchKeyword) {
-
-        if (StringUtils.hasText(searchKeyword)) {
-            return boardRepository.searchByBoardPages(searchKeyword, pageable);
-        } else {
-            return boardRepository.findBoardDTOS(pageable);
-        }
+        return boardQueryRepository.searchPageSimple(searchKeyword, pageable);
     }
 
     public BoardDetailDTO detail(Long boardId) {
@@ -119,9 +93,9 @@ public class BoardService {
         fileStoreService.deleteFilesIfBoardHasFiles(boardIds);
 
         try {
-//            boardRepository.deleteAllById(boardIds);
             boardQueryRepository.delete(boardIds); // 논리 삭제로 변경
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
+            log.warn("게시글 삭제 도중 오류 발생 : {}", e.getMessage());
             throw new BoardDeleteFailedException("게시글 삭제 중 오류가 발생했습니다.", e);
         }
     }

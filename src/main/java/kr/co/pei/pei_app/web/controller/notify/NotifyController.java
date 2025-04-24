@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 
-import static org.springframework.data.domain.Sort.Direction.ASC;
+import static kr.co.pei.pei_app.application.dto.api.ApiResult.*;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @Slf4j
@@ -138,7 +137,7 @@ public class NotifyController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("알림 조회 시 유저 객체 확인: {}", username);
         Page<NotifyFindDTO> all = notifyService.findAll(pageable, isRead);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success("모든 알림 조회", all));
+        return ResponseEntity.status(HttpStatus.OK).body(success("모든 알림 조회", all));
     }
 
     @Operation(
@@ -223,7 +222,7 @@ public class NotifyController {
                                                                   Pageable pageable) {
         Page<NotifyFindDTO> all = notifyService.findAllByIsDisplayedFalse(pageable);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResult.success("최초 알림 조회", all));
+                .body(success("최초 알림 조회", all));
     }
 
     @Operation(
@@ -250,7 +249,7 @@ public class NotifyController {
     public ResponseEntity<ApiResult<String>> markAsReadTrue(@RequestBody List<String> ids) {
         notifyService.markAsRead(ids);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResult.success("알림 읽음 처리"));
+                .body(success("알림 읽음 처리"));
     }
 
     @Operation(
@@ -275,6 +274,6 @@ public class NotifyController {
     @PatchMapping("/isDisplayed")
     public ResponseEntity<ApiResult<String>> updatedByDisPlayed(@RequestBody List<String> notifyIds) {
         notifyService.updatedDisplayedTrue(notifyIds);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success("알림 업데이트 완료"));
+        return ResponseEntity.status(HttpStatus.OK).body(success("알림 업데이트 완료"));
     }
 }

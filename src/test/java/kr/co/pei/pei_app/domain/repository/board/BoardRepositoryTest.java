@@ -24,28 +24,4 @@ class BoardRepositoryTest {
     @Autowired
     private BoardRepository boardRepository;
 
-    @Test
-    @DisplayName("게시글 제목 + 내용 검색")
-    void searchByBoardPages() {
-        // given
-        String searchKeyword = "테스트";
-        Page<BoardFindDTO> boards = boardRepository
-                .searchByBoardPages(searchKeyword, PageRequest.of(0, 10));
-
-        // when
-        List<BoardFindDTO> content = boards.getContent();
-        for (BoardFindDTO board : content) {
-            System.out.println("board.getId() = " + board.getId());
-            System.out.println("board.getTitle() = " + board.getTitle());
-            System.out.println("board.getContent() = " + board.getContent());
-        }
-
-        // then
-        content.forEach(board -> {
-            boolean matches =
-                    (board.getTitle() != null && board.getTitle().contains(searchKeyword)) ||
-                            (board.getContent() != null && board.getContent().contains(searchKeyword));
-            assertTrue(matches, "검색 키워드가 title 또는 content 에 포함되어야 합니다.");
-        });
-    }
 }

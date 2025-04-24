@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static kr.co.pei.pei_app.application.dto.api.ApiResult.*;
+
 @Tag(name = "REGISTER_API", description = "사용자 계정 인증 및 등록을 위한 API")
 @RestController
 @RequestMapping("/api/register")
@@ -85,7 +87,7 @@ public class RegisterController {
     @PostMapping
     public ResponseEntity<ApiResult<String>> register(@Valid @RequestBody UsersRegisterDTO registerDTO) {
         registerService.register(registerDTO);
-        return ResponseEntity.ok(ApiResult.success("가입이 완료 되었습니다."));
+        return ResponseEntity.ok(success("가입이 완료 되었습니다."));
     }
 
     // TODO 계정 규칙을 어떻게 결정할지 정해지지 않아서 중복 계정 확인만 구현
@@ -151,16 +153,16 @@ public class RegisterController {
     public ResponseEntity<ApiResult<String>> existUsername(@Parameter(description = "사용할 계정 입력") @RequestParam("username") String username) {
         if (username.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-                    .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(), "올바른 형식의 계정이 아닙니다.", null));
+                    .body(error(HttpStatus.BAD_REQUEST.value(), "올바른 형식의 계정이 아닙니다.", null));
         }
 
         boolean existByUsername = registerService.existByUsername(username);
 
         if (existByUsername) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(ApiResult.error(HttpStatus.CONFLICT.value(), "이미 사용 중인 계정입니다.", null));
+                    .body(error(HttpStatus.CONFLICT.value(), "이미 사용 중인 계정입니다.", null));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResult.success("사용 가능한 계정입니다.", username));
+        return ResponseEntity.status(HttpStatus.OK).body(success("사용 가능한 계정입니다.", username));
     }
 
     @Operation(summary = "인증번호 요청", description = "입력한 전화번호로 인증 번호 발송 (만료 시간: 3M) 응답")
@@ -224,7 +226,7 @@ public class RegisterController {
     @PostMapping("/phone")
     public ResponseEntity<ApiResult<Long>> requestSmsCode(@Parameter(description = "사용자 전화번호") @RequestParam(value = "phone") String phone) {
         Long expired = registerService.requestCode(phone);
-        return ResponseEntity.ok(ApiResult.success("인증번호 발송 완료", expired));
+        return ResponseEntity.ok(success("인증번호 발송 완료", expired));
     }
 
     @Operation(summary = "인증번호 검증", description = "입력한 인증번호 요청 후 검증, 인증번호 검증이 완료된 휴대폰번호 응답")
@@ -294,6 +296,6 @@ public class RegisterController {
     public ResponseEntity<ApiResult<String>> validSmsCode(@Parameter(description = "사용자 전화번호") @RequestParam(value = "phone") String phone,
                                                           @Parameter(description = "응답된 인증코드") @RequestParam(value = "code") String code) {
         registerService.validCode(phone, code);
-        return ResponseEntity.ok(ApiResult.success("인증번호 검증 성공", phone));
+        return ResponseEntity.ok(success("인증번호 검증 성공", phone));
     }
 }

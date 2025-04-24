@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.application.service.redis;
 
 import kr.co.pei.pei_app.application.exception.redis.OtpStorageException;
+import kr.co.pei.pei_app.application.exception.redis.PasswordTokenExpiredException;
 import kr.co.pei.pei_app.application.exception.users.DuplicateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,9 @@ public class AuthRedisService {
         log.info("유저가 저장한 토큰 값 조회");
         String mailKey = createMailKey(token);
         Map<Object, Object> savedMap = authRedisTemplate.opsForHash().entries(mailKey);
+        if (savedMap.isEmpty()) {
+            throw new PasswordTokenExpiredException("입력시간이 만료 되었습니다. 비밀번호를 설정을 다시 시도해주세요");
+        }
         return parseStringKeyMap(savedMap);
     }
 

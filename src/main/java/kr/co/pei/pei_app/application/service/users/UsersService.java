@@ -5,6 +5,7 @@ import kr.co.pei.pei_app.aop.AuditLogContext;
 import kr.co.pei.pei_app.application.dto.users.UsersFindDTO;
 import kr.co.pei.pei_app.application.dto.users.PasswordRequest;
 import kr.co.pei.pei_app.application.dto.users.UsersDetailDTO;
+import kr.co.pei.pei_app.application.exception.users.UserMailNotFoundException;
 import kr.co.pei.pei_app.application.exception.users.UsersExistException;
 import kr.co.pei.pei_app.application.service.auth.AuthService;
 import kr.co.pei.pei_app.domain.entity.log.AuditLog;
@@ -67,7 +68,7 @@ public class UsersService {
         String username = usersRepository.findUsernameByMail(mail);
         if (username == null) {
             log.info("잘못된 이메일 주소 또는 사용자가 존재하지 않음");
-            throw new EntityNotFoundException("사용자 정보가 존재하지 않습니다.");
+            throw new UserMailNotFoundException("사용자 정보가 존재하지 않습니다.");
         }
 
         Users users = usersRepository.findByUsername(username)
@@ -101,7 +102,7 @@ public class UsersService {
         return usersRepository.findByUsername(username);
     }
 
-    public Boolean deleteUsername(String username) {
+    public boolean deleteUsername(String username) {
 
         Users users = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("사용자 정보를 찾는 도중 오류가 발생 하였습니다."));
@@ -125,17 +126,18 @@ public class UsersService {
             Map<String, Object> usersUUIDToken = authService.getUsersUUIDToken(token);
 
             String userMail = usersUUIDToken.get("mail").toString();
+            // TODO 없을 경우 예외
             String username = usersRepository.findUsernameByMail(userMail);
             AuditLogContext.setUserMail(userMail);
 
             count = usersRepository.updateTempPassword(encodedPassword(password), username);
 
         } catch (IllegalArgumentException e) {
+            log.warn("사용자 비밀번호 변경 실패 : {}", e.getMessage());
             throw new IllegalArgumentException("사용자 비밀번호 변경에 실패 했습니다.");
         } finally {
             AuditLogContext.clear();
         }
-
         return count;
     }
 

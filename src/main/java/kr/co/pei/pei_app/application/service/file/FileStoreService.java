@@ -2,6 +2,7 @@ package kr.co.pei.pei_app.application.service.file;
 
 import jakarta.persistence.EntityNotFoundException;
 import kr.co.pei.pei_app.application.dto.board.BoardCreateDTO;
+import kr.co.pei.pei_app.application.dto.board.BoardFileSupport;
 import kr.co.pei.pei_app.application.dto.file.FileBoardDTO;
 import kr.co.pei.pei_app.application.dto.file.FileBoardUpdateDTO;
 import kr.co.pei.pei_app.application.dto.file.FileDownLoadDTO;
@@ -43,9 +44,9 @@ public class FileStoreService {
         return downloadDTO;
     }
 
-    public void saveFiles(Board board, BoardCreateDTO boardCreateDTO) {
+    public void saveFiles(Board board, BoardFileSupport boardFileSupport) {
 
-        List<FileBoardDTO> boardFiles = boardCreateDTO.getBoardFiles();
+        List<FileBoardDTO> boardFiles = boardFileSupport.getBoardFiles();
 
         for (FileBoardDTO boardFile : boardFiles) {
 

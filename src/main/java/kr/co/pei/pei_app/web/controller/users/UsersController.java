@@ -15,7 +15,6 @@ import kr.co.pei.pei_app.application.dto.users.PasswordRequest;
 import kr.co.pei.pei_app.application.dto.users.UsersUpdateDTO;
 import kr.co.pei.pei_app.application.dto.users.UsersDetailDTO;
 import kr.co.pei.pei_app.application.service.users.UsersService;
-import kr.co.pei.pei_app.config.exception.ErrorResult;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
@@ -26,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import static kr.co.pei.pei_app.application.dto.api.ApiResult.*;
 
 
 @Tag(name = "USERS_API", description = "로그인 후 사용자의 정보를 관리하기 위한 API")
@@ -104,7 +105,7 @@ public class UsersController {
     public ResponseEntity<ApiResult<Page<UsersFindDTO>>> findAllUsers(@ParameterObject @PageableDefault(
             sort = "roleType", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<UsersFindDTO> userList = usersService.findAllUsers(pageable);
-        return ResponseEntity.ok(ApiResult.success("모든 사용자 정보", userList));
+        return ResponseEntity.ok(success("모든 사용자 정보", userList));
     }
 
     @Operation(summary = "내 정보 조회", description = "내 정보 상세 조회를 위한 API")
@@ -137,7 +138,7 @@ public class UsersController {
     @GetMapping("/profile")
     public ResponseEntity<ApiResult<UsersDetailDTO>> detail() {
         UsersDetailDTO userInfo = usersService.detail();
-        return ResponseEntity.ok(ApiResult.success("내 정보", userInfo));
+        return ResponseEntity.ok(success("내 정보", userInfo));
     }
 
     @Operation(summary = "계정 찾기", description = "사용자 전화번호로 인증 번호 발송")
@@ -164,7 +165,7 @@ public class UsersController {
             @ApiResponse(
                     responseCode = "500",
                     description = "인증 번호 저장에 실패 했습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "application/json",
                             examples = @ExampleObject(
                                     name = "인증번호 REDIS 저장 실패 예시",
@@ -184,7 +185,7 @@ public class UsersController {
     public ResponseEntity<ApiResult<String>> recoverUsername(
             @Parameter(description = "사용자 전화번호", example = "00012345678") @RequestParam("phone") String phone) {
         usersService.recoverUsername(phone);
-        return ResponseEntity.ok(ApiResult.success("인증번호가 발송 되었습니다.", phone));
+        return ResponseEntity.ok(success("인증번호가 발송 되었습니다.", phone));
     }
 
     @Operation(summary = "인증번호 검증 -> 계정명 응답", description = "사용자 인증번호 검증 성공 시 사용자 계정 응답")
@@ -230,7 +231,7 @@ public class UsersController {
             @ApiResponse(
                     responseCode = "400",
                     description = "잘못된 요청 - 인증 실패(시간 만료, 코드 불일치 등)",
-                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "application/json",
                             examples = {
                             @ExampleObject(
@@ -278,9 +279,9 @@ public class UsersController {
         if (username == null) {
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
-                    .body(ApiResult.error(HttpStatus.NO_CONTENT.value(), "NOT_FIND_ID", "존재하지 않는 계정입니다"));
+                    .body(error(HttpStatus.NO_CONTENT.value(), "NOT_FIND_ID", "존재하지 않는 계정입니다"));
         }
-        return ResponseEntity.ok(ApiResult.success("인증 성공", username));
+        return ResponseEntity.ok(success("인증 성공", username));
     }
 
     @Operation(summary = "비밀번호 검증", description = "개인 정보 접근 시 사용자의 현재 비밀번호 검증")
@@ -330,9 +331,9 @@ public class UsersController {
         if (!validPassword) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(), "BAD_PASSWORD", "잘못된 비밀번호 입니다.", false));
+                    .body(error(HttpStatus.BAD_REQUEST.value(), "BAD_PASSWORD", "잘못된 비밀번호 입니다.", false));
         }
-        return ResponseEntity.ok(ApiResult.success("비밀번호 확인이 완료 되었습니다.", true));
+        return ResponseEntity.ok(success("비밀번호 확인이 완료 되었습니다.", true));
     }
 
     // TODO 수정할 데이터 결정 안됨
@@ -366,7 +367,7 @@ public class UsersController {
             @ApiResponse(
                     responseCode = "400",
                     description = "존재하지 않는 계정",
-                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "application/json",
                             examples = @ExampleObject(
                                     name = "존재하지 않는 계정으로 계정 찾을 경우",
@@ -384,7 +385,7 @@ public class UsersController {
             @ApiResponse(
                     responseCode = "500",
                     description = "비밀번호 링크 전송 실패",
-                    content = @Content(schema = @Schema(implementation = ErrorResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "application/json",
                             examples = @ExampleObject(
                                     name = "링크 전송 실패 (서버 내부 오류)",
@@ -406,7 +407,7 @@ public class UsersController {
             @Parameter(description = "사용자 계정", example = "userid@naver.com")
             @RequestParam("mail") String mail) {
         String userUUID = usersService.recoverPassword(mail);
-        return ResponseEntity.ok(ApiResult.success("비밀번호 변경 링크가 메일로 발송 되었습니다.", userUUID));
+        return ResponseEntity.ok(success("비밀번호 변경 링크가 메일로 발송 되었습니다.", userUUID));
     }
 
     // TODO 비밀번호 링크 클라이언트에서 전송 후 구현 완료 -> api Doc 작업
@@ -416,26 +417,27 @@ public class UsersController {
             @Parameter(description = "변경할 비밀번호 (숫자,영문,특수문자 포함 8자리)", example = "aa1234@@@")
             @RequestParam("token") String token,
             @RequestParam("password") String password) {
+
         int count = usersService.resetPassword(token, password);
 
         if (count < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResult.error(400, "유효하지 않은 페이지입니다. 비밀번호 찾기를 처음부터 진행해 주세요."));
+                    .body(error(400, "유효하지 않은 페이지입니다. 비밀번호 찾기를 처음부터 진행해 주세요."));
         }
-        return ResponseEntity.ok(ApiResult.success("비밀번호가 성공적으로 변경 되었습니다."));
+        return ResponseEntity.ok(success("비밀번호가 성공적으로 변경 되었습니다."));
     }
 
     // TODO 영구 탈퇴 (향후 요구 사항에 따라 복구 할지 결정) 일단 식별자 만들어놓음
     @Operation(summary = "회원 탈퇴", description = "비밀번호 검증 완료 후 회원 탈퇴")
     @DeleteMapping("/{username}")
     public ResponseEntity<ApiResult<String>> delete(@Parameter(description = "계정명") @PathVariable("username") String username) {
-        Boolean deleted = usersService.deleteUsername(username);
+        boolean deleted = usersService.deleteUsername(username);
         if (deleted) {
-            return ResponseEntity.ok(ApiResult.success("계정 탈퇴가 완료 되었습니다."));
+            return ResponseEntity.ok(success("계정 탈퇴가 완료 되었습니다."));
         }
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(),
+                .body(error(HttpStatus.BAD_REQUEST.value(),
                         "FAILED_WITH_DRAW",
                         "일시 적인 오류로 회원 탈퇴에 실패하였습니다."));
     }

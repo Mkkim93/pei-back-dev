@@ -2,11 +2,15 @@ package kr.co.pei.pei_app.config.exception;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import kr.co.pei.pei_app.application.dto.api.ApiResult;
 import kr.co.pei.pei_app.application.exception.board.BoardDeleteFailedException;
 import kr.co.pei.pei_app.application.exception.board.BoardNotFoundException;
 import kr.co.pei.pei_app.application.exception.redis.OtpStorageException;
+import kr.co.pei.pei_app.application.exception.redis.PasswordTokenExpiredException;
 import kr.co.pei.pei_app.application.exception.users.DuplicateException;
+import kr.co.pei.pei_app.application.exception.users.UserMailNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.Response;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,79 +30,95 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(DuplicateException.class)
-    public ErrorResult handleDuplicateUsernameException(DuplicateException e) {
+    public ResponseEntity<ApiResult<String>> handleDuplicateUsernameException(DuplicateException e) {
        log.error("[GlobalException]: ", e);
-       return new ErrorResult(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResult.error(
+               HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResult> handleIllegalArgumentException(IllegalArgumentException e) {
+    public ResponseEntity<ApiResult<String>> handleIllegalArgumentException(IllegalArgumentException e) {
         log.info("[GlobalException]: ", e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResult(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResult> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResult<Map<String, String>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.info("[GlobalException]: ", e);
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage()));
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResult(HttpStatus.BAD_REQUEST.value(), errors));
+                .body(ApiResult.error(HttpStatus.BAD_REQUEST.value(), errors));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public ErrorResult handleConstraintViolationException(ConstraintViolationException e) {
+    public ApiResult<String> handleConstraintViolationException(ConstraintViolationException e) {
         log.info("[GlobalException]: ", e);
-        return new ErrorResult(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return ApiResult.error(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EntityNotFoundException.class)
-    public ErrorResult handleEntityNotFoundException(EntityNotFoundException e) {
+    public ApiResult<String> handleEntityNotFoundException(EntityNotFoundException e) {
         log.info("[GlobalException]: ", e);
-        return new ErrorResult(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return ApiResult.error(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException.class)
-    public ErrorResult handleAuthenticationException(AuthenticationException e) {
-        return new ErrorResult(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+    public ApiResult<String> handleAuthenticationException(AuthenticationException e) {
+        return ApiResult.error(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(OtpStorageException.class)
-    public ErrorResult handleOtpStorageException(OtpStorageException e) {
+    public ApiResult<String> handleOtpStorageException(OtpStorageException e) {
         log.info("[GlobalException]: ", e);
-        return new ErrorResult(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        return ApiResult.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(MailSendException.class)
-    public ErrorResult handleMailSendException(MailSendException e) {
+    public ApiResult<String> handleMailSendException(MailSendException e) {
         log.info("[GlobalException]: ", e);
-        return new ErrorResult(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        return ApiResult.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BoardNotFoundException.class)
-    public ErrorResult handleBoardNotFoundException(BoardNotFoundException e) {
+    public ApiResult<String> handleBoardNotFoundException(BoardNotFoundException e) {
         log.info("[GlobalException]: ", e);
-        return new ErrorResult(HttpStatus.NOT_FOUND.value(), e.getMessage());
+        return ApiResult.error(HttpStatus.NOT_FOUND.value(), e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(BoardDeleteFailedException.class)
-    public ErrorResult handleBoardDeleteFailedException(BoardDeleteFailedException e) {
+    public ApiResult<String> handleBoardDeleteFailedException(BoardDeleteFailedException e) {
         log.info("[GlobalException]: ", e);
-        return new ErrorResult(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+        return ApiResult.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
     @ExceptionHandler(DataAccessException.class)
-    public ResponseEntity<ErrorResult> handleDataAccessException(DataAccessException e) {
+    public ResponseEntity<ApiResult<String>> handleDataAccessException(DataAccessException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResult(500, "데이터베이스 오류가 발생했습니다."));
+                .body(ApiResult.error(500, e.getMessage(), "데이터베이스 오류가 발생했습니다."));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserMailNotFoundException.class)
+    public ApiResult<String> handleUserMailNotFoundException(UserMailNotFoundException e) {
+        return ApiResult.error(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.GONE)
+    @ExceptionHandler(PasswordTokenExpiredException.class)
+    public ApiResult<String> handlePasswordTokenExpiredException(PasswordTokenExpiredException e) {
+        log.info("[GlobalException]: ", e);
+        log.info("global message : {}", e.getMessage());
+        return ApiResult.error(HttpStatus.GONE.value(), e.getMessage());
     }
 }

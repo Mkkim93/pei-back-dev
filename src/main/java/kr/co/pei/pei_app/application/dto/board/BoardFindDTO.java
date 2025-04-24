@@ -1,5 +1,6 @@
 package kr.co.pei.pei_app.application.dto.board;
 
+import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import kr.co.pei.pei_app.domain.entity.users.RoleType;
@@ -18,7 +19,6 @@ public class BoardFindDTO {
 
     private Long id;
     private String title;
-    private String content;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
     private String writer;
@@ -26,10 +26,10 @@ public class BoardFindDTO {
     private String roleType;
     private Long usersId;
 
+
     public BoardFindDTO(Board board) {
         this.id = board.getId();
         this.title = board.getTitle();
-        this.content = board.getContent();
         this.createAt = board.getCreatedAt();
         this.updateAt = board.getUpdatedAt();
         this.writer = board.getUsers().getName();
@@ -38,12 +38,12 @@ public class BoardFindDTO {
         this.usersId = board.getUsers().getId();
     }
 
-    public BoardFindDTO(Long id, String title, String content,
+    @QueryProjection
+    public BoardFindDTO(Long id, String title,
                         LocalDateTime createAt, LocalDateTime updateAt, String writer, RoleType roleType,
                         Long views, Long usersId) {
         this.id = id;
         this.title = title;
-        this.content = content;
         this.createAt = createAt;
         this.updateAt = updateAt;
         this.writer = writer;
@@ -56,7 +56,7 @@ public class BoardFindDTO {
     public String toString() {
         return String.format(
                 "FindBoardDTO{id=%d, title='%s', content='%s', writer='%s', updateAt=%s, views=%d}",
-                id, title, content, writer, updateAt, views
+                id, title, writer, updateAt, views
         );
     }
 }

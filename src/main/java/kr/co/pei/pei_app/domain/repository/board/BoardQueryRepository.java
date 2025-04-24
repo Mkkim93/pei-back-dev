@@ -1,16 +1,20 @@
 package kr.co.pei.pei_app.domain.repository.board;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
-import kr.co.pei.pei_app.application.dto.board.BoardDetailDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
+import kr.co.pei.pei_app.application.dto.board.*;
 
-import kr.co.pei.pei_app.application.dto.board.QBoardDetailDTO;
 import kr.co.pei.pei_app.application.dto.file.QFileDetailBoardDTO;
 
 import kr.co.pei.pei_app.application.exception.board.BoardDeleteFailedException;
+import kr.co.pei.pei_app.domain.entity.board.Board;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -37,7 +41,7 @@ public class BoardQueryRepository implements BoardRepositoryCustom {
                 .leftJoin(board.users, users)
                 .leftJoin(fileStore).on(fileStore.board.id.eq(board.id)
                         .and(fileStore.used.eq(true)))
-                .where(board.id.eq(boardId))
+                .where(board.id.eq(boardId).and(board.isTemp.isFalse()))
                 .transform(groupBy(board.id).as(new QBoardDetailDTO(
                                         board.id,
                                         board.title,
@@ -92,5 +96,82 @@ public class BoardQueryRepository implements BoardRepositoryCustom {
                 .set(board.isDeleted, true)
                 .where(board.id.in(boardId))
                 .execute();
+    }
+
+    @Override
+    public Page<BoardFindDTO> searchPageSimple(String searchKeyword, Pageable pageable) {
+        // 카운트 쿼리 날리지 않기
+        List<BoardFindDTO> content = queryFactory.select(new QBoardFindDTO(
+                        board.id,
+                        board.title,
+                        board.createdAt,
+                        board.updatedAt,
+                        users.name,
+                        users.roleType,
+                        board.views,
+                        users.id
+                )).from(board)
+                .leftJoin(board.users, users)
+                .where(
+                        board.isDeleted.isFalse(),
+                        board.isTemp.isFalse(),
+                        keywordEq(searchKeyword)
+                ).offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(board.createdAt.desc())
+                .fetch();
+
+        JPAQuery<Board> count = queryFactory
+                .selectFrom(board)
+                .leftJoin(board.users, users)
+                .where(
+                        board.isDeleted.isFalse(),
+                        board.isTemp.isFalse(),
+                        keywordEq(searchKeyword)
+                );
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+    }
+
+    @Override
+    public Page<BoardFindTempDTO> searchPageTemp(Long usersId, String searchKeyword, Pageable pageable) {
+
+        List<BoardFindTempDTO> content = queryFactory.select(new QBoardFindTempDTO(
+                        board.id,
+                        board.title,
+                        board.createdAt,
+                        board.updatedAt,
+                        users.id))
+                .from(board)
+                .leftJoin(board.users, users)
+                .where(
+                        board.isDeleted.isFalse(),
+                        board.isTemp.isTrue(),
+                        keywordEq(searchKeyword),
+                        userIdEq(usersId)
+                ).offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(board.createdAt.desc())
+                .fetch();
+
+        JPAQuery<Board> count = queryFactory.selectFrom(board)
+                .leftJoin(board.users, users)
+                .where(
+                        board.isDeleted.isFalse(),
+                        board.isTemp.isTrue(),
+                        keywordEq(searchKeyword),
+                        userIdEq(usersId)
+                );
+        return PageableExecutionUtils.getPage(content, pageable, () -> count.fetchCount());
+    }
+
+    private BooleanExpression userIdEq(Long usersId) {
+        return usersId != null ? users.id.eq(usersId) : null;
+    }
+
+    private BooleanExpression keywordEq(String searchKeyword) {
+        if (searchKeyword == null || searchKeyword.isBlank()) {
+            return null;
+        }
+        return board.title.containsIgnoreCase(searchKeyword);
     }
 }

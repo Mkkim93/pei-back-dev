@@ -43,4 +43,8 @@ public class ApiResult<T> {
     public static <T> ApiResult<T> error(int status, String message) {
         return new ApiResult<>(status, message, null, null);
     }
+
+    public static <T> ApiResult<T> error(int status, T data) {
+        return new ApiResult<>(status, null, null, data);
+    }
 }

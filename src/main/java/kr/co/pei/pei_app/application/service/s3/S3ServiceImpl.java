@@ -27,9 +27,6 @@ public class S3ServiceImpl implements S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${file.upload.dir}")
-    private String localLocation;
-
     @Override
     public List<FileBoardDTO> fileUpload(List<MultipartFile> files) throws IOException {
 

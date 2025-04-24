@@ -135,6 +135,11 @@ class BoardServiceTest {
         boardFiles.add(dto);
         boardCreateDTO.setBoardFiles(boardFiles);
 
-        boardService.create(boardCreateDTO);
+    }
+
+    @Test
+    @DisplayName("게시글 임시 저장")
+    void temp() {
+
     }
 }

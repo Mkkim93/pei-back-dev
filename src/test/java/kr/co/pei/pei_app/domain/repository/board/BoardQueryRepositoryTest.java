@@ -1,5 +1,6 @@
 package kr.co.pei.pei_app.domain.repository.board;
 
+import kr.co.pei.pei_app.application.dto.board.BoardFindDTO;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,5 +49,25 @@ class BoardQueryRepositoryTest {
 
         // then
         assertThat(result.getIsDeleted()).isTrue();
+    }
+
+    @Test
+    @DisplayName("게시글 목록 페이징")
+    void page() {
+        PageRequest page = PageRequest.of(0, 10);
+        String searchKeyword = "게시글";
+        Page<BoardFindDTO> keywordNull = repository.searchPageSimple(null, page);
+        Page<BoardFindDTO> keywordNotNull = repository.searchPageSimple(searchKeyword, page);
+
+        List<BoardFindDTO> result1 = keywordNull.getContent();
+        List<BoardFindDTO> result2 = keywordNotNull.getContent();
+
+        for (BoardFindDTO noKeyword : result1) {
+            System.out.println(noKeyword.getContent());
+        }
+        System.out.println("--------------------------");
+        for (BoardFindDTO keyword : result2) {
+            System.out.println(keyword.getContent());
+        }
     }
 }
