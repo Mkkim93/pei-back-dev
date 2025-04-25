@@ -81,7 +81,9 @@ public class SecurityConfig {
                                 "/api/register/**",
                                 "/api/reissue",
                                 "/api/board/**",
+                                "/api/roles/**",
                                 "/swagger-ui/**",
+                                "/api/s3upload/**",
                                 "/v3/api-docs/**").permitAll()
                         .requestMatchers("/**").hasAnyRole("ADMIN", "USER").anyRequest().authenticated());
 

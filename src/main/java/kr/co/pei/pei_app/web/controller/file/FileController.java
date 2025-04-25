@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import kr.co.pei.pei_app.application.dto.api.ApiResult;
 import kr.co.pei.pei_app.application.dto.file.FileDownLoadDTO;
 import kr.co.pei.pei_app.application.service.file.FileStoreService;
 import lombok.RequiredArgsConstructor;
@@ -51,11 +50,4 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                 .body(urlResource);
     }
-
-//    @Operation(summary = "파일 삭제", description = "파일 삭제를 위한 API")
-//    @DeleteMapping
-//    public ResponseEntity<ApiResult<String>> delete(@RequestParam("id") Long id) {
-//
-//        return null;
-//    }
 }

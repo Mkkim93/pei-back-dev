@@ -69,7 +69,8 @@ public class BoardService {
     public Long update(BoardUpdateDTO boardUpdateDTO) {
         Long updatedBoardId = boardQueryRepository.update(boardUpdateDTO);
 
-        Board board = boardRepository.findById(updatedBoardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        Board board = boardRepository.findById(updatedBoardId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
 
         fileStoreService.updateFiles(board, boardUpdateDTO.getBoardFiles());
 

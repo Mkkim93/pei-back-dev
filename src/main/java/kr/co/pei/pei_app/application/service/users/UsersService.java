@@ -35,10 +35,6 @@ public class UsersService {
     private final UsersRepository usersRepository;
     private final AuthService authService;
 
-    public Page<UsersFindDTO> findAllUsers(Pageable pageable) {
-        return usersRepository.findAllUsers(pageable);
-    }
-
     public UsersDetailDTO detail() {
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

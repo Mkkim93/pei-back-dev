@@ -1,8 +1,6 @@
 package kr.co.pei.pei_app.application.service.board;
 
-import com.fasterxml.jackson.databind.node.LongNode;
 import kr.co.pei.pei_app.application.dto.board.BoardFileSupport;
-import kr.co.pei.pei_app.application.dto.board.BoardFindDTO;
 import kr.co.pei.pei_app.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.application.service.file.FileStoreService;
 import kr.co.pei.pei_app.domain.entity.board.Board;
@@ -11,10 +9,7 @@ import kr.co.pei.pei_app.domain.entity.notify.NotifyEvent;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor

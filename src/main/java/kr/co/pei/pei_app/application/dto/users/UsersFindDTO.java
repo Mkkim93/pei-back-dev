@@ -1,5 +1,6 @@
 package kr.co.pei.pei_app.application.dto.users;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import kr.co.pei.pei_app.domain.entity.users.RoleType;
 import lombok.Data;
@@ -20,7 +21,10 @@ public class UsersFindDTO {
     private String name;
     private String phone;
     private String mail;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime createAt;
+
     private String roleType;
 
     public UsersFindDTO(Long id, String username,

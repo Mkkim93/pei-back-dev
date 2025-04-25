@@ -40,7 +40,7 @@ public class BoardController {
     @ApiResponse(
             responseCode = "200",
             description = "게시글 리스트",
-            content = @Content(schema = @Schema(implementation = kr.co.pei.pei_app.application.dto.api.ApiResult.class),
+            content = @Content(schema = @Schema(implementation = ApiResult.class),
                     mediaType = "application/json",
                     examples = @ExampleObject(
                             name = "게시글 페이징 조회 예시",
@@ -133,7 +133,7 @@ public class BoardController {
             @ApiResponse(
                     responseCode = "200",
                     description = "게시글 상세 조회",
-                    content = @Content(schema = @Schema(implementation = kr.co.pei.pei_app.application.dto.api.ApiResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "application/json",
                             examples = @ExampleObject(
                                     name = "게시글 상세 조회 예시",
@@ -159,7 +159,7 @@ public class BoardController {
             @ApiResponse(
                     responseCode = "400",
                     description = "게시글이 존재하지 않거나 로그인이 시간이 만료되어 접근이 불가 합니다.",
-                    content = @Content(schema = @Schema(implementation = kr.co.pei.pei_app.application.dto.api.ApiResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "application/json",
                             examples = @ExampleObject(
                                     name = "게시글 조회 실패 예시",
@@ -206,7 +206,7 @@ public class BoardController {
             @ApiResponse(
                     responseCode = "201",
                     description = "게시글 작성 완료",
-                    content = @Content(schema = @Schema(implementation = kr.co.pei.pei_app.application.dto.api.ApiResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "application/json",
                             examples = @ExampleObject(
                                     name = "게시글 작성 성공 예시",
@@ -225,7 +225,7 @@ public class BoardController {
             @ApiResponse( // TODO 파일 엔티티 연동 시 사용
                     responseCode = "413",
                     description = "게시글 작성 실패",
-                    content = @Content(schema = @Schema(implementation = kr.co.pei.pei_app.application.dto.api.ApiResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "multipart/form-data",
                             examples = @ExampleObject(
                                     name = "유효성 검사 실패",
@@ -289,7 +289,7 @@ public class BoardController {
     @Operation(summary = "게시글 수정", description = "게시글 수정 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "게시글 수정 성공",
-                    content = @Content(schema = @Schema(implementation = kr.co.pei.pei_app.application.dto.api.ApiResult.class)))
+                    content = @Content(schema = @Schema(implementation = ApiResult.class)))
     })
     @PatchMapping
     public ResponseEntity<ApiResult<Long>> updated(@RequestBody BoardUpdateDTO boardUpdateDTO) {
@@ -309,7 +309,7 @@ public class BoardController {
             @ApiResponse(
                     responseCode = "200",
                     description = "게시글이 삭제 완료",
-                    content = @Content(schema = @Schema(implementation = kr.co.pei.pei_app.application.dto.api.ApiResult.class),
+                    content = @Content(schema = @Schema(implementation = ApiResult.class),
                             mediaType = "application/json",
                             examples = @ExampleObject(
                                     name = "게시글 삭제 성공 예시",
