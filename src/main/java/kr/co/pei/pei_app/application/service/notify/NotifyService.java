@@ -38,7 +38,7 @@ public class NotifyService {
         Users usersEntity = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("유저 정보 없음"));
 
-        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE); // TODO .env 로 분리
+        SseEmitter emitter = new SseEmitter(300_000L); // TODO .env 로 분리
         emitterRepository.save(usersEntity.getId(), emitter);
 
         emitter.onCompletion(() -> emitterRepository.remove(usersEntity.getId()));

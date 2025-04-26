@@ -82,6 +82,7 @@ public class SecurityConfig {
                                 "/api/reissue",
                                 "/api/board/**",
                                 "/api/roles/**",
+                                "/api/survey/**",
                                 "/swagger-ui/**",
                                 "/api/s3upload/**",
                                 "/v3/api-docs/**").permitAll()
