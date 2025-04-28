@@ -21,7 +21,7 @@ public class Survey {
     @Enumerated(STRING)
     private CategoryType category;
 
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "json")
     private String content;
 
     @CreatedDate

@@ -7,8 +7,10 @@ import kr.co.pei.pei_app.application.exception.board.BoardDeleteFailedException;
 import kr.co.pei.pei_app.application.exception.board.BoardNotFoundException;
 import kr.co.pei.pei_app.application.exception.redis.OtpStorageException;
 import kr.co.pei.pei_app.application.exception.redis.PasswordTokenExpiredException;
+import kr.co.pei.pei_app.application.exception.survey.SurveyDepartException;
 import kr.co.pei.pei_app.application.exception.users.DuplicateException;
 import kr.co.pei.pei_app.application.exception.users.UserMailNotFoundException;
+import kr.co.pei.pei_app.domain.entity.survey.Survey;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import org.springframework.dao.DataAccessException;
@@ -111,6 +113,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserMailNotFoundException.class)
     public ApiResult<String> handleUserMailNotFoundException(UserMailNotFoundException e) {
+        log.info("[GlobalException]: ", e);
         return ApiResult.error(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 
@@ -118,7 +121,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordTokenExpiredException.class)
     public ApiResult<String> handlePasswordTokenExpiredException(PasswordTokenExpiredException e) {
         log.info("[GlobalException]: ", e);
-        log.info("global message : {}", e.getMessage());
         return ApiResult.error(HttpStatus.GONE.value(), e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(SurveyDepartException.class)
+    public ApiResult<String> handleSurveyDepartException(SurveyDepartException e) {
+        log.info("[GlobalException]: ", e);
+        return ApiResult.error(HttpStatus.BAD_REQUEST.value(), e.getMessage());
     }
 }

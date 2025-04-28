@@ -61,13 +61,5 @@ class BoardQueryRepositoryTest {
 
         List<BoardFindDTO> result1 = keywordNull.getContent();
         List<BoardFindDTO> result2 = keywordNotNull.getContent();
-
-        for (BoardFindDTO noKeyword : result1) {
-            System.out.println(noKeyword.getContent());
-        }
-        System.out.println("--------------------------");
-        for (BoardFindDTO keyword : result2) {
-            System.out.println(keyword.getContent());
-        }
     }
 }

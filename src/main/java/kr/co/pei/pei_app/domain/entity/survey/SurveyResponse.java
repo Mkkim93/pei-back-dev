@@ -17,7 +17,7 @@ public class SurveyResponse {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "text")
+    @Column(columnDefinition = "json")
     private String answerContent;
 
     @CreatedDate
