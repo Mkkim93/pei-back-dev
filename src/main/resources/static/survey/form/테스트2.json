@@ -1,0 +1,10 @@
+{
+  "title" : "테스트2",
+  "category" : "공통",
+  "content" : "{\"locale\":\"ko\",\"title\":{\"ko\":\"ㅎㅎ\"},\"description\":{\"ko\":\"ㅎㅎ\"},\"headerView\":\"advanced\"}",
+  "openAt" : "2025-04-05T17:25:00",
+  "closeAt" : "2025-04-19T17:25:00",
+  "surveyTypeId" : 6,
+  "hospitalId" : 1,
+  "surveyDepartId" : null
+}

@@ -1,7 +1,6 @@
-package kr.co.pei.pei_app.application.dto.survey.part;
+package kr.co.pei.pei_app.application.dto.surveys.part;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

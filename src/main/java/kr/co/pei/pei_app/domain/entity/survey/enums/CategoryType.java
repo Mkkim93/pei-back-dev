@@ -1,7 +1,7 @@
 package kr.co.pei.pei_app.domain.entity.survey.enums;
 
 public enum CategoryType {
-   OUTPATIENT("외래"), HOSPITALIZATION("입원");
+   OUTPATIENT("외래"), HOSPITALIZATION("입원"), COMMON("공통");
 
    private final String text;
 

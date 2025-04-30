@@ -2,7 +2,7 @@ package kr.co.pei.pei_app.web.controller.survey;
 
 import jakarta.validation.Valid;
 import kr.co.pei.pei_app.application.dto.api.ApiResult;
-import kr.co.pei.pei_app.application.dto.survey.part.CreatePartDTO;
+import kr.co.pei.pei_app.application.dto.surveys.part.CreatePartDTO;
 import kr.co.pei.pei_app.application.service.survey.SurveyPartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

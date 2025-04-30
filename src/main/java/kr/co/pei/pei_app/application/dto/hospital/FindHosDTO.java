@@ -1,16 +1,16 @@
-package kr.co.pei.pei_app.application.dto.survey.depart;
+package kr.co.pei.pei_app.application.dto.hospital;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class FindDepartDTO {
+public class FindHosDTO {
 
     private Long id;
     private String name;
 
-    public FindDepartDTO(Long id, String name) {
+    public FindHosDTO(Long id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -1,4 +1,4 @@
-package kr.co.pei.pei_app.application.dto.survey.type;
+package kr.co.pei.pei_app.application.dto.surveys.depart;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateTypeDTO {
+public class UpdateDepartDTO {
 
     private Long id;
     private String name;

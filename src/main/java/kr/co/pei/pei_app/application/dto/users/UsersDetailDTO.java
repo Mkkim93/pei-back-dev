@@ -19,8 +19,10 @@ public class UsersDetailDTO {
     private String roleType;
     private String description;
     private String userImg;
+    private String hospitalName;
 
-    public UsersDetailDTO(String username, String name, String phone, String mail, String roleType, String description, String userImg) {
+    public UsersDetailDTO(String username, String name, String phone, String mail, String roleType,
+                          String description, String userImg, String hospitalName) {
         this.username = username;
         this.name = name;
         this.phone = phone;
@@ -28,5 +30,6 @@ public class UsersDetailDTO {
         this.roleType = roleType;
         this.description = description;
         this.userImg = userImg;
+        this.hospitalName = hospitalName;
     }
 }

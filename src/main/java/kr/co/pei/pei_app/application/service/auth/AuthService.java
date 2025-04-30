@@ -121,8 +121,9 @@ public class AuthService {
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
         Long id = jwtUtil.getId(refreshToken);
+        Long hospital = jwtUtil.getHospital(refreshToken);
 
-        String access = jwtUtil.createJwt("access", id, username, role, accessExpired);
+        String access = jwtUtil.createJwt("access", id, username, role, hospital, accessExpired);
         validRedisByToken.put("token", access);
         return validRedisByToken;
     }

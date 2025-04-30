@@ -19,12 +19,20 @@ public class SurveyType {
     @Column
     private String name;
 
-    @Column(name = "is_deleted")
+    @Lob
+    @Column(columnDefinition = "text")
+    private String description;
+
+    @Column(name = "is_deleted", unique = true)
     private Boolean isDeleted = false;
 
     @Builder
     public SurveyType(String name) {
         this.name = name;
+    }
+
+    public SurveyType(Long id) {
+        this.id = id;
     }
 
     @Override

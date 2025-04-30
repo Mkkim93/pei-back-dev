@@ -1,0 +1,10 @@
+{
+  "title" : "영상의학과 설문 조사",
+  "category" : "공통",
+  "content" : "{\"locale\":\"ko\",\"headerView\":\"advanced\"}",
+  "openAt" : "2025-04-01T18:09:00",
+  "closeAt" : "2025-04-30T18:09:00",
+  "surveyTypeId" : 3,
+  "hospitalId" : 1,
+  "surveyDepartId" : 20
+}

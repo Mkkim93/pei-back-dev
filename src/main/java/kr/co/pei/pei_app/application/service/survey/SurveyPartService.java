@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.survey.part.CreatePartDTO;
+import kr.co.pei.pei_app.application.dto.surveys.part.CreatePartDTO;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyParticipant;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyPartJpaRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,12 +1,11 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.survey.part.CreatePartDTO;
+import kr.co.pei.pei_app.application.dto.surveys.part.CreatePartDTO;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyParticipant;
 import kr.co.pei.pei_app.domain.entity.survey.enums.AgeGroup;
 import kr.co.pei.pei_app.domain.entity.survey.enums.GenderType;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyPartJpaRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @Transactional

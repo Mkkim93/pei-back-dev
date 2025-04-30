@@ -1,7 +1,7 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.survey.depart.FindDepartDTO;
-import kr.co.pei.pei_app.application.dto.survey.depart.UpdateDepartDTO;
+import kr.co.pei.pei_app.application.dto.surveys.depart.FindDepartDTO;
+import kr.co.pei.pei_app.application.dto.surveys.depart.UpdateDepartDTO;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyDepart;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyDepartJpaRepository;
 import lombok.extern.slf4j.Slf4j;

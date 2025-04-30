@@ -2,8 +2,8 @@ package kr.co.pei.pei_app.web.controller.survey;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.pei.pei_app.application.dto.api.ApiResult;
-import kr.co.pei.pei_app.application.dto.survey.type.FindTypeDTO;
-import kr.co.pei.pei_app.application.dto.survey.type.UpdateTypeDTO;
+import kr.co.pei.pei_app.application.dto.surveys.type.FindTypeDTO;
+import kr.co.pei.pei_app.application.dto.surveys.type.UpdateTypeDTO;
 import kr.co.pei.pei_app.application.service.survey.SurveyTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;

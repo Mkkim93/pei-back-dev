@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,7 +24,6 @@ public interface SurveyTypeJpaRepository extends JpaRepository<SurveyType, Long>
     @Modifying
     @Query("update SurveyType st set st.isDeleted = false where st.id in :ids")
     int recoverTypeIds(@Param("ids") List<Long> ids);
-
 
     @Modifying
     @Query("update SurveyType st set st.name = :updateName where st.id = :id")

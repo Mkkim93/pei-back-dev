@@ -26,11 +26,12 @@ public class UsersFindDTO {
     private LocalDateTime createAt;
 
     private String roleType;
+    private String hospitalName;
 
     public UsersFindDTO(Long id, String username,
                         String name, String phone,
                         String mail, LocalDateTime createAt,
-                        RoleType roleType) {
+                        RoleType roleType, String hospitalName) {
         this.id = id;
         this.username = username;
         this.name = name;
@@ -38,5 +39,6 @@ public class UsersFindDTO {
         this.mail = mail;
         this.createAt = createAt;
         this.roleType = roleType.getText();
+        this.hospitalName = hospitalName;
     }
 }

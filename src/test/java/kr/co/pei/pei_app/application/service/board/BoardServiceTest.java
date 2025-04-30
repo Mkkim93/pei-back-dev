@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
-//@Transactional
+@Transactional
 @ActiveProfiles("test")
 class BoardServiceTest {
 

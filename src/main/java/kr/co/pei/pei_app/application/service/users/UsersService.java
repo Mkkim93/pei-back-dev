@@ -8,6 +8,7 @@ import kr.co.pei.pei_app.application.dto.users.UsersDetailDTO;
 import kr.co.pei.pei_app.application.exception.users.UserMailNotFoundException;
 import kr.co.pei.pei_app.application.exception.users.UsersExistException;
 import kr.co.pei.pei_app.application.service.auth.AuthService;
+import kr.co.pei.pei_app.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.log.AuditLog;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.users.UsersRepository;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+// UsersContext 순환 참조 걸림 쓰지 말것
 @Slf4j
 @Service
 @Transactional
@@ -44,7 +46,8 @@ public class UsersService {
 
         return new UsersDetailDTO(
                 users.getUsername(), users.getName(), users.getPhone(),
-                users.getMail(), users.getRoleType().getText(), users.getDescription(), users.getUserImg());
+                users.getMail(), users.getRoleType().getText(), users.getDescription(),
+                users.getUserImg(), users.getHospital().getName());
     }
 
     // 사용자 계정 찾기

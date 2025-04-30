@@ -137,4 +137,11 @@ class UsersRepositoryTest {
         // then
         assertThat(username).isEqualTo(recoverUsername);
     }
+
+    @Test
+    @DisplayName("Optional<Users> findByUsername Test")
+    void findByUsersName() {
+        Users users = repository.findByUsername("user1").get();
+        System.out.println("users: " + users.getHospital().getId());
+    }
 }

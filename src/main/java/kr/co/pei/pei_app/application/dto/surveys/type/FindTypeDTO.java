@@ -1,4 +1,4 @@
-package kr.co.pei.pei_app.application.dto.survey.type;
+package kr.co.pei.pei_app.application.dto.surveys.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

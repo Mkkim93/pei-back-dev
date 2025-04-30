@@ -28,7 +28,7 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     String findUsernameByPhone(@Param("phone") String phone);
 
     @Query("select new kr.co.pei.pei_app.application.dto.users.UsersFindDTO(" +
-            "u.id, u.username, u.name, u.phone, u.mail, u.createAt, u.roleType) " +
-            "from Users u")
+            "u.id, u.username, u.name, u.phone, u.mail, u.createAt, u.roleType, h.name) " +
+            "from Users u left join Hospital h on u.hospital.id = h.id")
     Page<UsersFindDTO> findAllUsers(Pageable pageable);
 }

@@ -2,8 +2,8 @@ package kr.co.pei.pei_app.web.controller.survey;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.pei.pei_app.application.dto.api.ApiResult;
-import kr.co.pei.pei_app.application.dto.survey.depart.FindDepartDTO;
-import kr.co.pei.pei_app.application.dto.survey.depart.UpdateDepartDTO;
+import kr.co.pei.pei_app.application.dto.surveys.depart.FindDepartDTO;
+import kr.co.pei.pei_app.application.dto.surveys.depart.UpdateDepartDTO;
 import kr.co.pei.pei_app.application.service.survey.SurveyDepartService;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -29,7 +29,6 @@ public class SurveyDepartController {
 
     private final SurveyDepartService service;
 
-
     @PostMapping("/upload")
     public ResponseEntity<ApiResult<String>> uploadDepartExcel(@RequestParam("file") MultipartFile file) throws IOException {
         service.saveDepartsForExcel(file);
@@ -37,43 +36,36 @@ public class SurveyDepartController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResult<Page<FindDepartDTO>>> findDepartPages(@ParameterObject @PageableDefault(
-            page = 0, size = 20, sort = "name", direction = Direction.ASC) Pageable pageable) {
+    public ResponseEntity<ApiResult<?>> findPages(@ParameterObject @PageableDefault(
+            page = 0, size = 20, sort = "name", direction = Direction.ASC) Pageable pageable,
+                                                  @RequestParam(value = "all", required = false) Boolean all) {
 
-        Page<FindDepartDTO> pages = service.findPages(pageable);
+        if (!all) {
+            Page<FindDepartDTO> pages = service.findPages(pageable);
+            return ResponseEntity.status(HttpStatus.OK.value())
+                    .body(success("진료과 페이징 조회 성공", pages));
+        }
 
-        return ResponseEntity.status(HttpStatus.OK.value())
-                .body(success("진료과 조회 성공", pages));
+        List<FindDepartDTO> list = service.findList();
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResult.success("진료과 리스트 조회 성공", list));
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResult<String>> addDeparts(@RequestBody List<String> departNames) {
+    public ResponseEntity<ApiResult<String>> save(@RequestBody List<String> departNames) {
         service.saveDepart(departNames);
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(success("등록 성공"));
     }
 
     @DeleteMapping
-    public ResponseEntity<ApiResult<Boolean>> deleted(@RequestBody List<Long> ids) {
-
-        boolean result = service.deletedDeparts(ids);
-
-        if (!result) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-                    .body(error("삭제 실패", false));
-        }
+    public ResponseEntity<ApiResult<Boolean>> delete(@RequestBody List<Long> ids) {
+        service.deletedDeparts(ids);
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(success("삭제 완료", true));
     }
 
     @PatchMapping("/recover")
-    public ResponseEntity<ApiResult<Boolean>> recovered(@RequestBody List<Long> ids) {
-
-        boolean result = service.recoverDeparts(ids);
-
-        if (!result) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-                    .body(error("복구 실패",false));
-        }
+    public ResponseEntity<ApiResult<Boolean>> recover(@RequestBody List<Long> ids) {
+        service.recoverDeparts(ids);
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(success("복구 성공", true));
     }

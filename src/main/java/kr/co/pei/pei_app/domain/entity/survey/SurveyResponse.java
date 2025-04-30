@@ -1,6 +1,9 @@
 package kr.co.pei.pei_app.domain.entity.survey;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -11,6 +14,7 @@ import static jakarta.persistence.GenerationType.*;
 
 @Entity
 @Table(name = "survey_response")
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class SurveyResponse {
 
@@ -31,4 +35,12 @@ public class SurveyResponse {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "participant_id")
     private SurveyParticipant surveyParticipant;
+
+    @Builder
+    public SurveyResponse(String answerContent, Survey survey, SurveyParticipant surveyParticipant) {
+        this.answerContent = answerContent;
+        this.survey = survey;
+        this.submittedAt = LocalDateTime.now();
+        this.surveyParticipant = surveyParticipant;
+    }
 }

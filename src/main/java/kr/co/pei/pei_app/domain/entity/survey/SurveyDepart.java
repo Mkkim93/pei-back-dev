@@ -19,8 +19,12 @@ public class SurveyDepart {
     @Column
     private String name;
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", unique = true)
     private boolean isDeleted = false;
+
+    public SurveyDepart(Long id) {
+        this.id = id;
+    }
 
     public void setDepartIdAndName(Long id, String name) {
         this.id = id;

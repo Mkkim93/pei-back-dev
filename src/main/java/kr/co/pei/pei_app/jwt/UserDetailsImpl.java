@@ -26,6 +26,10 @@ public record UserDetailsImpl(Users users) implements UserDetails {
 
     public Long getId() {return users.getId();}
 
+    public Long getHospital() {
+        return users.getHospital().getId();
+    }
+
     @Override
     public String getUsername() {
         return users.getUsername();

@@ -1,24 +1,13 @@
 {
-    "title": "Patient Assessment Form",
+    "title": "설문 양식 등록",
     "pages": [
         {
-            "name": "Patient information",
+            "name": "설문 참여자 정보 수집",
             "elements": [
                 {
                     "type": "panel",
                     "name": "patient-information",
                     "elements": [
-                        {
-                            "type": "text",
-                            "name": "first-name",
-                            "title": "First name"
-                        },
-                        {
-                            "type": "text",
-                            "name": "last-name",
-                            "startWithNewLine": false,
-                            "title": "Last name"
-                        },
                         {
                             "type": "text",
                             "name": "ssn",

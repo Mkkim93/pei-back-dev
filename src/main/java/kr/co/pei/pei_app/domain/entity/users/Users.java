@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.domain.entity.users;
 
 import jakarta.persistence.*;
+import kr.co.pei.pei_app.domain.entity.hospital.Hospital;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,6 +49,16 @@ public class Users {
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    // TODO 회원 가입 시 소속 병원 등록 필드
+    // 슈퍼 관리자가 소속 병원을 먼저 등록하고 회원가입 가능
+    @JoinColumn(name = "hospital_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Hospital hospital;
+
+    public Users(Long id) {
+        this.id = id;
+    }
 
     // refresh 토큰에 저장될 사용자 정보 (계정명, 권한)
     public void setJwtPayload(String username, RoleType roleType) {

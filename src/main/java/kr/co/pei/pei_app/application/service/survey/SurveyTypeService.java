@@ -1,8 +1,8 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.survey.type.FindTypeDTO;
-import kr.co.pei.pei_app.application.dto.survey.type.UpdateTypeDTO;
-import kr.co.pei.pei_app.application.exception.survey.SurveyTypeException;
+import kr.co.pei.pei_app.application.dto.surveys.type.FindTypeDTO;
+import kr.co.pei.pei_app.application.dto.surveys.type.UpdateTypeDTO;
+import kr.co.pei.pei_app.application.exception.surveys.SurveyTypeException;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyType;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyTypeJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -55,25 +55,28 @@ public class SurveyTypeService {
     // 유형 삭제
     public boolean deletedTypes(List<Long> ids) {
         int deleted = jpaRepository.deleteTypeIds(ids);
-        return deleted == ids.size();
+        if (deleted != ids.size()) {
+            throw new SurveyTypeException("삭제 대상 수와 실제 삭제된 수가 일치하지 않습니다.");
+        }
+        return true;
     }
 
     // 삭제된 유형 복구
     public boolean recoveredTypes(List<Long> ids) {
         int recovered = jpaRepository.recoverTypeIds(ids);
-        return recovered == ids.size();
+        if (recovered != ids.size()) {
+            throw new SurveyTypeException("복구 대상 수와 실제 복수된 수가 일치하지 않습니다.");
+        }
+        return true;
     }
 
     // 유형 수정
     public void updatedType(UpdateTypeDTO updateTypeDTO) {
-        boolean exists = jpaRepository.existsById(updateTypeDTO.getId());
-        if (!exists) {
-            throw new SurveyTypeException("해당 유형의 설문이 존재 하지 않습니다.");
-        }
+
         int updated = jpaRepository.updateName(updateTypeDTO.getName(), updateTypeDTO.getId());
 
         if (updated == 0) {
-            throw new SurveyTypeException("설문 유형 이름 수정이 실패 하였습니다.");
+            throw new SurveyTypeException("ID " + updateTypeDTO.getId() + "에 설문 유형이 존재하지 않거나 이름 수정에 실패 하였습니다.");
         }
     }
 }

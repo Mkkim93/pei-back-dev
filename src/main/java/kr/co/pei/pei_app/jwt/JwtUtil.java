@@ -46,6 +46,15 @@ public class JwtUtil {
                 .get("roles", String.class);
     }
 
+    public Long getHospital(String token) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("hospital", Long.class);
+    }
+
     public Boolean isExpired(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -56,13 +65,14 @@ public class JwtUtil {
                 .before(new Date());
     }
 
-    public String createJwt(String category, Long id, String username, String role, Long expirationTime) {
+    public String createJwt(String category, Long id, String username, String role, Long hospital, Long expirationTime) {
 
         return Jwts.builder()
                 .claim("category", category)
                 .claim("id", id)
                 .claim("username", username)
                 .claim("roles", role)
+                .claim("hospital",hospital)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(secretKey)

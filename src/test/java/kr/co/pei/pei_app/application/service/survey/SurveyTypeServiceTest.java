@@ -1,11 +1,10 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.survey.type.FindTypeDTO;
-import kr.co.pei.pei_app.application.dto.survey.type.UpdateTypeDTO;
+import kr.co.pei.pei_app.application.dto.surveys.type.FindTypeDTO;
+import kr.co.pei.pei_app.application.dto.surveys.type.UpdateTypeDTO;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyType;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyTypeJpaRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest

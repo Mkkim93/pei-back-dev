@@ -1,8 +1,8 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.survey.depart.FindDepartDTO;
-import kr.co.pei.pei_app.application.dto.survey.depart.UpdateDepartDTO;
-import kr.co.pei.pei_app.application.exception.survey.SurveyDepartException;
+import kr.co.pei.pei_app.application.dto.surveys.depart.FindDepartDTO;
+import kr.co.pei.pei_app.application.dto.surveys.depart.UpdateDepartDTO;
+import kr.co.pei.pei_app.application.exception.surveys.SurveyDepartException;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyDepart;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyDepartJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -103,35 +103,43 @@ public class SurveyDepartService {
 
     // 진료과 조회 (삭제된 진료과 제외)
     public Page<FindDepartDTO> findPages(Pageable pageable) {
-        Page<SurveyDepart> entity = jpaRepository.findPages(pageable);
-        return entity.map(depart -> new FindDepartDTO(
+            Page<SurveyDepart> entity = jpaRepository.findPages(pageable);
+            return entity.map(depart -> new FindDepartDTO(
+                    depart.getId(),
+                    depart.getName()
+            ));
+    }
+
+    public List<FindDepartDTO> findList() {
+        List<SurveyDepart> entity = jpaRepository.findList();
+        return entity.stream().map(depart -> new FindDepartDTO(
                 depart.getId(),
                 depart.getName()
-        ));
+        )).toList();
     }
 
     public boolean deletedDeparts(List<Long> ids) {
         int deleted = jpaRepository.deleteDepartIds(ids);
-        return deleted == ids.size();
+        if (deleted != ids.size()) {
+            throw new SurveyDepartException("삭제 대상 수와 실제 삭제된 수가 일치 하지 않습니다.");
+        }
+        return true;
     }
 
     public boolean recoverDeparts(List<Long> ids) {
         int recovered = jpaRepository.recoverDepartIds(ids);
-        return recovered == ids.size();
+        if (recovered != ids.size()) {
+            throw new SurveyDepartException("복구 대상 수와 실제 복구된 수가 일치하지 않습니다.");
+        }
+        return true;
     }
 
     public void updateDeparts(UpdateDepartDTO updateDepartDTO) {
 
-        boolean exists = jpaRepository.existsById(updateDepartDTO.getId());
-
-        if (!exists) {
-            throw new SurveyDepartException("해당 진료과는 존재하지 않습니다.");
-        }
-
         int updated = jpaRepository.updateName(updateDepartDTO.getName(), updateDepartDTO.getId());
 
         if (updated == 0) {
-            throw new SurveyDepartException("진료과 수정에 실패 했습니다.");
+            throw new SurveyDepartException("ID" + updateDepartDTO.getId() + "에 진료과 수정이 존재 하지 않거나 실패 했습니다.");
         }
     }
 }

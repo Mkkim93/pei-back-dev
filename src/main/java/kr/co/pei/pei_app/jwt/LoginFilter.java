@@ -82,12 +82,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
         Long id = principal.getId();
+        Long hospital = principal.getHospital();
 
         log.info("로그인 한사용자 PK: {}", id);
 
-        String access = jwtUtil.createJwt("access", id, username, role, accessTokenExpired);
+        String access = jwtUtil.createJwt("access", id, username, role, hospital, accessTokenExpired);
 
-        String refresh = jwtUtil.createJwt("refresh", id, username, role, refreshTokenExpired);
+        String refresh = jwtUtil.createJwt("refresh", id, username, role, hospital, refreshTokenExpired);
 
         redisService.saveRefreshToken(username, refresh, refreshTokenExpired);
 

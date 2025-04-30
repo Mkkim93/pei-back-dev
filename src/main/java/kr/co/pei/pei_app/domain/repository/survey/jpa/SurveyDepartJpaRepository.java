@@ -16,6 +16,9 @@ public interface SurveyDepartJpaRepository extends JpaRepository<SurveyDepart, L
     @Query("select sd from SurveyDepart sd where sd.isDeleted = false")
     Page<SurveyDepart> findPages(Pageable pageable);
 
+    @Query("select sd from SurveyDepart sd where sd.isDeleted = false")
+    List<SurveyDepart> findList();
+
     List<SurveyDepart> findByNameIn(List<String> names);
 
     @Modifying
