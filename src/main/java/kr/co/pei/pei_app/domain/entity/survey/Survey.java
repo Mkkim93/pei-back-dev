@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,10 @@ public class Survey {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt; // 설문 생성일
 
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt; // 설문 수정일(최종)
+
     @Column(name = "open_at")
     private LocalDateTime openAt; // 설문 시작일
 
@@ -66,14 +71,16 @@ public class Survey {
     private Users users;
 
     @Builder
-    public Survey(String title, String category, String content,
-                  LocalDateTime openAt, LocalDateTime closeAt,
+    public Survey(Long id, String title, String category, String content,
+                  LocalDateTime openAt, LocalDateTime closeAt, SurveyStatus surveyStatus,
                   SurveyType type, SurveyDepart depart, Hospital hospital, Users users) {
+        this.id = id;
         this.title = title;
         this.category = CategoryType.valueOf(category);
         this.content = content;
         this.openAt = openAt;
         this.closeAt = closeAt;
+        this.surveyStatus = surveyStatus;
         this.surveyType = type;
         this.surveyDepart = depart;
         this.createdAt = LocalDateTime.now();

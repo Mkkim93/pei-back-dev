@@ -22,6 +22,13 @@ public class Hospital {
     @Column
     private String name;
 
+    @Lob
+    @Column(columnDefinition = "text")
+    private String description;
+
+    @Column(name = "img_url")
+    private String imgUrl;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

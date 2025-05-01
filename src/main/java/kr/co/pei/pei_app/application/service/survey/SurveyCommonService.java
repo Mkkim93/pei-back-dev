@@ -1,7 +1,10 @@
 package kr.co.pei.pei_app.application.service.survey;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import kr.co.pei.pei_app.application.dto.surveys.survey.CreateSurveyDTO;
+import kr.co.pei.pei_app.application.dto.surveys.survey.DetailSurveyDTO;
 import kr.co.pei.pei_app.application.dto.surveys.survey.FindSurveyDTO;
+import kr.co.pei.pei_app.application.dto.surveys.survey.UpdateSurveyDTO;
 import kr.co.pei.pei_app.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.survey.enums.CategoryType;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,5 +44,15 @@ public class SurveyCommonService {
         Long hospitalId = contextService.getCurrentUser().getHospital().getId();
         log.info("hospitalId: {} ", hospitalId);
         return surveyService.findSurveyMyPage(pageable, hospitalId);
+    }
+
+    @Transactional
+    public DetailSurveyDTO findSurveyDetail(Long id) {
+        Long hospitalId = contextService.getCurrentUser().getHospital().getId();
+        return surveyService.findSurveyDetail(id, hospitalId);
+    }
+
+    public void surveyUpdate(UpdateSurveyDTO updateSurveyDTO) throws JsonProcessingException {
+        surveyService.update(updateSurveyDTO);
     }
 }

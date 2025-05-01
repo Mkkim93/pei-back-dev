@@ -7,7 +7,4 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface SurveyJpaRepository extends JpaRepository<Survey, Long> {
-
-    @Query("select s.category from Survey s")
-    List<String> findALlByCategory();
 }
