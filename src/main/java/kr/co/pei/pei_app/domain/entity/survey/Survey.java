@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.domain.entity.survey;
 
 import jakarta.persistence.*;
+import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminUpdateSurveyDTO;
 import kr.co.pei.pei_app.domain.entity.hospital.Hospital;
 import kr.co.pei.pei_app.domain.entity.survey.enums.CategoryType;
 import kr.co.pei.pei_app.domain.entity.survey.enums.SurveyStatus;
@@ -54,6 +55,9 @@ public class Survey {
     @Column(name = "survey_status")
     private SurveyStatus surveyStatus; // 설문 상태 (대기, 진행중, 종료)
 
+    @Column(name = "is_visible") // 설문 공개/비공개 (true : 공개, false : 비공개)
+    private boolean isVisible;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "type_id")
     private SurveyType surveyType;
@@ -70,22 +74,36 @@ public class Survey {
     @JoinColumn(name = "users_id")
     private Users users;
 
+    public void updateForm(AdminUpdateSurveyDTO dto, CategoryType category, String jsonContent, SurveyType surveyType, SurveyDepart surveyDepart, SurveyStatus surveyStatus) {
+        if (dto.getTitle() != null) this.title = dto.getTitle();
+        if (dto.getCategory() != null) this.category = category;
+        if (dto.getContent() != null) this.content = jsonContent;
+        if (dto.getOpenAt() != null) this.openAt = dto.getOpenAt();
+        if (dto.getCloseAt() != null) this.closeAt = dto.getCloseAt();
+        if (dto.getUpdatedAt() != null) this.updatedAt = dto.getUpdatedAt();
+        if (dto.getSurveyDepartId() != null) this.surveyDepart = surveyDepart;
+        if (dto.getSurveyTypeId() != null) this.surveyType = surveyType;
+        this.surveyStatus = surveyStatus;
+        this.isVisible = dto.isVisible();
+    }
+
     @Builder
-    public Survey(Long id, String title, String category, String content,
-                  LocalDateTime openAt, LocalDateTime closeAt, SurveyStatus surveyStatus,
-                  SurveyType type, SurveyDepart depart, Hospital hospital, Users users) {
+    public Survey(Long id, String title, CategoryType category, String content,
+                  LocalDateTime openAt, LocalDateTime closeAt, LocalDateTime updatedAt, SurveyStatus surveyStatus,
+                  boolean isVisible, SurveyType type, SurveyDepart depart, Hospital hospital, Users users) {
         this.id = id;
         this.title = title;
-        this.category = CategoryType.valueOf(category);
+        this.category = category;
         this.content = content;
         this.openAt = openAt;
         this.closeAt = closeAt;
         this.surveyStatus = surveyStatus;
+        this.isVisible = isVisible;
         this.surveyType = type;
         this.surveyDepart = depart;
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = updatedAt;
         this.hospital = hospital;
         this.users = users;
-
     }
 }

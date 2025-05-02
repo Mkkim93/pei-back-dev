@@ -1,9 +1,9 @@
 package kr.co.pei.pei_app.domain.repository.board;
 
-import kr.co.pei.pei_app.application.dto.board.BoardDetailDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardFindDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardFindTempDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardDetailDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardFindDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardFindTempDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardUpdateDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface BoardRepositoryCustom {
 
-    BoardDetailDTO detail(Long boardId);
+    AdminBoardDetailDTO detail(Long boardId);
 
-    Long update(BoardUpdateDTO boardUpdateDTO);
+    Long update(AdminBoardUpdateDTO adminBoardUpdateDTO);
 
     Long delete(List<Long> boardId);
 
-    Page<BoardFindDTO> searchPageSimple(String searchKeyword, Pageable pageable);
+    Page<AdminBoardFindDTO> searchPageSimple(String searchKeyword, Pageable pageable);
 
-    Page<BoardFindTempDTO> searchPageTemp(Long usersId, String searchKeyword, Pageable pageable);
+    Page<AdminBoardFindTempDTO> searchPageTemp(Long usersId, String searchKeyword, Pageable pageable);
 }

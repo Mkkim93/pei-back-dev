@@ -2,7 +2,7 @@ package kr.co.pei.pei_app.aop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import kr.co.pei.pei_app.application.service.auth.UsersContextService;
+import kr.co.pei.pei_app.admin.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.log.AuditLog;
 import kr.co.pei.pei_app.domain.entity.log.Log;
 import kr.co.pei.pei_app.domain.entity.users.Users;

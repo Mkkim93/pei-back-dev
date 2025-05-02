@@ -27,5 +27,4 @@ public interface HospitalJpaRepository extends JpaRepository<Hospital, Long> {
     @Modifying
     @Query("update Hospital h set h.isDeleted = false where h.id = :id")
     int recoverHospitalId(@Param("id") Long id);
-
 }

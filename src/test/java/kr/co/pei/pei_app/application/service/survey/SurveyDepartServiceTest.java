@@ -1,7 +1,8 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.surveys.depart.FindDepartDTO;
-import kr.co.pei.pei_app.application.dto.surveys.depart.UpdateDepartDTO;
+import kr.co.pei.pei_app.admin.application.service.survey.SurveyDepartService;
+import kr.co.pei.pei_app.admin.application.dto.surveys.depart.AdminFindDepartDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.depart.AdminUpdateDepartDTO;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyDepart;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyDepartJpaRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -98,12 +99,12 @@ class SurveyDepartServiceTest {
         PageRequest page = PageRequest.of(0, 20);
 
         // when
-        Page<FindDepartDTO> result = surveyDepartService.findPages(page);
+        Page<AdminFindDepartDTO> result = surveyDepartService.findPages(page);
 
         // then
-        List<FindDepartDTO> content = result.getContent();
+        List<AdminFindDepartDTO> content = result.getContent();
 
-        for (FindDepartDTO dto : content) {
+        for (AdminFindDepartDTO dto : content) {
             System.out.println("dto.getName: " + dto.getName());
         }
     }
@@ -134,7 +135,7 @@ class SurveyDepartServiceTest {
     @DisplayName("진료과 이름 수정 (리스트)")
     void updateNames() {
         // given
-        UpdateDepartDTO dto = new UpdateDepartDTO();
+        AdminUpdateDepartDTO dto = new AdminUpdateDepartDTO();
         dto.setId(22L);
         dto.setName("정형외과");
 

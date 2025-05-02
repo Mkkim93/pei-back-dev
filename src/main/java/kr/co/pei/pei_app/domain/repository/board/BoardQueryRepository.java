@@ -5,11 +5,14 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
-import kr.co.pei.pei_app.application.dto.board.*;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardDetailDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardFindDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardFindTempDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardUpdateDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.*;
+import kr.co.pei.pei_app.admin.application.dto.file.QAdminDetailFileBoardDTO;
 
-import kr.co.pei.pei_app.application.dto.file.QFileDetailBoardDTO;
-
-import kr.co.pei.pei_app.application.exception.board.BoardDeleteFailedException;
+import kr.co.pei.pei_app.admin.application.exception.board.BoardDeleteFailedException;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,14 +38,14 @@ public class BoardQueryRepository implements BoardRepositoryCustom {
     private final EntityManager entityManager;
 
     @Override
-    public BoardDetailDTO detail(Long boardId) {
+    public AdminBoardDetailDTO detail(Long boardId) {
 
         return queryFactory.selectFrom(board)
                 .leftJoin(board.users, users)
                 .leftJoin(fileStore).on(fileStore.board.id.eq(board.id)
                         .and(fileStore.used.eq(true)))
                 .where(board.id.eq(boardId).and(board.isTemp.isFalse()))
-                .transform(groupBy(board.id).as(new QBoardDetailDTO(
+                .transform(groupBy(board.id).as(new QAdminBoardDetailDTO(
                                         board.id,
                                         board.title,
                                         board.content,
@@ -51,7 +54,7 @@ public class BoardQueryRepository implements BoardRepositoryCustom {
                                         board.views,
                                         users.username,
                                         users.id,
-                                        list(new QFileDetailBoardDTO(
+                                        list(new QAdminDetailFileBoardDTO(
                                                         fileStore.id,
                                                         fileStore.name,
                                                         fileStore.path,
@@ -67,24 +70,24 @@ public class BoardQueryRepository implements BoardRepositoryCustom {
     }
 
     @Override
-    public Long update(BoardUpdateDTO boardUpdateDTO) {
+    public Long update(AdminBoardUpdateDTO adminBoardUpdateDTO) {
 
         JPAUpdateClause updateClause = new JPAUpdateClause(entityManager, board);
 
-        if (boardUpdateDTO.getTitle() != null) {
-            updateClause.set(board.title, boardUpdateDTO.getTitle());
+        if (adminBoardUpdateDTO.getTitle() != null) {
+            updateClause.set(board.title, adminBoardUpdateDTO.getTitle());
         }
-        if (boardUpdateDTO.getContent() != null) {
-            updateClause.set(board.content, boardUpdateDTO.getContent());
+        if (adminBoardUpdateDTO.getContent() != null) {
+            updateClause.set(board.content, adminBoardUpdateDTO.getContent());
         }
 
         updateClause.set(board.updatedAt, LocalDateTime.now());
-        updateClause.where(board.id.eq(boardUpdateDTO.getId()));
+        updateClause.where(board.id.eq(adminBoardUpdateDTO.getId()));
 
         long updateCount = updateClause.execute();
 
         if (updateCount > 0) {
-            return boardUpdateDTO.getId();
+            return adminBoardUpdateDTO.getId();
         }
         throw new IllegalArgumentException("게시글 업데이트 실패");
     }
@@ -99,9 +102,9 @@ public class BoardQueryRepository implements BoardRepositoryCustom {
     }
 
     @Override
-    public Page<BoardFindDTO> searchPageSimple(String searchKeyword, Pageable pageable) {
+    public Page<AdminBoardFindDTO> searchPageSimple(String searchKeyword, Pageable pageable) {
         // 카운트 쿼리 날리지 않기
-        List<BoardFindDTO> content = queryFactory.select(new QBoardFindDTO(
+        List<AdminBoardFindDTO> content = queryFactory.select(new QAdminBoardFindDTO(
                         board.id,
                         board.title,
                         board.createdAt,
@@ -133,9 +136,9 @@ public class BoardQueryRepository implements BoardRepositoryCustom {
     }
 
     @Override
-    public Page<BoardFindTempDTO> searchPageTemp(Long usersId, String searchKeyword, Pageable pageable) {
+    public Page<AdminBoardFindTempDTO> searchPageTemp(Long usersId, String searchKeyword, Pageable pageable) {
 
-        List<BoardFindTempDTO> content = queryFactory.select(new QBoardFindTempDTO(
+        List<AdminBoardFindTempDTO> content = queryFactory.select(new QAdminBoardFindTempDTO(
                         board.id,
                         board.title,
                         board.createdAt,

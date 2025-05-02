@@ -6,17 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import kr.co.pei.pei_app.application.dto.surveys.survey.DetailSurveyDTO;
-import kr.co.pei.pei_app.application.dto.surveys.survey.FindSurveyDTO;
-import kr.co.pei.pei_app.application.dto.surveys.survey.QDetailSurveyDTO;
-import kr.co.pei.pei_app.application.dto.surveys.survey.QFindSurveyDTO;
-import kr.co.pei.pei_app.domain.entity.survey.QSurvey;
-import kr.co.pei.pei_app.domain.entity.survey.QSurveyDepart;
-import kr.co.pei.pei_app.domain.entity.survey.QSurveyType;
+import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminSurveyDetailDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminFindSurveyDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.survey.QAdminSurveyDetailDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.survey.QAdminFindSurveyDTO;
 import kr.co.pei.pei_app.domain.entity.survey.Survey;
-import kr.co.pei.pei_app.domain.entity.survey.enums.CategoryType;
-import kr.co.pei.pei_app.domain.entity.users.QUsers;
-import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,15 +36,16 @@ public class SurveyQueryRepository implements SurveyRepositoryCustom {
 
     // 현재 로그인된 사용자의 소속 병원의 작성된 모든 설문 양식 조회
     @Override
-    public Page<FindSurveyDTO> findMySurveyPage(Pageable pageable, Long hospitalId) {
+    public Page<AdminFindSurveyDTO> findMySurveyPage(Pageable pageable, Long hospitalId) {
 
-        List<FindSurveyDTO> content = queryFactory.select(new QFindSurveyDTO(
+        List<AdminFindSurveyDTO> content = queryFactory.select(new QAdminFindSurveyDTO(
                         survey.id,
                         survey.title,
                         survey.category.stringValue(),
                         survey.createdAt,
                         survey.openAt,
                         survey.closeAt,
+                        survey.isVisible,
                         survey.surveyStatus.stringValue(),
                         surveyType.name,
                         surveyDepart.name))
@@ -73,9 +68,9 @@ public class SurveyQueryRepository implements SurveyRepositoryCustom {
     }
 
     @Override
-    public DetailSurveyDTO findSurveyDetail(Long id, Long hospitalId) {
+    public AdminSurveyDetailDTO findSurveyDetail(Long id, Long hospitalId) {
 
-        DetailSurveyDTO dto = queryFactory.select(new QDetailSurveyDTO(
+        AdminSurveyDetailDTO dto = queryFactory.select(new QAdminSurveyDetailDTO(
                         survey.id,
                         survey.title,
                         survey.category.stringValue(),

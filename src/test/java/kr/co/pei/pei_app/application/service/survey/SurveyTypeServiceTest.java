@@ -1,7 +1,8 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.surveys.type.FindTypeDTO;
-import kr.co.pei.pei_app.application.dto.surveys.type.UpdateTypeDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminFindTypeDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminUpdateTypeDTO;
+import kr.co.pei.pei_app.admin.application.service.survey.SurveyTypeService;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyType;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyTypeJpaRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -54,15 +55,15 @@ class SurveyTypeServiceTest {
         PageRequest page = PageRequest.of(0, 10);
 
         // when
-        Page<FindTypeDTO> result = service.findPages(page);
+        Page<AdminFindTypeDTO> result = service.findPages(page);
 
-        List<FindTypeDTO> content = result.getContent();
+        List<AdminFindTypeDTO> content = result.getContent();
         Pageable pageable = result.getPageable();
 
         // then
         assertThat(pageable.getPageSize()).isEqualTo(page.getPageSize());
         assertThat(content).isNotEmpty();
-        for (FindTypeDTO dto : content) {
+        for (AdminFindTypeDTO dto : content) {
             System.out.println(dto.getName());
         }
 
@@ -130,7 +131,7 @@ class SurveyTypeServiceTest {
 
     @Test
     void updatedType() {
-        UpdateTypeDTO dto = new UpdateTypeDTO();
+        AdminUpdateTypeDTO dto = new AdminUpdateTypeDTO();
         dto.setId(savedIds.get(0));
         dto.setName("설문지 이름 변경");
 

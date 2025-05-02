@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.domain.repository.survey.query;
 
-import kr.co.pei.pei_app.application.dto.surveys.survey.FindSurveyDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminFindSurveyDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,10 @@ class SurveyQueryRepositoryTest {
     void findMySurveyPage() {
         PageRequest pages = PageRequest.of(0, 10);
         Long hospitalId = 26L;
-        Page<FindSurveyDTO> result = queryRepository.findMySurveyPage(pages, hospitalId);
+        Page<AdminFindSurveyDTO> result = queryRepository.findMySurveyPage(pages, hospitalId);
 
-        List<FindSurveyDTO> content = result.getContent();
-        for (FindSurveyDTO dto : content) {
+        List<AdminFindSurveyDTO> content = result.getContent();
+        for (AdminFindSurveyDTO dto : content) {
             System.out.println(dto.getTitle());
         }
     }

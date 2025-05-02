@@ -12,8 +12,11 @@ import java.util.List;
 
 public interface SurveyTypeJpaRepository extends JpaRepository<SurveyType, Long> {
 
-    @Query("select st from SurveyType st where st.isDeleted = false")
-    Page<SurveyType> findPages(Pageable pageable);
+    @Query("select st from SurveyType st where st.isDeleted = false and st.isPublic = false and st.hospital.id = :hospitalId")
+    Page<SurveyType> findPages(Pageable pageable, @Param("hospitalId") Long hospitalId);
+
+    @Query("select st from SurveyType st where st.isDeleted = false and st.isPublic = true")
+    Page<SurveyType> findAllPages(Pageable pageable);
 
     List<SurveyType> findByNameIn(List<String> names);
 

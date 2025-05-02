@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.aop;
 
-import kr.co.pei.pei_app.application.service.notify.NotifySender;
+import kr.co.pei.pei_app.admin.application.service.notify.NotifySender;
 import kr.co.pei.pei_app.domain.entity.notify.NotifyEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

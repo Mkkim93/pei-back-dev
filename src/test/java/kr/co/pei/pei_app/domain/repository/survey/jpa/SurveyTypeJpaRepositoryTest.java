@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.domain.repository.survey.jpa;
 
-import kr.co.pei.pei_app.application.dto.surveys.type.UpdateTypeDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminUpdateTypeDTO;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyType;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -76,7 +76,7 @@ class SurveyTypeJpaRepositoryTest {
     @Test
     @DisplayName("설문 유형 이름 수정")
     void updateName() {
-        UpdateTypeDTO dto = new UpdateTypeDTO(savedIds.get(0), "수정이름");
+        AdminUpdateTypeDTO dto = new AdminUpdateTypeDTO(savedIds.get(0), "수정이름");
 
         int updated = jpaRepository.updateName(dto.getName(), dto.getId());
         SurveyType updatedData = jpaRepository.findById(dto.getId()).get();

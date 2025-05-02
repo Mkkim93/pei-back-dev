@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.domain.repository.users;
 
-import kr.co.pei.pei_app.application.dto.users.UsersFindDTO;
+import kr.co.pei.pei_app.admin.application.dto.users.UsersFindDTO;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;

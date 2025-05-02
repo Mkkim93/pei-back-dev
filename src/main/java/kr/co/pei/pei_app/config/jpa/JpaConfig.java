@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.config.jpa;
 
-import kr.co.pei.pei_app.application.service.users.UsersService;
+import kr.co.pei.pei_app.admin.application.service.users.UsersService;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

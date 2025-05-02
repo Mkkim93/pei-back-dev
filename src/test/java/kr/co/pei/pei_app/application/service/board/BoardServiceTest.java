@@ -1,14 +1,14 @@
 package kr.co.pei.pei_app.application.service.board;
 
-import kr.co.pei.pei_app.application.dto.board.BoardCreateDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardDetailDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardFindDTO;
-import kr.co.pei.pei_app.application.dto.board.BoardUpdateDTO;
-import kr.co.pei.pei_app.application.dto.file.FileBoardDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminAdminBoardCreateDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardDetailDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardFindDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardUpdateDTO;
+import kr.co.pei.pei_app.admin.application.dto.file.AdminFileBoardDTO;
+import kr.co.pei.pei_app.admin.application.service.board.BoardService;
 import kr.co.pei.pei_app.domain.entity.board.Board;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import kr.co.pei.pei_app.domain.repository.board.BoardRepository;
-import kr.co.pei.pei_app.domain.repository.users.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,11 +60,11 @@ class BoardServiceTest {
     @DisplayName("전체 게시글 조회")
     void pages() {
         // given / when
-        Page<BoardFindDTO> pages = boardService.pages(PageRequest.of(0, 10), null);
+        Page<AdminBoardFindDTO> pages = boardService.pages(PageRequest.of(0, 10), null);
 
         // then
-        for (BoardFindDTO boardFindDTO : pages.getContent()) {
-            System.out.println("findBoardDTO.toString() = " + boardFindDTO.toString());
+        for (AdminBoardFindDTO adminBoardFindDTO : pages.getContent()) {
+            System.out.println("findBoardDTO.toString() = " + adminBoardFindDTO.toString());
         }
     }
 
@@ -73,9 +73,9 @@ class BoardServiceTest {
     void searchPages() {
         String keyword = "알림";
 
-        Page<BoardFindDTO> pages = boardService.pages(PageRequest.of(0, 10), keyword);
+        Page<AdminBoardFindDTO> pages = boardService.pages(PageRequest.of(0, 10), keyword);
 
-        for (BoardFindDTO dto : pages) {
+        for (AdminBoardFindDTO dto : pages) {
             System.out.println("dto.toString() = " + dto.toString());
         }
     }
@@ -87,7 +87,7 @@ class BoardServiceTest {
         Long boardId = 1L;
 
         // when
-        BoardDetailDTO detail = boardService.detail(boardId);
+        AdminBoardDetailDTO detail = boardService.detail(boardId);
 
         // then
         System.out.println("detail.toString() = " + detail.toString());
@@ -102,7 +102,7 @@ class BoardServiceTest {
         String updateContent = "게시글 내용 수정";
 
         // when
-        BoardUpdateDTO dto = new BoardUpdateDTO();
+        AdminBoardUpdateDTO dto = new AdminBoardUpdateDTO();
         dto.setId(updateBoardId);
         dto.setTitle(updateTitle);
         dto.setContent(updateContent);
@@ -120,12 +120,12 @@ class BoardServiceTest {
     @WithMockUser()
     void create() {
         // given
-        BoardCreateDTO boardCreateDTO = new BoardCreateDTO();
-        boardCreateDTO.setTitle("제목 테스트6");
-        boardCreateDTO.setContent("내용 테스트6");
+        AdminAdminBoardCreateDTO adminBoardCreateDTO = new AdminAdminBoardCreateDTO();
+        adminBoardCreateDTO.setTitle("제목 테스트6");
+        adminBoardCreateDTO.setContent("내용 테스트6");
 
-        List<FileBoardDTO> boardFiles = new ArrayList<>();
-        FileBoardDTO dto = new FileBoardDTO();
+        List<AdminFileBoardDTO> boardFiles = new ArrayList<>();
+        AdminFileBoardDTO dto = new AdminFileBoardDTO();
         dto.setName("파일 이름_uuid");
         dto.setOrgName("파일 이름");
         dto.setPath("/");
@@ -133,7 +133,7 @@ class BoardServiceTest {
         dto.setType("image/png");
         dto.setRenderType("LIST");
         boardFiles.add(dto);
-        boardCreateDTO.setBoardFiles(boardFiles);
+        adminBoardCreateDTO.setBoardFiles(boardFiles);
 
     }
 

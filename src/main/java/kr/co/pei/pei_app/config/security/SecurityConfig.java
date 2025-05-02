@@ -1,7 +1,7 @@
 package kr.co.pei.pei_app.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.pei.pei_app.application.service.redis.JwtRedisService;
+import kr.co.pei.pei_app.admin.application.service.redis.JwtRedisService;
 import kr.co.pei.pei_app.jwt.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
