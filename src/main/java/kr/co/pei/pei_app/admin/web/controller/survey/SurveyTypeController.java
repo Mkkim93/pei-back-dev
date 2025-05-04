@@ -1,12 +1,13 @@
 package kr.co.pei.pei_app.admin.web.controller.survey;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.pei.pei_app.admin.application.dto.api.ApiResult;
-import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminFindTypeDTO;
-import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminUpdateTypeDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.type.*;
 import kr.co.pei.pei_app.admin.application.service.survey.SurveyCommonService;
 import kr.co.pei.pei_app.admin.application.service.survey.SurveyTypeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import static org.springframework.data.domain.Sort.Direction;
 
+@Slf4j
 @Tag(name = "SURVEY_TYPE_API", description = "관리자가 설문 유형을 관리하기 위한 API")
 @RequestMapping("/api/survey-type")
 @RestController
@@ -37,6 +39,40 @@ public class SurveyTypeController {
                 .body(ApiResult.success("설문 유형 조회 성공", pages));
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<ApiResult<List<AdminFindTypeDTO>>> findList(@RequestParam(value = "isPublic", required = false) boolean isPublic) {
+        log.info("isPublic: {}", isPublic);
+        List<AdminFindTypeDTO> list = commonService.findList(isPublic);
+        return ResponseEntity.status(HttpStatus.OK.value())
+                .body(ApiResult.success("설문 유형 리스트 조회 성공", list));
+    }
+
+    @GetMapping("/usang")
+    public ResponseEntity<ApiResult<Page<AdminTypeUsageDTO>>> findUsagePage(@ParameterObject @PageableDefault(
+            page = 0, size = 10, sort = "createdAt", direction = Direction.ASC) Pageable pageable, @RequestParam(value = "isPublic", required = false) boolean isPublic) {
+        Page<AdminTypeUsageDTO> usagePage = commonService.findUsagePage(pageable, isPublic);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResult.success("설문 양식 통계 페이징 조회 성공", usagePage));
+    }
+
+    @Operation(summary = "최근 수정된 양식 목록", description = "최근 변경일 기준으로 수정된 양식 조회 (내 병원 / 공통)")
+    @GetMapping("/recent")
+    public ResponseEntity<ApiResult<Page<AdminFindTypeRecentDTO>>> recent(@ParameterObject @PageableDefault(
+            page = 0, size = 10, sort = "updatedAt", direction = Direction.ASC) Pageable pageable, @RequestParam(value = "isPublic", required = false) boolean isPublic) {
+        Page<AdminFindTypeRecentDTO> recentPage = commonService.findRecentPage(pageable, isPublic);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResult.success("수정된 양식 조회 성공", recentPage));
+    }
+
+    @Operation(summary = "진행 중인 설문 목록", description = "진행 중인 설문을 내병원/공통 으로 조회")
+    @GetMapping("/status")
+    public ResponseEntity<ApiResult<Page<AdminTypeStatusDTO>>> findStatusPage(@ParameterObject @PageableDefault(
+      page = 0, size = 5, sort = "createdAt", direction = Direction.DESC) Pageable pageable,
+                                                                              @RequestParam(value = "isPublic", required = false) boolean isPublic,
+                                                                              @RequestParam(value = "status", required = false) String status) {
+        Page<AdminTypeStatusDTO> pages = commonService.findSurveyStatusPage(pageable, isPublic, status);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResult.success("설문 상태 조회 성공", pages));
+    }
+
+
     @PostMapping("/add")
     public ResponseEntity<ApiResult<String>> addTypes(@RequestBody List<String> names) {
         service.saveType(names);
@@ -45,25 +81,14 @@ public class SurveyTypeController {
 
     @DeleteMapping
     public ResponseEntity<ApiResult<Boolean>> deleted(@RequestBody List<Long> ids) {
-        boolean result = service.deletedTypes(ids);
-
-        if (result) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-                    .body(ApiResult.error("삭제 실패",false));
-        }
+        service.deletedTypes(ids);
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(ApiResult.success("삭제 성공", true));
     }
 
     @PatchMapping("/recover")
     public ResponseEntity<ApiResult<Boolean>> recovered(@RequestBody List<Long> ids) {
-
-        boolean result = service.recoveredTypes(ids);
-
-        if (!result) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST.value())
-                    .body(ApiResult.error("복구 실패",false));
-        }
+        service.recoveredTypes(ids);
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(ApiResult.success("복구 성공", true));
     }

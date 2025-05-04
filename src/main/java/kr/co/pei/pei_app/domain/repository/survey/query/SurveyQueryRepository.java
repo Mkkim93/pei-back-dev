@@ -55,7 +55,7 @@ public class SurveyQueryRepository implements SurveyRepositoryCustom {
                 .where(survey.hospital.id.eq(hospitalId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(survey.createdAt.asc())
+                .orderBy(survey.createdAt.desc())
                 .fetch();
 
         JPAQuery<Survey> count = queryFactory

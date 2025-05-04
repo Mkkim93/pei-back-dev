@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.domain.repository.board;
 
-import kr.co.pei.pei_app.application.dto.board.BoardFindDTO;
+import kr.co.pei.pei_app.admin.application.dto.board.AdminBoardFindDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

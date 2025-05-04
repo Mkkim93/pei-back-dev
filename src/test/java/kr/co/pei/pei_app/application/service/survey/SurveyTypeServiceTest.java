@@ -55,7 +55,8 @@ class SurveyTypeServiceTest {
         PageRequest page = PageRequest.of(0, 10);
 
         // when
-        Page<AdminFindTypeDTO> result = service.findPages(page);
+
+        Page<AdminFindTypeDTO> result = service.findPages(page, null);
 
         List<AdminFindTypeDTO> content = result.getContent();
         Pageable pageable = result.getPageable();
@@ -93,40 +94,38 @@ class SurveyTypeServiceTest {
         }
 
         // when
-        boolean result = service.recoveredTypes(savedIds);
+        service.recoveredTypes(savedIds);
 
         // then
         List<SurveyType> recoveredTypes = jpaRepository.findAllById(savedIds);
         for (SurveyType type : recoveredTypes) {
             assertThat(type.getIsDeleted()).isFalse();
         }
-        assertThat(result).isTrue();
     }
 
     @Test
     void deletedTypes() {
 
-        boolean result = service.deletedTypes(savedIds);
+        service.deletedTypes(savedIds);
 
         List<SurveyType> deletedIds = jpaRepository.findAllById(savedIds);
 
         for (SurveyType deletedId : deletedIds) {
             assertThat(deletedId.getIsDeleted()).isTrue();
         }
-        assertThat(result).isTrue();
+
     }
 
     @Test
     void recoveredTypes() {
 
-        boolean result = service.recoveredTypes(savedIds);
+        service.recoveredTypes(savedIds);
 
         List<SurveyType> recoveredIds = jpaRepository.findAllById(savedIds);
 
         for (SurveyType recoveredId : recoveredIds) {
             assertThat(recoveredId.getIsDeleted()).isFalse();
         }
-        assertThat(result).isTrue();
     }
 
     @Test

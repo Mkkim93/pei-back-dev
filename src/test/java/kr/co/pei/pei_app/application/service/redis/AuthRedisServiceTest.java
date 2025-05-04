@@ -1,6 +1,6 @@
 package kr.co.pei.pei_app.application.service.redis;
 
-import kr.co.pei.pei_app.application.service.auth.AuthService;
+import kr.co.pei.pei_app.admin.application.service.auth.AuthService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

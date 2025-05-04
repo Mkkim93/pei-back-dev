@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.domain.entity.survey;
 
 import jakarta.persistence.*;
+import kr.co.pei.pei_app.domain.entity.hospital.Ward;
 import kr.co.pei.pei_app.domain.entity.survey.enums.AgeGroup;
 import kr.co.pei.pei_app.domain.entity.survey.enums.GenderType;
 import lombok.Builder;
@@ -26,6 +27,10 @@ public class SurveyParticipant {
     @Column
     @Enumerated(STRING)
     private GenderType genderType;
+
+    @JoinColumn(name = "ward_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Ward ward;
 
     @Builder
     public SurveyParticipant(String ageGroup, String genderType) {

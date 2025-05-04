@@ -45,6 +45,12 @@ public class Survey {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // 설문 수정일(최종)
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
     @Column(name = "open_at")
     private LocalDateTime openAt; // 설문 시작일
 
@@ -74,15 +80,21 @@ public class Survey {
     @JoinColumn(name = "users_id")
     private Users users;
 
-    public void updateForm(AdminUpdateSurveyDTO dto, CategoryType category, String jsonContent, SurveyType surveyType, SurveyDepart surveyDepart, SurveyStatus surveyStatus) {
+    public void updateForm(AdminUpdateSurveyDTO dto,
+                           CategoryType category, String jsonContent, SurveyType surveyType,
+                           SurveyDepart surveyDepart, SurveyStatus surveyStatus) {
+
         if (dto.getTitle() != null) this.title = dto.getTitle();
         if (dto.getCategory() != null) this.category = category;
         if (dto.getContent() != null) this.content = jsonContent;
-        if (dto.getOpenAt() != null) this.openAt = dto.getOpenAt();
-        if (dto.getCloseAt() != null) this.closeAt = dto.getCloseAt();
+
+        this.openAt = dto.getOpenAt() != null ? dto.getOpenAt() : this.openAt;
+        this.closeAt = dto.getCloseAt() != null ? dto.getCloseAt() : this.closeAt;
+
         if (dto.getUpdatedAt() != null) this.updatedAt = dto.getUpdatedAt();
         if (dto.getSurveyDepartId() != null) this.surveyDepart = surveyDepart;
         if (dto.getSurveyTypeId() != null) this.surveyType = surveyType;
+
         this.surveyStatus = surveyStatus;
         this.isVisible = dto.isVisible();
     }

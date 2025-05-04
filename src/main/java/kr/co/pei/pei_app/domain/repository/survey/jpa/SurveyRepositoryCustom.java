@@ -10,4 +10,6 @@ public interface SurveyRepositoryCustom {
     Page<AdminFindSurveyDTO> findMySurveyPage(Pageable pageable, Long hospitalId);
 
     AdminSurveyDetailDTO findSurveyDetail(Long id, Long hospitalId);
+
+
 }

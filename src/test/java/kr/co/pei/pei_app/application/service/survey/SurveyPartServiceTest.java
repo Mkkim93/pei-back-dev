@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.application.service.survey;
 
-import kr.co.pei.pei_app.application.dto.surveys.part.CreatePartDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.part.AdminCreatePartDTO;
+import kr.co.pei.pei_app.admin.application.service.survey.SurveyPartService;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyParticipant;
 import kr.co.pei.pei_app.domain.entity.survey.enums.AgeGroup;
 import kr.co.pei.pei_app.domain.entity.survey.enums.GenderType;
@@ -33,7 +34,7 @@ class SurveyPartServiceTest {
     @DisplayName("설문자 정보 등록")
     void createPart() {
         // given
-        CreatePartDTO dto = new CreatePartDTO();
+        AdminCreatePartDTO dto = new AdminCreatePartDTO();
 
         dto.setAgeGroup("AGE_20S");
         dto.setGenderType("MALE");

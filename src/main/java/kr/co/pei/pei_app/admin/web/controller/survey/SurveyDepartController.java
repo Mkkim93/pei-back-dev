@@ -36,14 +36,14 @@ public class SurveyDepartController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResult<?>> findPages(@ParameterObject @PageableDefault(
+    public ResponseEntity<ApiResult<?>> findPagesOrList(@ParameterObject @PageableDefault(
             page = 0, size = 20, sort = "name", direction = Direction.ASC) Pageable pageable,
                                                   @RequestParam(value = "all", required = false) Boolean all) {
 
         if (!all) {
             Page<AdminFindDepartDTO> pages = service.findPages(pageable);
             return ResponseEntity.status(HttpStatus.OK.value())
-                    .body(success("진료과 페이징 조회 성공", pages));
+                    .body(success("진료과 페이징 또는 리스트 조회 성공", pages));
         }
 
         List<AdminFindDepartDTO> list = service.findList();

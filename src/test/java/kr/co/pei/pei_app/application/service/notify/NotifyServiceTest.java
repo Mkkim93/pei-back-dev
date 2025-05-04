@@ -1,7 +1,8 @@
 package kr.co.pei.pei_app.application.service.notify;
 
-import kr.co.pei.pei_app.application.dto.notify.NotifyFindDTO;
-import kr.co.pei.pei_app.application.service.users.UsersService;
+import kr.co.pei.pei_app.admin.application.dto.notify.AdminNotifyFindDTO;
+import kr.co.pei.pei_app.admin.application.service.notify.NotifyService;
+import kr.co.pei.pei_app.admin.application.service.users.UsersService;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -59,11 +60,11 @@ class NotifyServiceTest {
         boolean isRead = false;
 
         // when
-        Page<NotifyFindDTO> all = service.findAll(pageRequest, isRead);
-        List<NotifyFindDTO> content = all.getContent();
-        NotifyFindDTO first = content.getFirst();
+        Page<AdminNotifyFindDTO> all = service.findAll(pageRequest, isRead);
+        List<AdminNotifyFindDTO> content = all.getContent();
+        AdminNotifyFindDTO first = content.getFirst();
 
-        for (NotifyFindDTO dto : all) {
+        for (AdminNotifyFindDTO dto : all) {
             System.out.println("dto.getIsDisplayed() = " + dto.getIsDisplayed());
             System.out.println("dto.getMessage() = " + dto.getMessage());
             System.out.println("dto.getType() = " + dto.getType());

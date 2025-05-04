@@ -1,8 +1,9 @@
 package kr.co.pei.pei_app.application.service.users;
 
-import kr.co.pei.pei_app.application.dto.users.UsersRegisterDTO;
-import kr.co.pei.pei_app.application.dto.users.UsersResponseDTO;
-import kr.co.pei.pei_app.application.service.auth.AuthService;
+import kr.co.pei.pei_app.admin.application.dto.users.UsersRegisterDTO;
+import kr.co.pei.pei_app.admin.application.dto.users.UsersResponseDTO;
+import kr.co.pei.pei_app.admin.application.service.auth.AuthService;
+import kr.co.pei.pei_app.admin.application.service.users.RegisterService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -61,6 +63,15 @@ class RegisterServiceTest {
     @Test
     @DisplayName("계정 중복 확인")
     void existByUsername() {
+
+        String existUsername = "user1"; // 이미 존재하는 계정
+        String username = "user20"; // 새로운 계정
+
+        boolean existNameFalse = registerService.existByUsername(username);
+        boolean existNameTrue = registerService.existByUsername(existUsername);
+
+        assertThat(existNameFalse).isFalse();
+        assertThat(existNameTrue).isTrue();
     }
 
     @Test

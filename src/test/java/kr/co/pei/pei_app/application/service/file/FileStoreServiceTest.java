@@ -1,5 +1,6 @@
 package kr.co.pei.pei_app.application.service.file;
 
+import kr.co.pei.pei_app.admin.application.service.file.FileStoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -22,14 +22,14 @@ public class BoardFileCleanUpJobConfig {
     private final UnusedFileReader unusedFileReader;
     // TODO S3Delete 의존성 추가
 
-    @Bean
+//    @Bean
     public Job boardFileCleanupJob() {
         return new JobBuilder("boardFileCleanupJob", jobRepository)
                 .start(deleteUnusedFileStep())
                 .build();
     }
 
-    @Bean
+//    @Bean
     public Step deleteUnusedFileStep() {
 //        return new StepBuilder("deleteUnusedFileStep", jobRepository)
 //                .<FileStore, FileStore> chunk(100, platformTransactionManager)

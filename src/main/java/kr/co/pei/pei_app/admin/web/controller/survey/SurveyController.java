@@ -46,7 +46,7 @@ public class SurveyController {
     @Operation(summary = "사용자가 소속된 병원 설문 양식 조회", description = "사용자 또는 다른 관리자가 작성한 현재 소속 병원의 양식만 조회")
     @GetMapping("/hospital")
     public ResponseEntity<ApiResult<Page<AdminFindSurveyDTO>>> findMySurveyPage(@ParameterObject @PageableDefault(page = 0, size = 5, sort = "createdAt",
-            direction = Direction.ASC) Pageable pageable) {
+            direction = Direction.DESC) Pageable pageable) {
         Page<AdminFindSurveyDTO> result = surveyCommonService.findMyPage(pageable);
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResult.success("소속 병원 양식 조회 성공", result));
     }

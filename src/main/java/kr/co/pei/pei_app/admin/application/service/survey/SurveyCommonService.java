@@ -6,6 +6,9 @@ import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminFindSurveyDTO
 import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminSurveyDetailDTO;
 import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminUpdateSurveyDTO;
 import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminFindTypeDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminFindTypeRecentDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminTypeStatusDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminTypeUsageDTO;
 import kr.co.pei.pei_app.admin.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyDepart;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyType;
@@ -17,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -71,5 +75,25 @@ public class SurveyCommonService {
 
         Long hospitalId = contextService.getCurrentUser().getHospital().getId();
         return typeService.findPages(pageable, hospitalId);
+    }
+
+    public List<AdminFindTypeDTO> findList(boolean isPublic) {
+        Long hospitalId = contextService.getCurrentUser().getHospital().getId();
+        return typeService.findList(isPublic, hospitalId);
+    }
+
+    public Page<AdminTypeUsageDTO> findUsagePage(Pageable pageable, boolean isPublic) {
+        Long hospitalId = contextService.getCurrentUser().getHospital().getId();
+        return typeService.findUsage(pageable, hospitalId, isPublic);
+    }
+
+    public Page<AdminFindTypeRecentDTO> findRecentPage(Pageable pageable, boolean isPublic) {
+        Long hospitalId = contextService.getCurrentUser().getHospital().getId();
+        return typeService.findRecent(pageable, hospitalId, isPublic);
+    }
+
+    public Page<AdminTypeStatusDTO> findSurveyStatusPage(Pageable pageable, boolean isPublic, String surveyStatus) {
+        Long hospitalId = contextService.getCurrentUser().getHospital().getId();
+        return typeService.findStatusPages(pageable, hospitalId, isPublic, surveyStatus);
     }
 }

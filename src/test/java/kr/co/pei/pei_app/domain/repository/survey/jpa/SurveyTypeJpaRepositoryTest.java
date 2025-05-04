@@ -45,7 +45,7 @@ class SurveyTypeJpaRepositoryTest {
     @DisplayName("유형 조회 (페이징)")
     void findPages() {
         PageRequest page = PageRequest.of(0, 20);
-        Page<SurveyType> pages = jpaRepository.findPages(page);
+        Page<SurveyType> pages = jpaRepository.findPages(page, null);
 
         List<SurveyType> content = pages.getContent();
         for (SurveyType surveyType : content) {

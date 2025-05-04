@@ -1,11 +1,11 @@
 package kr.co.pei.pei_app.admin.application.service.survey;
 
 import jakarta.persistence.EntityNotFoundException;
-import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminFindTypeDTO;
-import kr.co.pei.pei_app.admin.application.dto.surveys.type.AdminUpdateTypeDTO;
+import kr.co.pei.pei_app.admin.application.dto.surveys.type.*;
 import kr.co.pei.pei_app.admin.application.exception.surveys.SurveyTypeException;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyType;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyTypeJpaRepository;
+import kr.co.pei.pei_app.domain.repository.survey.query.SurveyTypeQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +21,7 @@ import java.util.List;
 public class SurveyTypeService {
 
     private final SurveyTypeJpaRepository jpaRepository;
+    private final SurveyTypeQueryRepository queryRepository;
 
     public SurveyType findById(Long id) {
         return jpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 유형은 존재하지 않는 유형입니다."));
@@ -35,6 +36,32 @@ public class SurveyTypeService {
                 type.getDescription()
         ));
     }
+
+    public List<AdminFindTypeDTO> findList(boolean isPublic, Long hospitalId) {
+
+        if (isPublic) {
+            List<SurveyType> allList = jpaRepository.findAllList();
+            return allList.stream().map(type -> new AdminFindTypeDTO(
+                    type.getId(),
+                    type.getName(),
+                    type.getDescription())).toList();
+        }
+
+        List<SurveyType> list = jpaRepository.findList(false, hospitalId);
+        return list.stream().map(type -> new AdminFindTypeDTO(
+                type.getId(),
+                type.getName(),
+                type.getDescription())).toList();
+    }
+
+    public Page<AdminTypeUsageDTO> findUsage(Pageable pageable, Long hospitalId, boolean isPublic) {
+        return queryRepository.findUsagePage(pageable, hospitalId, isPublic);
+    }
+
+    public Page<AdminTypeStatusDTO> findStatusPages(Pageable pageable, Long hospitalId, boolean isPublic, String surveyStatus) {
+        return queryRepository.findStatusPage(pageable, hospitalId, isPublic, surveyStatus);
+    }
+
 
     // 유형 등록
     public void saveType(List<String> names) {
@@ -59,21 +86,19 @@ public class SurveyTypeService {
     }
 
     // 유형 삭제
-    public boolean deletedTypes(List<Long> ids) {
+    public void deletedTypes(List<Long> ids) {
         int deleted = jpaRepository.deleteTypeIds(ids);
         if (deleted != ids.size()) {
             throw new SurveyTypeException("삭제 대상 수와 실제 삭제된 수가 일치하지 않습니다.");
         }
-        return true;
     }
 
     // 삭제된 유형 복구
-    public boolean recoveredTypes(List<Long> ids) {
+    public void recoveredTypes(List<Long> ids) {
         int recovered = jpaRepository.recoverTypeIds(ids);
         if (recovered != ids.size()) {
             throw new SurveyTypeException("복구 대상 수와 실제 복수된 수가 일치하지 않습니다.");
         }
-        return true;
     }
 
     // 유형 수정
@@ -92,6 +117,25 @@ public class SurveyTypeService {
                 type.getId(),
                 type.getName(),
                 type.getDescription()
+        ));
+    }
+
+    public Page<AdminFindTypeRecentDTO> findRecent(Pageable pageable, Long hospitalId, boolean isPublic) {
+        if (isPublic) {
+            Page<SurveyType> pages = jpaRepository.findRecentPublicPage(pageable);
+            return pages.map(type -> new AdminFindTypeRecentDTO(
+                    type.getId(),
+                    type.getName(),
+                    type.getUpdatedAt()
+            ));
+        }
+
+        Page<SurveyType> pages = jpaRepository.findRecentPage(pageable, hospitalId);
+
+        return pages.map(type -> new AdminFindTypeRecentDTO(
+                type.getId(),
+                type.getName(),
+                type.getUpdatedAt()
         ));
     }
 }
