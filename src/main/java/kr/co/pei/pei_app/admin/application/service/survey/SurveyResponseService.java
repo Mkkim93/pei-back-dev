@@ -3,7 +3,7 @@ package kr.co.pei.pei_app.admin.application.service.survey;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.pei.pei_app.admin.application.dto.surveys.response.AdminSurveyResponseDTO;
-import kr.co.pei.pei_app.domain.entity.survey.SurveyResponse;
+import kr.co.pei.pei_app.domain.entity.surveyres.SurveyResponse;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyResponseJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

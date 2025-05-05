@@ -1,7 +1,9 @@
-package kr.co.pei.pei_app.domain.entity.survey;
+package kr.co.pei.pei_app.domain.entity.surveyres;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import kr.co.pei.pei_app.domain.entity.hospital.Ward;
+import kr.co.pei.pei_app.domain.entity.survey.Survey;
+import kr.co.pei.pei_app.domain.entity.survey.SurveyParticipant;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -9,8 +11,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.FetchType.*;
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "survey_response")
@@ -26,7 +28,10 @@ public class SurveyResponse {
 
     @CreatedDate
     @Column(name = "submitted_at", updatable = false)
-    private LocalDateTime submittedAt;
+    private LocalDateTime submittedAt; // 작성시간
+
+    @Column(name = "response_at")
+    private LocalDateTime responseAt; // 응답시간
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "survey_id")
@@ -35,6 +40,10 @@ public class SurveyResponse {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "participant_id")
     private SurveyParticipant surveyParticipant;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "ward_id")
+    private Ward ward;
 
     @Builder
     public SurveyResponse(String answerContent, Survey survey, SurveyParticipant surveyParticipant) {

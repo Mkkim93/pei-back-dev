@@ -35,9 +35,15 @@ public class Ward {
     private LocalDateTime deletedAt;
 
     @Column(name = "is_deleted")
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
     @JoinColumn(name = "hospital_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Hospital hospital;
+
+    public void setWardInfo(Long id, String name, Hospital hospital) {
+        this.id = id;
+        this.name = name;
+        this.hospital = hospital;
+    }
 }

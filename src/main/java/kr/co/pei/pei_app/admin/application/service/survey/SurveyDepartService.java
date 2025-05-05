@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import kr.co.pei.pei_app.admin.application.dto.surveys.depart.AdminFindDepartDTO;
 import kr.co.pei.pei_app.admin.application.dto.surveys.depart.AdminUpdateDepartDTO;
 import kr.co.pei.pei_app.admin.application.exception.surveys.SurveyDepartException;
+import kr.co.pei.pei_app.admin.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyDepart;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyDepartJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.util.List;
 public class SurveyDepartService {
 
     private final SurveyDepartJpaRepository jpaRepository;
+
 
     public SurveyDepart findById(Long id) {
         return jpaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 진료과는 존재하지 않는 진료과입니다."));

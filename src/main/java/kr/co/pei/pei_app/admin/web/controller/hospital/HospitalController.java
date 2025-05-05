@@ -25,10 +25,9 @@ public class HospitalController {
     private final HospitalService service;
 
     @GetMapping
-    public ResponseEntity<ApiResult<Page<AdminFindHosDTO>>> findPages(@ParameterObject @PageableDefault(page = 0, size = 10, sort = "name", direction = Direction.ASC) Pageable pageable) {
-        Page<AdminFindHosDTO> pages = service.findPages(pageable);
-        return ResponseEntity.status(HttpStatus.OK.value())
-                .body(ApiResult.success("조회 성공", pages));
+    public ResponseEntity<ApiResult<AdminFindHosDTO>> findHospitalInfo() {
+        AdminFindHosDTO info = service.findMyHospitalInfo();
+        return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResult.success("병원 정보 조회 성공", info));
     }
 
     @PostMapping

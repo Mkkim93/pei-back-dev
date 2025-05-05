@@ -69,6 +69,7 @@ public class SurveyTypeController {
                                                                               @RequestParam(value = "isPublic", required = false) boolean isPublic,
                                                                               @RequestParam(value = "status", required = false) String status) {
         Page<AdminTypeStatusDTO> pages = commonService.findSurveyStatusPage(pageable, isPublic, status);
+        log.info("내병원 진행중인 설문 조회: {}", pages.getContent());
         return ResponseEntity.status(HttpStatus.OK.value()).body(ApiResult.success("설문 상태 조회 성공", pages));
     }
 

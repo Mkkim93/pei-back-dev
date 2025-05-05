@@ -10,6 +10,7 @@ import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminSurveyDetailD
 import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminFindSurveyDTO;
 import kr.co.pei.pei_app.admin.application.dto.surveys.survey.QAdminSurveyDetailDTO;
 import kr.co.pei.pei_app.admin.application.dto.surveys.survey.QAdminFindSurveyDTO;
+import kr.co.pei.pei_app.common.application.dto.surveys.survey.CommonDetailSurveyDTO;
 import kr.co.pei.pei_app.domain.entity.survey.Survey;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -97,5 +98,12 @@ public class SurveyQueryRepository implements SurveyRepositoryCustom {
             }
         }
         return dto;
+    }
+
+    @Override
+    public CommonDetailSurveyDTO commonFindSurveyDetail(Long id) {
+
+
+        return null;
     }
 }

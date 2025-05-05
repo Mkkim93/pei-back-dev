@@ -21,6 +21,10 @@ public class HospitalService {
     private final UsersContextService contextService;
     private final HospitalJpaRepository jpaRepository;
 
+    public Hospital findById(Long hospitalId) {
+        return jpaRepository.findById(hospitalId).orElseThrow(() -> new EntityNotFoundException("병원 정보 조회에 실패하였습니다."));
+    }
+
     // 내 병원 정보 조회
     public AdminFindHosDTO findMyHospitalInfo() {
         Long hospitalId = contextService.getCurrentUser().getHospital().getId();

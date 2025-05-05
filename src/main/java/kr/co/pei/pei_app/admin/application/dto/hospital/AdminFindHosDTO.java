@@ -23,7 +23,8 @@ public class AdminFindHosDTO {
     public AdminFindHosDTO toDto(Hospital hospital) {
         this.id = hospital.getId();
         this.name = hospital.getName();
-        this.description = hospital.getDescription();;
+        this.description = hospital.getDescription();
         this.imgUrl = hospital.getImgUrl();
+        return this;
     }
 }
