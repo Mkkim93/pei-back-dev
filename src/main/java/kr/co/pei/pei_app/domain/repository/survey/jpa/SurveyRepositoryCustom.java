@@ -13,6 +13,6 @@ public interface SurveyRepositoryCustom {
     AdminSurveyDetailDTO findSurveyDetail(Long id, Long hospitalId);
 
     // 사용자 전용 작성 설문 조회
-    CommonDetailSurveyDTO commonFindSurveyDetail(Long id);
+    CommonDetailSurveyDTO commonFindSurveyDetail(Long id, Long hospitalId);
 
 }

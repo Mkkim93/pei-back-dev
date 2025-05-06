@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.domain.entity.hospital;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -46,4 +47,5 @@ public class Ward {
         this.name = name;
         this.hospital = hospital;
     }
+
 }

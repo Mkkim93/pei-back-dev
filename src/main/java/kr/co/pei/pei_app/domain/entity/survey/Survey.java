@@ -49,10 +49,10 @@ public class Survey {
     private LocalDateTime deletedAt;
 
     @Column(name = "is_deleted")
-    private boolean isDeleted;
+    private Boolean isDeleted = false;
 
     @Column(name = "open_at")
-    private LocalDateTime openAt; // 설문 시작일
+    private LocalDateTime openAt; // 설문 시작일 (boolean -> Boolean) 05/06
 
     @Column(name = "close_at")
     private LocalDateTime closeAt; // 설문 종료일

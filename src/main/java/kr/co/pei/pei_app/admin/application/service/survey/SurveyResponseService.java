@@ -3,8 +3,8 @@ package kr.co.pei.pei_app.admin.application.service.survey;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.pei.pei_app.admin.application.dto.surveys.response.AdminSurveyResponseDTO;
-import kr.co.pei.pei_app.domain.entity.surveyres.SurveyResponse;
-import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyResponseJpaRepository;
+import kr.co.pei.pei_app.domain.entity.surveyresponse.SurveyResponse;
+import kr.co.pei.pei_app.domain.repository.surveyresponse.SurveyResponseJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class SurveyResponseService {
     private final SurveyResponseJpaRepository jpaRepository;
     private final ObjectMapper objectMapper;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void saveSurveyResponse(AdminSurveyResponseDTO responseDTO) throws JsonProcessingException {
 
         try {

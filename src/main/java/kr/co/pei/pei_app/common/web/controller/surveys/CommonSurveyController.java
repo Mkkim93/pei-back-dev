@@ -43,13 +43,12 @@ public class CommonSurveyController {
     }
 
     @Operation(summary = "설문 양식 조회", description = "사용자가 선택한 설문양식 응답 API")
-    @GetMapping
-    public ResponseEntity<ApiResult<CommonDetailSurveyDTO>> findSurveyTemplate(@RequestParam("id") Long id) {
-//        AdminSurveyDetailDTO adminSurveyDetailDTO = surveyCommonService.findSurveyDetail(id);
-
-//        log.info("surveyJson: {}", adminSurveyDetailDTO);
+    @GetMapping("/detail")
+    public ResponseEntity<ApiResult<CommonDetailSurveyDTO>> findSurveyTemplate(@RequestParam("hospitalId") Long hospitalId,
+                                                                               @RequestParam("surveyId") Long surveyId) {
+        CommonDetailSurveyDTO detail = service.findDetailSurvey(hospitalId, surveyId);
         return ResponseEntity.status(HttpStatus.OK.value())
-                .body(ApiResult.success("상세 조회 성공", null));
+                .body(ApiResult.success("상세 조회 성공", detail));
     }
 
 

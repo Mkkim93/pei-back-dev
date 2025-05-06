@@ -13,4 +13,13 @@ public enum GenderType {
     public String getText() {
         return text;
     }
+
+    public static GenderType fromText(String text) {
+        for (GenderType gender : GenderType.values()) {
+            if (gender.getText().equals(text)) {
+                return gender;
+            }
+        }
+        throw new IllegalArgumentException("Unknown age group: " + text);
+    }
 }

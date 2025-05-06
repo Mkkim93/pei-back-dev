@@ -22,19 +22,20 @@ public class SurveyParticipant {
 
     @Column
     @Enumerated(STRING)
-    private AgeGroup ageGroup;
+    private AgeGroup ageGroup; // 환자 연령대
 
     @Column
     @Enumerated(STRING)
-    private GenderType genderType;
+    private GenderType genderType; // 환자 성별
 
     @JoinColumn(name = "ward_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Ward ward;
+    private Ward ward; // 환자 설문 초기 화면에서 병동 정보 입력 시 필수
 
     @Builder
-    public SurveyParticipant(String ageGroup, String genderType) {
-        this.ageGroup = AgeGroup.valueOf(ageGroup);
-        this.genderType = GenderType.valueOf(genderType);
+    public SurveyParticipant(AgeGroup ageGroup, GenderType genderType, Ward ward) {
+        this.ageGroup = ageGroup;
+        this.genderType = genderType;
+        this.ward = ward;
     }
 }

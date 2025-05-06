@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.domain.entity.survey;
 
 import jakarta.persistence.*;
+import kr.co.pei.pei_app.domain.entity.hospital.Hospital;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,10 @@ public class SurveyDepart {
 
     @Column(name = "is_deleted", unique = true)
     private boolean isDeleted = false;
+
+    @JoinColumn(name = "hospital_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Hospital hospital;
 
     public SurveyDepart(Long id) {
         this.id = id;

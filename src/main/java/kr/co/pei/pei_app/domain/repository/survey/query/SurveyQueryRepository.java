@@ -11,6 +11,7 @@ import kr.co.pei.pei_app.admin.application.dto.surveys.survey.AdminFindSurveyDTO
 import kr.co.pei.pei_app.admin.application.dto.surveys.survey.QAdminSurveyDetailDTO;
 import kr.co.pei.pei_app.admin.application.dto.surveys.survey.QAdminFindSurveyDTO;
 import kr.co.pei.pei_app.common.application.dto.surveys.survey.CommonDetailSurveyDTO;
+import kr.co.pei.pei_app.common.application.dto.surveys.survey.QCommonDetailSurveyDTO;
 import kr.co.pei.pei_app.domain.entity.survey.Survey;
 import kr.co.pei.pei_app.domain.repository.survey.jpa.SurveyRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -101,9 +102,17 @@ public class SurveyQueryRepository implements SurveyRepositoryCustom {
     }
 
     @Override
-    public CommonDetailSurveyDTO commonFindSurveyDetail(Long id) {
+    public CommonDetailSurveyDTO commonFindSurveyDetail(Long hospitalId, Long surveyId) {
 
-
-        return null;
+        return queryFactory.select(new QCommonDetailSurveyDTO(
+                survey.id,
+                survey.title,
+                survey.category.stringValue(),
+                survey.content
+        )).from(survey)
+                .where
+                        (survey.id.eq(surveyId)
+                                .and(survey.hospital.id.eq(hospitalId))
+        ).fetchOne();
     }
 }

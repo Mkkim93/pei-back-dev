@@ -1,4 +1,4 @@
-package kr.co.pei.pei_app.domain.entity.surveyres;
+package kr.co.pei.pei_app.domain.entity.surveyresponse;
 
 import jakarta.persistence.*;
 import kr.co.pei.pei_app.domain.entity.hospital.Ward;
@@ -28,10 +28,10 @@ public class SurveyResponse {
 
     @CreatedDate
     @Column(name = "submitted_at", updatable = false)
-    private LocalDateTime submittedAt; // 작성시간
+    private LocalDateTime submittedAt; // 작성시점
 
     @Column(name = "response_at")
-    private LocalDateTime responseAt; // 응답시간
+    private LocalDateTime responseAt; // 응답시점
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "survey_id")
@@ -46,10 +46,12 @@ public class SurveyResponse {
     private Ward ward;
 
     @Builder
-    public SurveyResponse(String answerContent, Survey survey, SurveyParticipant surveyParticipant) {
+    public SurveyResponse(String answerContent, LocalDateTime submittedAt, Survey survey, SurveyParticipant surveyParticipant, Ward ward) {
         this.answerContent = answerContent;
+        this.submittedAt = submittedAt;
+        this.responseAt = LocalDateTime.now();
         this.survey = survey;
-        this.submittedAt = LocalDateTime.now();
         this.surveyParticipant = surveyParticipant;
+        this.ward = ward;
     }
 }

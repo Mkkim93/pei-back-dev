@@ -32,4 +32,8 @@ public interface SurveyDepartJpaRepository extends JpaRepository<SurveyDepart, L
     @Modifying
     @Query("update SurveyDepart sb set sb.name = :updateName where sb.id = :id")
     int updateName(@Param("updateName") String updateName, @Param("id") Long id);
+
+    // 사용자 전용
+    @Query("select sd from SurveyDepart sd where sd.hospital.id = :hospitalId")
+    List<SurveyDepart> findSurveyDepartByHospitalId(@Param("hospitalId") Long hospitalId);
 }

@@ -21,4 +21,14 @@ public enum AgeGroup {
     public String getText() {
         return text;
     }
+
+    // 내부 문자열 -> 열거형
+    public static AgeGroup fromText(String text) {
+        for (AgeGroup age : AgeGroup.values()) {
+            if (age.getText().equals(text)) {
+                return age;
+            }
+        }
+        throw new IllegalArgumentException("Unknown age group: " + text);
+    }
 }
