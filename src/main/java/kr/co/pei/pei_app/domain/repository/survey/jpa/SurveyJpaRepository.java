@@ -17,7 +17,7 @@ public interface SurveyJpaRepository extends JpaRepository<Survey, Long> {
     )
     from Survey s
     join s.surveyType st
-    where s.surveyStatus = :status and s.hospital.id = :hospitalId
+    where s.surveyStatus = :status and s.hospital.id = :hospitalId and s.isVisible = true
     """)
     Page<CommonFindSurveyListDTO> findAllByActiveSurveyPage(Pageable pageable, @Param("status")SurveyStatus status, @Param("hospitalId") Long hospitalId);
 }

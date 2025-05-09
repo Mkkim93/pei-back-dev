@@ -64,6 +64,9 @@ public class Survey {
     @Column(name = "is_visible") // 설문 공개/비공개 (true : 공개, false : 비공개)
     private boolean isVisible;
 
+    @Column(name = "expected_part")
+    private Long expectedParticipants; // 설문 참여자 수 추정 (실제 설문이 종료되면 이 값으로 전체 참여자 추정 수와 실제 참여한 참여자 수를 측정하여 응답률 통계)
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "type_id")
     private SurveyType surveyType;

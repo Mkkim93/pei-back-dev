@@ -32,7 +32,8 @@ public class FileStoreService {
 
     public AdminFileDownLoadDTO findById(Long id) {
 
-        FileStore fileStore = fileStoreRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("파일이 존재 하지 않습니다."));
+        FileStore fileStore = fileStoreRepository.findById(id).orElseThrow(()
+                -> new EntityNotFoundException("파일이 존재 하지 않습니다."));
 
         AdminFileDownLoadDTO downloadDTO = new AdminFileDownLoadDTO(
                 fileStore.getId(),

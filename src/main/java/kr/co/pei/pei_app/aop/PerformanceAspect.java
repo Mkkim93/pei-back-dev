@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PerformanceAspect {
 
-    @Around("execution(* kr.co.pei.pei_app.application.service..*(..))")
+    @Around("execution(* kr.co.pei.pei_app.admin.application.service..*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         Object result = joinPoint.proceed();

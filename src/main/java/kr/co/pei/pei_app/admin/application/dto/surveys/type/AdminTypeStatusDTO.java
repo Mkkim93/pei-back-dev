@@ -31,7 +31,11 @@ public class AdminTypeStatusDTO {
     private String hospitalName;
 
     @QueryProjection
-    public AdminTypeStatusDTO(Long id, String name, String description, String title, String category, String surveyStatus, LocalDateTime openAt, LocalDateTime closeAt, LocalDateTime createdAt, LocalDateTime deletedAt, LocalDateTime updatedAt, boolean isVisible, String departName, String hospitalName) {
+    public AdminTypeStatusDTO(Long id, String name, String description,
+                              String title, String category, String surveyStatus,
+                              LocalDateTime openAt, LocalDateTime closeAt, LocalDateTime createdAt,
+                              LocalDateTime deletedAt, LocalDateTime updatedAt, boolean isVisible,
+                              String departName, String hospitalName) {
         this.id = id;
         this.name = name;
         this.description = description;

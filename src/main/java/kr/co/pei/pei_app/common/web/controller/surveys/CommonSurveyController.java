@@ -50,6 +50,4 @@ public class CommonSurveyController {
         return ResponseEntity.status(HttpStatus.OK.value())
                 .body(ApiResult.success("상세 조회 성공", detail));
     }
-
-
 }

@@ -21,7 +21,6 @@ import static jakarta.persistence.GenerationType.*;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class Schedule {
 
     @Id @GeneratedValue(strategy = IDENTITY)
@@ -33,11 +32,9 @@ public class Schedule {
     @Column
     private String description;
 
-    @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
@@ -55,6 +52,18 @@ public class Schedule {
     private String status; // 일정 상태 기록
 
     @Column(name = "is_deleted")
-    private boolean isDeleted;
+    private boolean isDeleted = false;
+
+    @Builder
+    public Schedule(String title, String description, LocalDateTime startTime, LocalDateTime endTime,
+                    String status, Users users) {
+        this.title = title;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = status;
+        this.isDeleted = this.isDeleted();
+        this.users = users;
+    }
 }
 

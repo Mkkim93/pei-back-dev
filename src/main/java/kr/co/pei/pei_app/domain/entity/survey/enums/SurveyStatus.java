@@ -13,4 +13,13 @@ public enum SurveyStatus {
     public String getText() {
         return text;
     }
+
+    public static SurveyStatus fromText(String text) {
+        for (SurveyStatus status : SurveyStatus.values()) {
+            if (status.getText().equals(text)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Unknown status group: " + text);
+    }
 }

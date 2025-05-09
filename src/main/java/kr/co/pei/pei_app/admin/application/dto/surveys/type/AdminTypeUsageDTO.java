@@ -19,7 +19,8 @@ public class AdminTypeUsageDTO {
     private Long usageCount;
 
     @QueryProjection
-    public AdminTypeUsageDTO(Long id, String name, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt, Long usageCount) {
+    public AdminTypeUsageDTO(Long id, String name, LocalDateTime createdAt, LocalDateTime updatedAt,
+                             LocalDateTime deletedAt, Long usageCount) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;

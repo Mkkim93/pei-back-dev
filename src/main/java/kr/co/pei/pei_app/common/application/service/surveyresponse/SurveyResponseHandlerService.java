@@ -1,5 +1,7 @@
 package kr.co.pei.pei_app.common.application.service.surveyresponse;
 
+import kr.co.pei.pei_app.admin.application.dto.surveys.response.SurveyResponseDetailDTO;
+import kr.co.pei.pei_app.admin.application.service.auth.UsersContextService;
 import kr.co.pei.pei_app.common.application.dto.surveyresponse.SurveyResponseCreateDTO;
 import kr.co.pei.pei_app.common.application.dto.surveyresponse.SurveyResponseFindMetaDTO;
 import kr.co.pei.pei_app.common.application.dto.surveys.depart.FindSurveyDepartDTO;
@@ -10,13 +12,13 @@ import kr.co.pei.pei_app.domain.entity.hospital.Ward;
 import kr.co.pei.pei_app.domain.entity.survey.Survey;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyDepart;
 import kr.co.pei.pei_app.domain.entity.survey.SurveyParticipant;
+import kr.co.pei.pei_app.domain.entity.survey.enums.SurveyStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -24,6 +26,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class SurveyResponseHandlerService {
 
+    private final UsersContextService contextService;
     private final CommonSurveyService surveyService;
     private final CommonHospitalService hospitalService;
     private final CommonWardService wardService;
@@ -68,5 +71,11 @@ public class SurveyResponseHandlerService {
 
         // 4. 최종 응답 저장
         responseService.saveResponse(dto, survey, ward, part);
+    }
+
+    public List<SurveyResponseDetailDTO> findDetail(Long surveyId, String status) {
+        Long hospitalId = contextService.getCurrentUser().getHospital().getId();
+        SurveyStatus surveyStatus = SurveyStatus.fromText(status);
+        return responseService.findDetail(surveyId, hospitalId, surveyStatus);
     }
 }

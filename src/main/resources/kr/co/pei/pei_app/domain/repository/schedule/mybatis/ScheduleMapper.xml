@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.pei.pei_app.domain.repository.schedule.mybatis.ScheduleMapper">
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="AdminCreateScheduleDTO">
+        insert into schedule (title, description, start_time, end_time, status, users_id)
+        values (#{title}, #{description}, #{startTime}, #{endTime}, #{status}, #{usersId})
+    </insert>
+
+<!--    하나의 객체만 파라미터로 받을 경우 @Mapper 인터페이스에 @Param()을 거의 붙이지 않고 두개 이상의 파라미터를 받을 경우 붙인다.-->
+    <update id="update" parameterType="AdminScheduleUpdateDTO">
+        update schedule
+        <set>
+            <if test="update.title != null">
+            title = #{update.title},
+            </if>
+
+            <if test="update.description != null">
+            description = #{update.description},
+            </if>
+
+            <if test="update.startTime != null">
+            start_Time = #{update.startTime},
+            </if>
+
+            <if test="update.endTime != null">
+            end_Time = #{update.endTime},
+            </if>
+
+            <if test="update.isDeleted != null">
+            is_deleted = #{update.isDeleted}
+        </if>
+        </set>
+        where id = #{update.id}
+    </update>
+
+    <select id="findById" parameterType="Long" resultType="Schedule">
+        select * from schedule where id = #{id}
+    </select>
+
+    <select id="findAll" resultType="Schedule">
+        select * from schedule
+        <where>
+            <if test="title != null and title != ''">
+                and title like concat('%', #{title}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>
