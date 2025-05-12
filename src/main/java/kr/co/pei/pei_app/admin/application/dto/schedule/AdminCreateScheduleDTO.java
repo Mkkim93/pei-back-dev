@@ -18,4 +18,5 @@ public class AdminCreateScheduleDTO {
 
     // Users 엔티티가 들어올 수 없음
     private Long usersId;
+    private Long hospitalId;
 }

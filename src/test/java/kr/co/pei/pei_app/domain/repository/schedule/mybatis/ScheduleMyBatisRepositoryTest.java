@@ -58,12 +58,6 @@ class ScheduleMyBatisRepositoryTest {
     @Test
     void findAll() {
         AdminFindScheduleDTO dto = new AdminFindScheduleDTO();
-        List<Schedule> result = repository.findAll(dto);
-
-        for (Schedule schedule : result) {
-            System.out.println(schedule.getTitle());
-            System.out.println(schedule.getStartTime());
-            System.out.println(schedule.getEndTime());
-        }
+        List<AdminFindScheduleDTO> list = repository.findAll();
     }
 }

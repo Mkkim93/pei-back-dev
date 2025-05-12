@@ -22,8 +22,8 @@ public class ScheduleMyBatisRepository implements ScheduleMapper {
     }
 
     @Override
-    public void update(AdminScheduleUpdateDTO dto) {
-        scheduleMapper.update(dto);
+    public int update(AdminScheduleUpdateDTO dto) {
+        return scheduleMapper.update(dto);
     }
 
     @Override
@@ -32,7 +32,12 @@ public class ScheduleMyBatisRepository implements ScheduleMapper {
     }
 
     @Override
-    public List<Schedule> findAll(AdminFindScheduleDTO dto) {
-        return scheduleMapper.findAll(dto);
+    public List<AdminFindScheduleDTO> findAll() {
+        return scheduleMapper.findAll();
+    }
+
+    @Override
+    public int deleteById(Long id) {
+        return scheduleMapper.deleteById(id);
     }
 }

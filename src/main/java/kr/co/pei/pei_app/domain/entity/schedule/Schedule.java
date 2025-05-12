@@ -1,6 +1,7 @@
 package kr.co.pei.pei_app.domain.entity.schedule;
 
 import jakarta.persistence.*;
+import kr.co.pei.pei_app.domain.entity.hospital.Hospital;
 import kr.co.pei.pei_app.domain.entity.users.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,15 +45,20 @@ public class Schedule {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "users_id")
-    private Users users;
-
     @Column
     private String status; // 일정 상태 기록
 
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "users_id")
+    private Users users;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
+
 
     @Builder
     public Schedule(String title, String description, LocalDateTime startTime, LocalDateTime endTime,
