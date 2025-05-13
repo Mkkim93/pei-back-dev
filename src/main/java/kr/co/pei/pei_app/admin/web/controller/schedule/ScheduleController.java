@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import kr.co.pei.pei_app.admin.application.dto.api.ApiResult;
 import kr.co.pei.pei_app.admin.application.dto.schedule.AdminCreateScheduleDTO;
 import kr.co.pei.pei_app.admin.application.dto.schedule.AdminFindScheduleDTO;
+import kr.co.pei.pei_app.admin.application.dto.schedule.AdminScheduleResponseDTO;
 import kr.co.pei.pei_app.admin.application.dto.schedule.AdminScheduleUpdateDTO;
 import kr.co.pei.pei_app.admin.application.service.schedule.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +35,9 @@ public class ScheduleController {
 
     @Operation(summary = "병원의 일정을 현재 로그인한 사용자를 기준으로 등록", description = "관리자가 일정 등록을 위한 API")
     @PostMapping
-    public ResponseEntity<ApiResult<String>> save(@RequestBody AdminCreateScheduleDTO dto) {
-        service.save(dto);
-        return ResponseEntity.status(HttpStatus.CREATED.value()).body(ApiResult.success("일정이 성공적으로 등록 되었습니다."));
+    public ResponseEntity<ApiResult<AdminScheduleResponseDTO>> save(@RequestBody AdminCreateScheduleDTO dto) {
+        AdminScheduleResponseDTO savedDto = service.save(dto);
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(ApiResult.success("일정이 성공적으로 등록 되었습니다.", savedDto));
     }
 
     @Operation(summary = "일정 삭제", description = "일정 삭제(is_deleted = true) API")

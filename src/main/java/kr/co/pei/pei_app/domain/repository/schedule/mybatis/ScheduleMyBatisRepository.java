@@ -5,11 +5,13 @@ import kr.co.pei.pei_app.admin.application.dto.schedule.AdminFindScheduleDTO;
 import kr.co.pei.pei_app.admin.application.dto.schedule.AdminScheduleUpdateDTO;
 import kr.co.pei.pei_app.domain.entity.schedule.Schedule;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class ScheduleMyBatisRepository implements ScheduleMapper {
@@ -17,8 +19,10 @@ public class ScheduleMyBatisRepository implements ScheduleMapper {
     private final ScheduleMapper scheduleMapper;
 
     @Override
-    public void save(AdminCreateScheduleDTO dto) {
+    public Long save(AdminCreateScheduleDTO dto) {
         scheduleMapper.save(dto);
+        log.info("저장 후 객체 id: {}", dto.getId());
+        return dto.getId();
     }
 
     @Override

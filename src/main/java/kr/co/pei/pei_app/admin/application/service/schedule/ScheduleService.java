@@ -1,7 +1,9 @@
 package kr.co.pei.pei_app.admin.application.service.schedule;
 
+import jakarta.persistence.EntityNotFoundException;
 import kr.co.pei.pei_app.admin.application.dto.schedule.AdminCreateScheduleDTO;
 import kr.co.pei.pei_app.admin.application.dto.schedule.AdminFindScheduleDTO;
+import kr.co.pei.pei_app.admin.application.dto.schedule.AdminScheduleResponseDTO;
 import kr.co.pei.pei_app.admin.application.dto.schedule.AdminScheduleUpdateDTO;
 import kr.co.pei.pei_app.admin.application.exception.schedule.ScheduleUpdateException;
 import kr.co.pei.pei_app.admin.application.service.auth.UsersContextService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -26,13 +29,15 @@ public class ScheduleService {
         return repository.findAll();
     }
 
-    public void save(AdminCreateScheduleDTO dto) {
+    public AdminScheduleResponseDTO save(AdminCreateScheduleDTO dto) {
         Long userId = contextService.getCurrentUser().getId();
         Long hospitalId = contextService.getCurrentUser().getHospital().getId();
         dto.setUsersId(userId);
         dto.setHospitalId(hospitalId);
         log.info("스케줄 등록 사용자 usersId : {}", userId);
-        repository.save(dto);
+        Long savedId = repository.save(dto);
+        Schedule savedEntity = repository.findById(savedId).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 일정"));
+        return new AdminScheduleResponseDTO(savedEntity);
     }
 
     public void delete(Long id) {

@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ScheduleMapper {
 
     // 일정 저장
-    void save(AdminCreateScheduleDTO dto);
+    Long save(AdminCreateScheduleDTO dto);
 
     // 일정 수정
     int update(@Param("update") AdminScheduleUpdateDTO dto);

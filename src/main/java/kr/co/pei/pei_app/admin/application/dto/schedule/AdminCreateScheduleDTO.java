@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AdminCreateScheduleDTO {
 
-    private Long id;
+    private Long id; // 저장 후 반환할 id
     private String title;
     private String description;
     private LocalDateTime startTime;
